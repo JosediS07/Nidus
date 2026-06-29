@@ -1,6 +1,5 @@
-package com.nidus.shared.config;
+package com.nidus.auth.infrastructure.security;
 
-import com.nidus.auth.web.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

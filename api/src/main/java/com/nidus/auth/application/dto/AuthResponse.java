@@ -1,4 +1,4 @@
-package com.nidus.auth.dto;
+package com.nidus.auth.application.dto;
 
 public record AuthResponse(
     String token,

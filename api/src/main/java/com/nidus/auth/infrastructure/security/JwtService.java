@@ -1,5 +1,6 @@
-package com.nidus.auth.service;
+package com.nidus.auth.infrastructure.security;
 
+import com.nidus.auth.application.port.output.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -12,7 +13,7 @@ import java.util.Date;
 import java.util.Map;
 
 @Service
-public class JwtService {
+public class JwtService implements TokenService {
 
     private final SecretKey secretKey;
     private final long expiration;
@@ -24,6 +25,7 @@ public class JwtService {
         this.expiration = expiration;
     }
 
+    @Override
     public String generarToken(String email, String rol) {
         var ahora = new Date();
         var expiracion = new Date(ahora.getTime() + expiration);

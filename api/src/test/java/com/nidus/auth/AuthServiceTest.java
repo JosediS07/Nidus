@@ -1,12 +1,12 @@
 package com.nidus.auth;
 
-import com.nidus.auth.dto.LoginRequest;
-import com.nidus.auth.dto.RegisterRequest;
-import com.nidus.auth.model.Role;
-import com.nidus.auth.model.User;
-import com.nidus.auth.repository.UserRepository;
-import com.nidus.auth.service.AuthService;
-import com.nidus.auth.service.JwtService;
+import com.nidus.auth.application.dto.LoginRequest;
+import com.nidus.auth.application.dto.RegisterRequest;
+import com.nidus.auth.application.port.output.TokenService;
+import com.nidus.auth.application.port.output.UserRepository;
+import com.nidus.auth.application.service.AuthServiceImpl;
+import com.nidus.auth.domain.Role;
+import com.nidus.auth.domain.User;
 import com.nidus.shared.exception.DuplicateResourceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,13 +32,13 @@ class AuthServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private JwtService jwtService;
+    private TokenService tokenService;
 
-    private AuthService authService;
+    private AuthServiceImpl authService;
 
     @BeforeEach
     void setUp() {
-        authService = new AuthService(userRepository, passwordEncoder, jwtService);
+        authService = new AuthServiceImpl(userRepository, passwordEncoder, tokenService);
     }
 
     @Test
@@ -46,7 +46,7 @@ class AuthServiceTest {
         var request = new RegisterRequest("Juan", "juan@mail.com", "123456");
         when(userRepository.existsByEmail("juan@mail.com")).thenReturn(false);
         when(passwordEncoder.encode("123456")).thenReturn("hash");
-        when(jwtService.generarToken("juan@mail.com", "USER")).thenReturn("token123");
+        when(tokenService.generarToken("juan@mail.com", "USER")).thenReturn("token123");
 
         var response = authService.registrar(request);
 
@@ -73,7 +73,7 @@ class AuthServiceTest {
 
         when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("123456", "hash")).thenReturn(true);
-        when(jwtService.generarToken("juan@mail.com", "USER")).thenReturn("token123");
+        when(tokenService.generarToken("juan@mail.com", "USER")).thenReturn("token123");
 
         var response = authService.login(request);
 

@@ -1,39 +1,16 @@
-package com.nidus.auth.model;
+package com.nidus.auth.domain;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
     private String nombre;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
-    @Column(nullable = false)
     private String password;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role rol;
-
-    @Column(nullable = false, updatable = false)
     private LocalDateTime creado;
-
-    @Column(nullable = false)
     private boolean activo = true;
-
-    @PrePersist
-    protected void onCreate() {
-        this.creado = LocalDateTime.now();
-    }
 
     public User() {}
 
@@ -42,6 +19,7 @@ public class User {
         this.email = email;
         this.password = password;
         this.rol = rol;
+        this.creado = LocalDateTime.now();
     }
 
     public Long getId() { return id; }

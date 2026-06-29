@@ -1,4 +1,4 @@
-package com.nidus.auth.model;
+package com.nidus.auth.domain;
 
 public enum Role {
     ADMIN, USER

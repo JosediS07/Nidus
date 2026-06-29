@@ -1,6 +1,5 @@
-package com.nidus.auth.web;
+package com.nidus.auth.infrastructure.security;
 
-import com.nidus.auth.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

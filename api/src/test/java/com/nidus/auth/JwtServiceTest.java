@@ -1,6 +1,6 @@
 package com.nidus.auth;
 
-import com.nidus.auth.service.JwtService;
+import com.nidus.auth.infrastructure.security.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

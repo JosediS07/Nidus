@@ -1,15 +1,16 @@
 package com.nidus.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nidus.auth.dto.AuthResponse;
-import com.nidus.auth.dto.LoginRequest;
-import com.nidus.auth.dto.RegisterRequest;
-import com.nidus.auth.service.AuthService;
+import com.nidus.auth.application.dto.AuthResponse;
+import com.nidus.auth.application.dto.LoginRequest;
+import com.nidus.auth.application.dto.RegisterRequest;
+import com.nidus.auth.application.port.input.AuthService;
 import com.nidus.shared.exception.DuplicateResourceException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class AuthControllerTest {
 
     @Autowired

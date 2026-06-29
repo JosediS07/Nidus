@@ -16,3 +16,6 @@ Thumbs.db
 
 ### Maven ###
 .mvn/wrapper/maven-wrapper.jar
+
+### Local config ###
+**/application-local.yaml

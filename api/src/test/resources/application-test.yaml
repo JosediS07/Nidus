@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/nidus_test?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${TEST_MYSQL_USER:nidus_test}
+    password: ${TEST_MYSQL_PASSWORD:nidus_test123}
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+app:
+  jwt:
+    secret: "N4k3dUHJ1bVRva2VuU2VjcmV0UXVlRGViZXNTZXJMYXJnYU1heTI1NkJpdHM="

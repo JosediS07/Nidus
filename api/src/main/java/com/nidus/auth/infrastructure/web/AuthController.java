@@ -1,9 +1,9 @@
-package com.nidus.auth.web;
+package com.nidus.auth.infrastructure.web;
 
-import com.nidus.auth.dto.AuthResponse;
-import com.nidus.auth.dto.LoginRequest;
-import com.nidus.auth.dto.RegisterRequest;
-import com.nidus.auth.service.AuthService;
+import com.nidus.auth.application.dto.AuthResponse;
+import com.nidus.auth.application.dto.LoginRequest;
+import com.nidus.auth.application.dto.RegisterRequest;
+import com.nidus.auth.application.port.input.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

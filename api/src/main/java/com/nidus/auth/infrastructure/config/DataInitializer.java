@@ -1,8 +1,8 @@
-package com.nidus.shared.config;
+package com.nidus.auth.infrastructure.config;
 
-import com.nidus.auth.model.Role;
-import com.nidus.auth.model.User;
-import com.nidus.auth.repository.UserRepository;
+import com.nidus.auth.application.port.output.UserRepository;
+import com.nidus.auth.domain.Role;
+import com.nidus.auth.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
