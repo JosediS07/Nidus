@@ -19,7 +19,7 @@ Paquete raíz: `com.nidus`. Organización por **módulos de dominio**:
 com.nidus
 ├── auth          — autenticación y roles (Admin, Usuario)
 ├── booking       — lógica de reservas y control de conflictos
-├── resource      — gestión de recursos (CRUD)
+├── recurso       — gestión de recursos (CRUD)
 ├── notification  — envío de correos (JavaMail)
 └── shared        — utilidades transversales (excepciones, dtos, config)
 ```
@@ -28,7 +28,7 @@ com.nidus
 
 - `com.nidus.auth.*` — registro, login, JWT filter, seguridad.
 - `com.nidus.booking.*` — servicio de reservas con validación de conflictos.
-- `com.nidus.resource.*` — CRUD de recursos con visibilidad por rol.
+- `com.nidus.recurso.*` — CRUD de recursos con visibilidad por rol.
 - `com.nidus.notification.*` — plantillas de correo y envío asíncrono.
 - `com.nidus.shared.*` — excepciones globales, DTOs base, configuración común.
 

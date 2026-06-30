@@ -7,9 +7,10 @@
 
 ## Siguiente 🔜
 
-1. **002 · Gestión de recursos** — CRUD de recursos con visibilidad según permisos. _(en curso)_
+1. **002 · Gestión de recursos** — CRUD de recursos con visibilidad según permisos.
    → `features/002-recursos/`
-3. **003 · Motor de reservas** — calendario, creación/modificación/cancelación de reservas con control de conflictos.
+   - Además: seed admin configurable (`application.yaml`), endpoint `PUT /api/v1/auth/usuarios/{id}/rol` para promover usuarios.
+2. **003 · Motor de reservas** — calendario, creación/modificación/cancelación de reservas con control de conflictos.
 4. **004 · Notificaciones por correo** — envío automático de confirmaciones.
 5. **005 · Panel de administración** — métricas, gestión de usuarios y reservas.
 

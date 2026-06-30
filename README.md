@@ -6,7 +6,7 @@ Plataforma SaaS de reserva y gestión centralizada de recursos (salas de reunion
 
 | Capa | Tecnología |
 |------|-----------|
-| Backend | Java 24, Spring Boot 4.1.0, Spring Security, Spring Data JPA |
+| Backend | Java 25, Spring Boot 4.1.0, Spring Security, Spring Data JPA |
 | Base de datos | MySQL (desarrollo), PostgreSQL (producción) |
 | Autenticación | JWT stateless |
 | Frontend | React (SPA) — _próximamente_ |
@@ -14,7 +14,7 @@ Plataforma SaaS de reserva y gestión centralizada de recursos (salas de reunion
 
 ## Requisitos
 
-- Java 24+
+- Java 25+
 - Maven (incluye `mvnw`)
 
 ## Ejecutar
@@ -39,6 +39,7 @@ La API arranca en `http://localhost:8080`.
 |--------|------|-------------|------|
 | POST | `/api/v1/auth/register` | Registrar usuario | No |
 | POST | `/api/v1/auth/login` | Iniciar sesión | No |
+| PUT | `/api/v1/auth/usuarios/{id}/rol` | Cambiar rol de usuario | ADMIN |
 
 ### Recursos (`/api/v1/recursos`)
 
