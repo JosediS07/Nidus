@@ -6,15 +6,15 @@ Plataforma SaaS de reserva y gestión centralizada de recursos (salas de reunion
 
 | Capa | Tecnología |
 |------|-----------|
-| Backend | Java 25, Spring Boot 4.1.0, Spring Security, Spring Data JPA |
-| Base de datos | H2 (desarrollo), PostgreSQL (producción) |
+| Backend | Java 24, Spring Boot 4.1.0, Spring Security, Spring Data JPA |
+| Base de datos | MySQL (desarrollo), PostgreSQL (producción) |
 | Autenticación | JWT stateless |
 | Frontend | React (SPA) — _próximamente_ |
 | Build | Maven |
 
 ## Requisitos
 
-- Java 25+
+- Java 24+
 - Maven (incluye `mvnw`)
 
 ## Ejecutar
@@ -68,6 +68,7 @@ api/                         ← código fuente del backend
     ├── auth/
     └── recurso/
 
-constitution/                ← reglas del proyecto
-features/                    ← especificaciones por feature
+spec/
+├── constitution/            ← reglas del proyecto
+└── features/                ← especificaciones por feature
 ```
