@@ -7,7 +7,7 @@
 
 ## Siguiente 🔜
 
-1. **002 · Gestión de recursos** — CRUD de recursos con visibilidad según permisos.
+1. **002 · Gestión de recursos** — CRUD de recursos con visibilidad según permisos. _(en curso)_
    → `features/002-recursos/`
 3. **003 · Motor de reservas** — calendario, creación/modificación/cancelación de reservas con control de conflictos.
 4. **004 · Notificaciones por correo** — envío automático de confirmaciones.
