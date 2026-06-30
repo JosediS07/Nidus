@@ -2,13 +2,12 @@
 
 ## Hecho ✅
 
-_(Aún no hay features completadas)_
+1. **001 · Autenticación y registro** — registro de usuarios, login con JWT y roles Admin/Usuario.
+   → `features/001-auth/`
 
 ## Siguiente 🔜
 
-1. **001 · Autenticación y registro** — registro de usuarios, login con JWT y roles Admin/Usuario.
-   → `features/001-auth/`
-2. **002 · Gestión de recursos** — CRUD de recursos con visibilidad según permisos.
+1. **002 · Gestión de recursos** — CRUD de recursos con visibilidad según permisos.
    → `features/002-recursos/`
 3. **003 · Motor de reservas** — calendario, creación/modificación/cancelación de reservas con control de conflictos.
 4. **004 · Notificaciones por correo** — envío automático de confirmaciones.
