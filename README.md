@@ -2,7 +2,7 @@
 
 Plataforma SaaS de reserva y gestión centralizada de recursos (salas de reuniones, equipos tecnológicos, citas).
 
-## Stack
+## Stack tecnológico
 
 | Capa | Tecnología |
 |------|-----------|
@@ -25,7 +25,7 @@ Plataforma SaaS de reserva y gestión centralizada de recursos (salas de reunion
 
 La API arranca en `http://localhost:8080`.
 
-## Tests
+## Pruebas
 
 ```bash
 ./mvnw test
@@ -35,16 +35,16 @@ La API arranca en `http://localhost:8080`.
 
 ### Autenticación (`/api/v1/auth`)
 
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
+| Método | Ruta | Descripción | Autenticación |
+|--------|------|-------------|---------------|
 | POST | `/api/v1/auth/register` | Registrar usuario | No |
 | POST | `/api/v1/auth/login` | Iniciar sesión | No |
 | PUT | `/api/v1/auth/usuarios/{id}/rol` | Cambiar rol de usuario | ADMIN |
 
 ### Recursos (`/api/v1/recursos`)
 
-| Método | Ruta | Descripción | Auth |
-|--------|------|-------------|------|
+| Método | Ruta | Descripción | Autenticación |
+|--------|------|-------------|---------------|
 | GET | `/api/v1/recursos` | Listar recursos | Sí |
 | GET | `/api/v1/recursos/{id}` | Obtener recurso | Sí |
 | POST | `/api/v1/recursos` | Crear recurso | ADMIN |

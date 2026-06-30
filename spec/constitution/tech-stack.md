@@ -1,15 +1,15 @@
-# Tech stack y convenciones
+# Stack tecnológico y convenciones
 
 ## Tecnologías
 
-- **Lenguaje backend:** Java 17+
-- **Framework backend:** Spring Boot 3.x, Spring Security, Spring Data JPA
-- **Base de datos:** Relacional (H2 para desarrollo, PostgreSQL para producción)
-- **Autenticación:** Stateless con JWT (almacenado en el cliente, enviado como `Authorization: Bearer <token>`)
+- **Lenguaje backend:** Java 25+
+- **Framework backend:** Spring Boot 4.x, Spring Security, Spring Data JPA
+- **Base de datos:** Relacional (MySQL para desarrollo, PostgreSQL para producción)
+- **Autenticación:** JWT sin estado (stateless) — se envía como `Authorization: Bearer <token>`
 - **Notificaciones:** JavaMail (envío automático de correos al confirmar, cancelar o modificar una reserva)
 - **Frontend:** React (SPA) con consumo de API REST
-- **Tests:** JUnit 5 + Mockito (backend); Vitest + React Testing Library (frontend)
-- **Build:** Maven (backend), Vite (frontend)
+- **Pruebas:** JUnit 5 + Mockito (backend); Vitest + React Testing Library (frontend)
+- **Compilación:** Maven (backend), Vite (frontend)
 
 ## Arquitectura del código (backend)
 
@@ -26,7 +26,7 @@ com.nidus
 
 ## Archivos / módulos clave
 
-- `com.nidus.auth.*` — registro, login, JWT filter, seguridad.
+- `com.nidus.auth.*` — registro, inicio de sesión, filtro JWT, seguridad.
 - `com.nidus.booking.*` — servicio de reservas con validación de conflictos.
 - `com.nidus.recurso.*` — CRUD de recursos con visibilidad por rol.
 - `com.nidus.notification.*` — plantillas de correo y envío asíncrono.
@@ -42,24 +42,24 @@ com.nidus
 
 ## Modelo de datos / dominio
 
-- **User** — id, nombre, email (único), password hash, rol (ADMIN / USER), creado, activo.
-- **Resource** — id, nombre, tipo (SALA, PROYECTOR, VEHICULO, OTRO), descripción, capacidad, activo.
-- **Booking** — id, recurso (FK), usuario (FK), fechaInicio, fechaFin, estado (CONFIRMADA, CANCELADA, MODIFICADA), creado, modificado.
-- **Invariante crítico:** No pueden existir dos `Booking` con el mismo `resource_id` y rangos de fecha solapados cuando ambas estén en estado `CONFIRMADA`.
+- **Usuario** — id, nombre, email (único), contraseña hasheada, rol (ADMIN / USER), fecha de creación, activo.
+- **Recurso** — id, nombre, tipo (SALA, PROYECTOR, VEHICULO, OTRO), descripción, capacidad, activo.
+- **Reserva** — id, recurso (FK), usuario (FK), fechaInicio, fechaFin, estado (CONFIRMADA, CANCELADA, MODIFICADA), creado, modificado.
+- **Invariante crítico:** No pueden existir dos `Reserva` con el mismo `recurso_id` y rangos de fecha solapados cuando ambas estén en estado `CONFIRMADA`.
 
 ## Convenciones
 
 - **Idioma:** Código fuente, comentarios y documentación en español (el proyecto es para portafolio en español).
 - **Nombres:** camelCase para variables y métodos; PascalCase para clases; UPPER_SNAKE para constantes.
-- **API REST:** URLs en plural (`/api/resources`, `/api/bookings`), versionado por prefijo (`/api/v1/`).
+- **API REST:** URLs en plural (`/api/v1/recursos`, `/api/v1/reservas`), versionado por prefijo (`/api/v1/`).
 - **Respuestas:** DTOs específicos por caso de uso (no exponer entidades JPA directamente).
 - **Manejo de errores:** `@ControllerAdvice` global con `ResponseEntity` estructurado (`{ error, message, status, timestamp }`).
 - **Validación:** Jakarta Validation (`@Valid`, `@NotBlank`, etc.) en los DTOs de entrada.
- - **Tests:** Unitarios con Mockito para servicios; repositorios con `@DataJpaTest`; controllers con `@WebMvcTest`.
-- **Commits:** Conventional Commits: `tipo(alcance): descripción`.
-  Tipos: `feat`, `docs`, `test`, `refactor`, `chore`.
-  Alcance: nombre del módulo (`auth`, `recursos`, `booking`, etc.).
-- **Ramas:** `feature/NNN-nombre` desde `main`. Merge a `main` con `--no-ff` para mantener historial de ramas.
+ - **Pruebas:** Unitarias con Mockito para servicios; repositorios con `@DataJpaTest`; controladores con `@WebMvcTest`.
+- **Commits:** Commits convencionales: `tipo(alcance): descripción`.
+  Tipos: `feat` (nueva funcionalidad), `docs` (documentación), `test` (pruebas), `refactor` (refactorización), `chore` (mantenimiento).
+  Alcance: nombre del módulo (`auth`, `recursos`, `reservas`, etc.).
+- **Ramas:** `feature/NNN-nombre` desde `main`. Integrar a `main` con `--no-ff` para mantener historial de ramas.
 - **Confirmación:** Cada commit/acción se presenta al autor y requiere confirmación explícita antes de ejecutarse.
 
 ## Límites duros
