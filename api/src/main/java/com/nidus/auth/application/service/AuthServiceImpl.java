@@ -1,6 +1,7 @@
 package com.nidus.auth.application.service;
 
 import com.nidus.auth.application.dto.AuthResponse;
+import com.nidus.auth.application.dto.CambiarRolRequest;
 import com.nidus.auth.application.dto.LoginRequest;
 import com.nidus.auth.application.dto.RegisterRequest;
 import com.nidus.auth.application.port.input.AuthService;
@@ -9,6 +10,7 @@ import com.nidus.auth.application.port.output.UserRepository;
 import com.nidus.auth.domain.Role;
 import com.nidus.auth.domain.User;
 import com.nidus.shared.exception.DuplicateResourceException;
+import com.nidus.shared.exception.ResourceNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -53,5 +55,14 @@ public class AuthServiceImpl implements AuthService {
 
         var token = tokenService.generarToken(user.getEmail(), user.getRol().name());
         return new AuthResponse(token, user.getNombre(), user.getEmail(), user.getRol().name());
+    }
+
+    @Transactional
+    @Override
+    public void cambiarRol(Long userId, CambiarRolRequest request) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario con id " + userId + " no encontrado"));
+        user.setRol(request.rol());
+        userRepository.save(user);
     }
 }

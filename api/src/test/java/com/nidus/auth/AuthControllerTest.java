@@ -2,6 +2,7 @@ package com.nidus.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nidus.auth.application.dto.AuthResponse;
+import com.nidus.auth.application.dto.CambiarRolRequest;
 import com.nidus.auth.application.dto.LoginRequest;
 import com.nidus.auth.application.dto.RegisterRequest;
 import com.nidus.auth.application.port.input.AuthService;
@@ -19,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -101,5 +104,27 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void cambiarRol_200() throws Exception {
+        var request = new CambiarRolRequest(com.nidus.auth.domain.Role.ADMIN);
+
+        mockMvc.perform(put("/api/v1/auth/usuarios/1/rol")
+                        .with(user("admin").roles("ADMIN"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void cambiarRol_403_usuarioNoAdmin() throws Exception {
+        var request = new CambiarRolRequest(com.nidus.auth.domain.Role.ADMIN);
+
+        mockMvc.perform(put("/api/v1/auth/usuarios/1/rol")
+                        .with(user("user").roles("USER"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isForbidden());
     }
 }

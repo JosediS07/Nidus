@@ -1,5 +1,6 @@
 package com.nidus.auth;
 
+import com.nidus.auth.application.dto.CambiarRolRequest;
 import com.nidus.auth.application.dto.LoginRequest;
 import com.nidus.auth.application.dto.RegisterRequest;
 import com.nidus.auth.application.port.output.TokenService;
@@ -8,6 +9,7 @@ import com.nidus.auth.application.service.AuthServiceImpl;
 import com.nidus.auth.domain.Role;
 import com.nidus.auth.domain.User;
 import com.nidus.shared.exception.DuplicateResourceException;
+import com.nidus.shared.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -87,6 +89,28 @@ class AuthServiceTest {
         when(userRepository.findByEmail("juan@mail.com")).thenReturn(Optional.empty());
 
         assertThrows(BadCredentialsException.class, () -> authService.login(request));
+    }
+
+    @Test
+    void cambiarRol_cambiaRoleExitosamente() {
+        var user = new User("Juan", "juan@mail.com", "hash", Role.USER);
+        user.setId(1L);
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        authService.cambiarRol(1L, new CambiarRolRequest(Role.ADMIN));
+
+        assertEquals(Role.ADMIN, user.getRol());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void cambiarRol_usuarioNoExistenteLanzaExcepcion() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class,
+                () -> authService.cambiarRol(99L, new CambiarRolRequest(Role.ADMIN)));
     }
 
     @Test

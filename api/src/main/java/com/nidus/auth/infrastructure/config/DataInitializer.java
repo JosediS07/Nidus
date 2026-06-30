@@ -5,6 +5,7 @@ import com.nidus.auth.domain.Role;
 import com.nidus.auth.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -16,19 +17,30 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final String adminEmail;
+    private final String adminPassword;
 
-    public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                           @Value("${app.admin.email}") String adminEmail,
+                           @Value("${app.admin.password}") String adminPassword) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.adminEmail = adminEmail;
+        this.adminPassword = adminPassword;
     }
 
     @Override
     public void run(String... args) {
-        if (!userRepository.existsByEmail("admin@nidus.com")) {
-            var admin = new User("Admin", "admin@nidus.com",
-                    passwordEncoder.encode("admin123"), Role.ADMIN);
+        if (adminEmail == null || adminEmail.isBlank()) {
+            log.info("Admin email no configurado — se omite creación de admin por defecto");
+            return;
+        }
+
+        if (!userRepository.existsByEmail(adminEmail)) {
+            var admin = new User("Admin", adminEmail,
+                    passwordEncoder.encode(adminPassword), Role.ADMIN);
             userRepository.save(admin);
-            log.info("Usuario admin creado: admin@nidus.com / admin123");
+            log.info("Usuario admin creado: {} / {}", adminEmail, adminPassword);
         }
     }
 }
