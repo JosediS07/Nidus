@@ -60,7 +60,7 @@ com.nidus
   Tipos: `feat` (nueva funcionalidad), `docs` (documentación), `test` (pruebas), `refactor` (refactorización), `chore` (mantenimiento).
   Alcance: nombre del módulo (`auth`, `recursos`, `reservas`, etc.).
 - **Ramas:** `feature/NNN-nombre` desde `main`. Integrar a `main` con `--no-ff` para mantener historial de ramas.
-- **Confirmación:** Cada commit/acción se presenta al autor y requiere confirmación explícita antes de ejecutarse.
+- **Confirmación:** Cada commit/acción requiere confirmación explícita antes de ejecutarse. El mensaje del commit se muestra primero para que el autor pueda revisarlo o modificarlo.
 
 ## Límites duros
 
