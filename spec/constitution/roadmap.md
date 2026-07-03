@@ -13,6 +13,7 @@
 ## Siguiente 🔜
 
 1. **004 · Notificaciones por correo** — envío automático de confirmaciones.
+   → `features/004-notificaciones/`
 2. **005 · Panel de administración** — métricas, gestión de usuarios y reservas.
 
 ## Backlog / ideas 💡
