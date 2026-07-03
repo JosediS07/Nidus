@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Reserva cancelada</title></head>
+<body style="font-family: Arial, sans-serif; color: #333; padding: 20px;">
+    <h2 style="color: #c62828;">Reserva cancelada</h2>
+    <p>Hola, <strong th:text="${nombreUsuario}">usuario</strong>.</p>
+    <p>Tu reserva ha sido cancelada:</p>
+    <table style="border-collapse: collapse; margin: 16px 0;">
+        <tr><td style="padding: 8px; font-weight: bold;">ID:</td><td style="padding: 8px;" th:text="${idReserva}">1</td></tr>
+        <tr><td style="padding: 8px; font-weight: bold;">Recurso:</td><td style="padding: 8px;" th:text="${recursoNombre}">Sala A</td></tr>
+        <tr><td style="padding: 8px; font-weight: bold;">Inicio:</td><td style="padding: 8px;" th:text="${fechaInicio}">01/01/2026 10:00</td></tr>
+        <tr><td style="padding: 8px; font-weight: bold;">Fin:</td><td style="padding: 8px;" th:text="${fechaFin}">01/01/2026 12:00</td></tr>
+        <tr><td style="padding: 8px; font-weight: bold;">Estado:</td><td style="padding: 8px; color: #c62828;" th:text="${estado}">CANCELADA</td></tr>
+    </table>
+    <p style="color: #666; font-size: 12px;">Este es un mensaje automático, por favor no respondas a este correo.</p>
+</body>
+</html>
