@@ -1,8 +1,8 @@
 # 004 · Notificaciones por correo — Tareas
 
 - [x] Crear spec, plan y tasks (`spec/features/004-notificaciones/`).
-- [ ] Agregar dependencias `spring-boot-starter-mail` y `spring-boot-starter-thymeleaf` en `pom.xml`.
-- [ ] Agregar configuración `app.mail` en `application.yaml`.
+- [x] Agregar dependencias `spring-boot-starter-mail` y `spring-boot-starter-thymeleaf` en `pom.xml`.
+- [x] Agregar configuración `app.mail` en `application.yaml`.
 - [ ] Implementar `EmailConfig.java` (bean JavaMailSender + @EnableAsync).
 - [ ] Implementar `NotificacionPort.java` (interface con 3 métodos).
 - [ ] Crear plantillas Thymeleaf: `confirmacion.html`, `cancelacion.html`, `modificacion.html`.
