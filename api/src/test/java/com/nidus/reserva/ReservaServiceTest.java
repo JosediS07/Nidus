@@ -3,6 +3,10 @@ package com.nidus.reserva;
 import com.nidus.auth.application.port.output.UserRepository;
 import com.nidus.auth.domain.Role;
 import com.nidus.auth.domain.User;
+import com.nidus.notificacion.application.port.NotificacionPort;
+import com.nidus.recurso.application.dto.RecursoResponse;
+import com.nidus.recurso.application.port.input.RecursoService;
+import com.nidus.recurso.domain.TipoRecurso;
 import com.nidus.reserva.application.dto.CrearReservaRequest;
 import com.nidus.reserva.application.dto.ModificarReservaRequest;
 import com.nidus.reserva.application.port.output.ReservaRepository;
@@ -34,7 +38,15 @@ class ReservaServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private RecursoService recursoService;
+
+    @Mock
+    private NotificacionPort notificacionPort;
+
     private ReservaServiceImpl reservaService;
+
+    private final RecursoResponse recursoResponse = new RecursoResponse(10L, "Sala A", TipoRecurso.SALA, "Desc", 10, true);
 
     private final Long usuarioId = 1L;
     private final Long recursoId = 10L;
@@ -43,7 +55,7 @@ class ReservaServiceTest {
 
     @BeforeEach
     void setUp() {
-        reservaService = new ReservaServiceImpl(reservaRepository, userRepository);
+        reservaService = new ReservaServiceImpl(reservaRepository, userRepository, recursoService, notificacionPort);
     }
 
     @Test
@@ -57,6 +69,7 @@ class ReservaServiceTest {
         when(userRepository.findById(usuarioId)).thenReturn(Optional.of(usuario));
         when(reservaRepository.encontrarSolapamientos(any(), any(), any(), any())).thenReturn(List.of());
         when(reservaRepository.guardar(any(Reserva.class))).thenReturn(reserva);
+        when(recursoService.obtener(recursoId)).thenReturn(recursoResponse);
 
         var resultado = reservaService.crear(request, usuarioId);
 
@@ -65,6 +78,8 @@ class ReservaServiceTest {
         assertEquals(usuarioId, resultado.usuarioId());
         assertEquals(EstadoReserva.CONFIRMADA, resultado.estado());
         verify(reservaRepository).guardar(any(Reserva.class));
+        verify(notificacionPort).enviarConfirmacion(eq("juan@mail.com"), eq("Juan"), eq(1L),
+                eq("Sala A"), any(), any());
     }
 
     @Test
@@ -93,16 +108,21 @@ class ReservaServiceTest {
         var nuevaInicio = LocalDateTime.now().plusDays(3);
         var nuevaFin = LocalDateTime.now().plusDays(4);
         var request = new ModificarReservaRequest(nuevaInicio, nuevaFin);
+        var usuario = new User("Juan", "juan@mail.com", "hash", Role.USER);
+        usuario.setId(usuarioId);
 
         when(reservaRepository.encontrarPorId(1L)).thenReturn(Optional.of(reserva));
         when(reservaRepository.encontrarSolapamientos(any(), any(), any(), any())).thenReturn(List.of());
         when(reservaRepository.guardar(any(Reserva.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userRepository.findById(usuarioId)).thenReturn(Optional.of(usuario));
+        when(recursoService.obtener(recursoId)).thenReturn(recursoResponse);
 
         var resultado = reservaService.modificar(1L, request, usuarioId);
 
         assertEquals(nuevaInicio, resultado.fechaInicio());
         assertEquals(nuevaFin, resultado.fechaFin());
         assertEquals(EstadoReserva.MODIFICADA, resultado.estado());
+        verify(notificacionPort).enviarModificacion(any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -138,14 +158,19 @@ class ReservaServiceTest {
     @Test
     void cancelar_cambiaEstado() {
         var reserva = new Reserva(1L, recursoId, usuarioId, maniana, pasadoManiana, EstadoReserva.CONFIRMADA, 0);
+        var usuario = new User("Juan", "juan@mail.com", "hash", Role.USER);
+        usuario.setId(usuarioId);
 
         when(reservaRepository.encontrarPorId(1L)).thenReturn(Optional.of(reserva));
         when(reservaRepository.guardar(any(Reserva.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userRepository.findById(usuarioId)).thenReturn(Optional.of(usuario));
+        when(recursoService.obtener(recursoId)).thenReturn(recursoResponse);
 
         reservaService.cancelar(1L, usuarioId);
 
         assertEquals(EstadoReserva.CANCELADA, reserva.getEstado());
         verify(reservaRepository).guardar(reserva);
+        verify(notificacionPort).enviarCancelacion(any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -218,14 +243,19 @@ class ReservaServiceTest {
         var reserva = new Reserva(1L, recursoId, 999L, maniana, pasadoManiana, EstadoReserva.CONFIRMADA, 0);
         var admin = new User("Admin", "admin@mail.com", "hash", Role.ADMIN);
         admin.setId(adminId);
+        var duenio = new User("Otro", "otro@mail.com", "hash", Role.USER);
+        duenio.setId(999L);
 
         when(reservaRepository.encontrarPorId(1L)).thenReturn(Optional.of(reserva));
         when(reservaRepository.guardar(any(Reserva.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(userRepository.findById(adminId)).thenReturn(Optional.of(admin));
+        when(userRepository.findById(999L)).thenReturn(Optional.of(duenio));
+        when(recursoService.obtener(recursoId)).thenReturn(recursoResponse);
 
         reservaService.cancelar(1L, adminId);
 
         assertEquals(EstadoReserva.CANCELADA, reserva.getEstado());
+        verify(notificacionPort).enviarCancelacion(eq("otro@mail.com"), any(), any(), any(), any(), any());
     }
 
     private User usuarioSinId(String email) {
