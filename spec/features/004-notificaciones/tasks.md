@@ -4,7 +4,7 @@
 - [x] Agregar dependencias `spring-boot-starter-mail` y `spring-boot-starter-thymeleaf` en `pom.xml`.
 - [x] Agregar configuración `app.mail` en `application.yaml`.
 - [x] Implementar `EmailConfig.java` (bean JavaMailSender + @EnableAsync).
-- [ ] Implementar `NotificacionPort.java` (interface con 3 métodos).
+- [x] Implementar `NotificacionPort.java` (interface con 3 métodos).
 - [ ] Crear plantillas Thymeleaf: `confirmacion.html`, `cancelacion.html`, `modificacion.html`.
 - [ ] Implementar `EmailNotificacionAdapter.java` (async, Thymeleaf, JavaMailSender).
 - [ ] Inyectar `NotificacionPort` en `ReservaServiceImpl` y disparar tras cada operación.
