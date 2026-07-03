@@ -1,7 +1,12 @@
 package com.nidus.reserva.application.service;
 
 import com.nidus.auth.application.port.output.UserRepository;
+import com.nidus.notificacion.application.port.NotificacionPort;
+import com.nidus.recurso.application.port.input.RecursoService;
 import com.nidus.reserva.application.dto.CrearReservaRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.nidus.reserva.application.dto.ModificarReservaRequest;
 import com.nidus.reserva.application.dto.ReservaResponse;
 import com.nidus.reserva.application.port.input.ReservaService;
@@ -19,12 +24,19 @@ import java.util.List;
 @Service
 public class ReservaServiceImpl implements ReservaService {
 
+    private static final Logger log = LoggerFactory.getLogger(ReservaServiceImpl.class);
+
     private final ReservaRepository reservaRepository;
     private final UserRepository userRepository;
+    private final RecursoService recursoService;
+    private final NotificacionPort notificacionPort;
 
-    public ReservaServiceImpl(ReservaRepository reservaRepository, UserRepository userRepository) {
+    public ReservaServiceImpl(ReservaRepository reservaRepository, UserRepository userRepository,
+                              RecursoService recursoService, NotificacionPort notificacionPort) {
         this.reservaRepository = reservaRepository;
         this.userRepository = userRepository;
+        this.recursoService = recursoService;
+        this.notificacionPort = notificacionPort;
     }
 
     @Override
@@ -40,6 +52,7 @@ public class ReservaServiceImpl implements ReservaService {
                 request.fechaInicio(), request.fechaFin(), EstadoReserva.CONFIRMADA, 0);
 
         var guardada = reservaRepository.guardar(reserva);
+        notificar(guardada, "confirmacion");
         return toResponse(guardada);
     }
 
@@ -66,6 +79,7 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado(EstadoReserva.MODIFICADA);
 
         var guardada = reservaRepository.guardar(reserva);
+        notificar(guardada, "modificacion");
         return toResponse(guardada);
     }
 
@@ -85,6 +99,7 @@ public class ReservaServiceImpl implements ReservaService {
 
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.guardar(reserva);
+        notificar(reserva, "cancelacion");
     }
 
     @Override
@@ -114,6 +129,28 @@ public class ReservaServiceImpl implements ReservaService {
         return reservaRepository.encontrarTodas().stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    private void notificar(Reserva reserva, String tipo) {
+        try {
+            var usuario = userRepository.findById(reserva.getUsuarioId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+            var recurso = recursoService.obtener(reserva.getRecursoId());
+
+            switch (tipo) {
+                case "confirmacion" -> notificacionPort.enviarConfirmacion(
+                        usuario.getEmail(), usuario.getNombre(), reserva.getId(),
+                        recurso.nombre(), reserva.getFechaInicio(), reserva.getFechaFin());
+                case "modificacion" -> notificacionPort.enviarModificacion(
+                        usuario.getEmail(), usuario.getNombre(), reserva.getId(),
+                        recurso.nombre(), reserva.getFechaInicio(), reserva.getFechaFin());
+                case "cancelacion" -> notificacionPort.enviarCancelacion(
+                        usuario.getEmail(), usuario.getNombre(), reserva.getId(),
+                        recurso.nombre(), reserva.getFechaInicio(), reserva.getFechaFin());
+            }
+        } catch (Exception e) {
+            log.warn("No se pudo enviar notificación para reserva {}: {}", reserva.getId(), e.getMessage());
+        }
     }
 
     private void validarFechas(LocalDateTime inicio, LocalDateTime fin) {
