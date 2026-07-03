@@ -10,5 +10,5 @@
 - [x] Inyectar `NotificacionPort` en `ReservaServiceImpl` y disparar tras cada operación.
 - [x] Escribir tests del adaptador (`EmailNotificacionAdapterTest`).
 - [x] Actualizar `ReservaServiceImplTest` para verificar que llama al puerto.
-- [ ] Validar contra los criterios de aceptación de `spec.md`.
-- [ ] Mover la feature a "Hecho" en `../../constitution/roadmap.md`.
+- [x] Validar contra los criterios de aceptación de `spec.md`.
+- [x] Mover la feature a "Hecho" en `../../constitution/roadmap.md`.
