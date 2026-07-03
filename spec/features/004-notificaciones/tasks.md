@@ -6,7 +6,7 @@
 - [x] Implementar `EmailConfig.java` (bean JavaMailSender + @EnableAsync).
 - [x] Implementar `NotificacionPort.java` (interface con 3 métodos).
 - [x] Crear plantillas Thymeleaf: `confirmacion.html`, `cancelacion.html`, `modificacion.html`.
-- [ ] Implementar `EmailNotificacionAdapter.java` (async, Thymeleaf, JavaMailSender).
+- [x] Implementar `EmailNotificacionAdapter.java` (async, Thymeleaf, JavaMailSender).
 - [ ] Inyectar `NotificacionPort` en `ReservaServiceImpl` y disparar tras cada operación.
 - [ ] Escribir tests del adaptador (`EmailNotificacionAdapterTest`).
 - [ ] Actualizar `ReservaServiceImplTest` para verificar que llama al puerto.
