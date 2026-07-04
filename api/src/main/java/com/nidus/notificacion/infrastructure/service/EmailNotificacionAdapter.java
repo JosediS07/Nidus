@@ -73,7 +73,7 @@ public class EmailNotificacionAdapter implements NotificacionPort {
 
             mailSender.send(mimeMessage);
             log.info("Email enviado a {}: {}", to, asunto);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             log.error("Error al enviar email a {}: {}", to, e.getMessage());
         }
     }
