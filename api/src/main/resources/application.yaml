@@ -6,13 +6,12 @@ spring:
     name: nidus
 
   datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: validate
     properties:
@@ -22,13 +21,13 @@ spring:
 app:
   admin:
     email: ${ADMIN_EMAIL:admin@nidus.com}
-    password: ${ADMIN_PASSWORD:admin123}
+    password: ${ADMIN_PASSWORD}
   jwt:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION:86400000}
   mail:
-    host: ${MAIL_HOST}
+    host: ${MAIL_HOST:localhost}
     port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME}
+    username: ${MAIL_USERNAME:dev}
     password: ${MAIL_PASSWORD}
     from: ${MAIL_FROM:noreply@nidus.com}

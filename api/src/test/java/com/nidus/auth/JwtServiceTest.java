@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = JwtService.class, properties = {
-    "app.jwt.secret=N4k3dUHJ1bVRva2VuU2VjcmV0UXVlRGViZXNTZXJMYXJnYU1heTI1NkJpdHM=",
+    "app.jwt.secret=301OdDgIHlQQQH6D6TF15rXZC6ludvZZ185iV+/Ak+8=",
     "app.jwt.expiration=86400000"
 })
 class JwtServiceTest {
