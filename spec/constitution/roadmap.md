@@ -9,11 +9,12 @@
    - Además: seed admin configurable (`application.yaml`), endpoint `PUT /api/v1/auth/usuarios/{id}/rol` para promover usuarios.
 3. **003 · Motor de reservas** — creación/modificación/cancelación de reservas con detección de solapamientos, JPQL, `@Version` para optimistic locking, índices compuestos, arquitectura hexagonal.
    → `features/003-motor-reservas/`
+4. **004 · Notificaciones por correo** — envío automático de notificaciones (confirmación, modificación, cancelación) con Spring Mail + Thymeleaf + @Async.
+   → `features/004-notificaciones/`
 
 ## Siguiente 🔜
 
-1. **004 · Notificaciones por correo** — envío automático de confirmaciones.
-2. **005 · Panel de administración** — métricas, gestión de usuarios y reservas.
+1. **005 · Panel de administración** — métricas, gestión de usuarios y reservas.
 
 ## Backlog / ideas 💡
 

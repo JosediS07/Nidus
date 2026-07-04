@@ -4,7 +4,7 @@
 
 - **Lenguaje backend:** Java 25+
 - **Framework backend:** Spring Boot 4.x, Spring Security, Spring Data JPA
-- **Base de datos:** Relacional (MySQL para desarrollo, PostgreSQL para producción)
+- **Base de datos:** Relacional (PostgreSQL)
 - **Autenticación:** JWT sin estado (stateless) — se envía como `Authorization: Bearer <token>`
 - **Notificaciones:** JavaMail (envío automático de correos al confirmar, cancelar o modificar una reserva)
 - **Frontend:** React (SPA) con consumo de API REST
@@ -18,18 +18,18 @@ Paquete raíz: `com.nidus`. Organización por **módulos de dominio**:
 ```
 com.nidus
 ├── auth          — autenticación y roles (Admin, Usuario)
-├── booking       — lógica de reservas y control de conflictos
+├── reserva       — motor de reservas con detección de solapamientos
 ├── recurso       — gestión de recursos (CRUD)
-├── notification  — envío de correos (JavaMail)
+├── notificacion  — envío de correos (Spring Mail + Thymeleaf + @Async)
 └── shared        — utilidades transversales (excepciones, dtos, config)
 ```
 
 ## Archivos / módulos clave
 
 - `com.nidus.auth.*` — registro, inicio de sesión, filtro JWT, seguridad.
-- `com.nidus.booking.*` — servicio de reservas con validación de conflictos.
+- `com.nidus.reserva.*` — servicio de reservas con validación de conflictos.
 - `com.nidus.recurso.*` — CRUD de recursos con visibilidad por rol.
-- `com.nidus.notification.*` — plantillas de correo y envío asíncrono.
+- `com.nidus.notificacion.*` — plantillas de correo y envío asíncrono.
 - `com.nidus.shared.*` — excepciones globales, DTOs base, configuración común.
 
 ## Comandos
@@ -55,10 +55,10 @@ com.nidus
 - **Respuestas:** DTOs específicos por caso de uso (no exponer entidades JPA directamente).
 - **Manejo de errores:** `@ControllerAdvice` global con `ResponseEntity` estructurado (`{ error, message, status, timestamp }`).
 - **Validación:** Jakarta Validation (`@Valid`, `@NotBlank`, etc.) en los DTOs de entrada.
- - **Pruebas:** Unitarias con Mockito para servicios; repositorios con `@DataJpaTest`; controladores con `@WebMvcTest`.
+- **Pruebas:** Unitarias con Mockito para servicios; repositorios con `@DataJpaTest`; controladores con `@WebMvcTest`.
 - **Commits:** Commits convencionales: `tipo(alcance): descripción`.
   Tipos: `feat` (nueva funcionalidad), `docs` (documentación), `test` (pruebas), `refactor` (refactorización), `chore` (mantenimiento).
-  Alcance: nombre del módulo (`auth`, `recursos`, `reservas`, etc.).
+  Alcance: nombre del módulo (`auth`, `recursos`, `reservas`, `notificacion`, etc.).
 - **Ramas:** `feature/NNN-nombre` desde `main`. Integrar a `main` con `--no-ff` para mantener historial de ramas.
 - **Confirmación:** Cada commit/acción requiere confirmación explícita antes de ejecutarse. El mensaje del commit se muestra primero para que el autor pueda revisarlo o modificarlo.
 
