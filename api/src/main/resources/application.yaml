@@ -21,7 +21,7 @@ spring:
 app:
   admin:
     email: ${ADMIN_EMAIL:admin@nidus.com}
-    password: ${ADMIN_PASSWORD}
+    password: ${ADMIN_PASSWORD:admin123}
   jwt:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION:86400000}
@@ -29,5 +29,5 @@ app:
     host: ${MAIL_HOST:localhost}
     port: ${MAIL_PORT:587}
     username: ${MAIL_USERNAME:dev}
-    password: ${MAIL_PASSWORD}
+    password: ${MAIL_PASSWORD:dev}
     from: ${MAIL_FROM:noreply@nidus.com}

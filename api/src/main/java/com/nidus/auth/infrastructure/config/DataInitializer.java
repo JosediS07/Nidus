@@ -41,6 +41,11 @@ public class DataInitializer implements CommandLineRunner {
                     passwordEncoder.encode(adminPassword), Role.ADMIN);
             userRepository.save(admin);
             log.info("Usuario admin creado: {} / {}", adminEmail, adminPassword);
+        } else {
+            var admin = userRepository.findByEmail(adminEmail).orElseThrow();
+            admin.setPassword(passwordEncoder.encode(adminPassword));
+            userRepository.save(admin);
+            log.info("Contraseña de admin actualizada: {} / {}", adminEmail, adminPassword);
         }
     }
 }

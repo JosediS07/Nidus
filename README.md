@@ -12,34 +12,14 @@ API REST de gestión centralizada de reservas de recursos (salas de reuniones, e
 | Documentación API | OpenAPI 3.0 (Swagger UI) |
 | Notificaciones | Spring Mail + Thymeleaf + @Async |
 | Build | Maven |
-| Contenedores | Docker + docker-compose |
 
 ## Requisitos
 
-- **Local:** Java 25+, Maven (`./mvnw`), PostgreSQL 16+
-- **Docker:** Docker Engine + docker-compose
+- Java 25+, Maven (`./mvnw`), PostgreSQL 16+
 
 ## Ejecutar
 
-### Con Docker (recomendado)
-
-```bash
-# Crear archivo .env con las variables obligatorias
-cat > .env << EOF
-POSTGRES_PASSWORD=cambiar123
-DB_PASSWORD=cambiar123
-JWT_SECRET=$(openssl rand -base64 32)
-ADMIN_PASSWORD=admin123
-MAIL_PASSWORD=
-EOF
-
-# Arrancar
-docker compose up
-```
-
-La API disponible en `http://localhost:8080`.
-
-### Local (sin Docker)
+### Local
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
@@ -159,8 +139,6 @@ spec/                             ← documentación y reglas del proyecto
 ├── constitution/                 ← roadmap, tech-stack
 └── features/                     ← especificaciones por feature
 
-Dockerfile                        ← build multi-etapa para producción
-docker-compose.yml                ← orquestación local (app + PostgreSQL)
 ```
 
 ## Arquitectura
@@ -199,7 +177,7 @@ Cada módulo (`auth`, `recurso`, `reserva`, `notificacion`) es independiente y s
 ### Buenas prácticas
 
 - **No hardcodees secretos** — todas las credenciales van en variables de entorno
-- **Usa JWT_SECRET diferente** en cada entorno (local, tests, docker, producción)
+- **Usa JWT_SECRET diferente** en cada entorno (local, tests, producción)
 - **No expongas la API** sin autenticación en producción
 - **Configura HTTPS** en producción (Railway/Render lo proveen automáticamente)
 

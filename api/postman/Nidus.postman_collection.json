@@ -1,0 +1,501 @@
+{
+  "info": {
+    "name": "Nidus API",
+    "description": "API REST de gestión de reservas - Nidus\n\n## Autenticación\n1. Ejecuta **POST /auth/register** para crear un usuario, o usa **POST /auth/login** si ya existe.\n2. El token JWT se asigna automáticamente a la variable `token` de la colección.\n3. El resto de endpoints usan `Authorization: Bearer {{token}}` automáticamente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "nidus"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "usuarioId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "recursoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "reservaId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [""],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Registro, inicio de sesión y gestión de roles",
+      "item": [
+        {
+          "name": "Registrar usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan@mail.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            },
+            "description": "Registra un nuevo usuario. Devuelve token JWT, nombre, email y rol."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Tiene token', () => pm.expect(jsonData.token).to.not.be.empty);",
+                  "pm.collectionVariables.set('token', jsonData.token);",
+                  "pm.collectionVariables.set('usuarioId', jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Iniciar sesión",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"juan@mail.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Inicia sesión con credenciales. Devuelve token JWT que se asigna automáticamente a la variable `token`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tiene token', () => pm.expect(jsonData.token).to.not.be.empty);",
+                  "pm.collectionVariables.set('token', jsonData.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cambiar rol de usuario",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rol\": \"ADMIN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/usuarios/{{usuarioId}}/rol",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "usuarios", "{{usuarioId}}", "rol"]
+            },
+            "description": "Cambia el rol de un usuario (solo ADMIN). Requiere token de administrador."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Recursos",
+      "description": "CRUD de recursos (salas, proyectores, vehículos, etc.)",
+      "item": [
+        {
+          "name": "Listar recursos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/recursos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "recursos"]
+            },
+            "description": "Lista todos los recursos activos. No requiere autenticación."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Es un array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener recurso por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/recursos/{{recursoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "recursos", "{{recursoId}}"]
+            },
+            "description": "Obtiene un recurso por su ID. No requiere autenticación."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tiene nombre', () => pm.expect(pm.response.json().nombre).to.not.be.empty);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Crear recurso",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Sala de reuniones A\",\n  \"tipo\": \"SALA\",\n  \"descripcion\": \"Sala principal con proyector\",\n  \"capacidad\": 10\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/recursos",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "recursos"]
+            },
+            "description": "Crea un nuevo recurso (solo ADMIN).\n\nTipos disponibles: SALA, PROYECTOR, VEHICULO, OTRO"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Tiene id', () => pm.expect(jsonData.id).to.not.be.empty);",
+                  "pm.collectionVariables.set('recursoId', jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar recurso",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Sala de reuniones A (actualizada)\",\n  \"capacidad\": 12\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/recursos/{{recursoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "recursos", "{{recursoId}}"]
+            },
+            "description": "Actualiza un recurso existente (solo ADMIN). Todos los campos son opcionales."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Desactivar recurso",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/recursos/{{recursoId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "recursos", "{{recursoId}}"]
+            },
+            "description": "Desactiva (soft-delete) un recurso (solo ADMIN)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reservas",
+      "description": "Gestión de reservas (CREAR, LISTAR, MODIFICAR, CANCELAR)",
+      "item": [
+        {
+          "name": "Crear reserva",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recursoId\": {{recursoId}},\n  \"fechaInicio\": \"2026-07-10T09:00:00\",\n  \"fechaFin\": \"2026-07-10T11:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reservas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reservas"]
+            },
+            "description": "Crea una nueva reserva. Requiere autenticación.\nLas fechas deben ser futuras."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "pm.test('Estado CONFIRMADA', () => pm.expect(jsonData.estado).to.equal('CONFIRMADA'));",
+                  "pm.collectionVariables.set('reservaId', jsonData.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar mis reservas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reservas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reservas"]
+            },
+            "description": "Lista las reservas del usuario autenticado."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Es un array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar todas las reservas (admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reservas/todas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reservas", "todas"]
+            },
+            "description": "Lista todas las reservas del sistema (solo ADMIN)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Es un array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener reserva por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reservas/{{reservaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reservas", "{{reservaId}}"]
+            },
+            "description": "Obtiene una reserva por su ID. El usuario solo puede ver sus propias reservas."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tiene id', () => pm.expect(pm.response.json().id).to.not.be.empty);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Modificar reserva",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fechaInicio\": \"2026-07-10T14:00:00\",\n  \"fechaFin\": \"2026-07-10T16:00:00\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reservas/{{reservaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reservas", "{{reservaId}}"]
+            },
+            "description": "Modifica las fechas de una reserva existente. El estado cambia a MODIFICADA."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Estado MODIFICADA', () => pm.expect(pm.response.json().estado).to.equal('MODIFICADA'));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cancelar reserva",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reservas/{{reservaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reservas", "{{reservaId}}"]
+            },
+            "description": "Cancela una reserva. El estado cambia a CANCELADA."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
