@@ -1,0 +1,108 @@
+package com.nidus.admin.application.service;
+
+import com.nidus.admin.application.dto.DashboardResponse;
+import com.nidus.admin.application.dto.ReservaAdminResponse;
+import com.nidus.admin.application.dto.UsuarioAdminResponse;
+import com.nidus.auth.infrastructure.persistence.repository.JpaUserRepository;
+import com.nidus.recurso.infrastructure.persistence.repository.JpaRecursoRepository;
+import com.nidus.reserva.domain.EstadoReserva;
+import com.nidus.reserva.infrastructure.persistence.entity.ReservaEntity;
+import com.nidus.reserva.infrastructure.persistence.repository.JpaReservaRepository;
+import com.nidus.shared.exception.ResourceNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+public class AdminService {
+
+    private final JpaUserRepository userRepository;
+    private final JpaRecursoRepository recursoRepository;
+    private final JpaReservaRepository reservaRepository;
+
+    public AdminService(JpaUserRepository userRepository,
+                        JpaRecursoRepository recursoRepository,
+                        JpaReservaRepository reservaRepository) {
+        this.userRepository = userRepository;
+        this.recursoRepository = recursoRepository;
+        this.reservaRepository = reservaRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public DashboardResponse dashboard() {
+        long totalUsuarios = userRepository.count();
+        long totalRecursos = recursoRepository.count();
+        long totalReservas = reservaRepository.count();
+
+        Map<String, Long> reservasPorEstado = Arrays.stream(EstadoReserva.values())
+            .collect(Collectors.toMap(
+                Enum::name,
+                e -> reservaRepository.countByEstado(e)
+            ));
+
+        LocalDateTime hoyInicio = LocalDate.now().atStartOfDay();
+        LocalDateTime hoyFin = LocalDate.now().atTime(LocalTime.MAX);
+        long reservasHoy = reservaRepository.countByFechaInicioBetween(hoyInicio, hoyFin);
+
+        String recursoMasReservado = reservaRepository.findTopRecursoId()
+            .map(id -> recursoRepository.findById(id)
+                .map(r -> r.getNombre())
+                .orElse("—"))
+            .orElse("—");
+
+        return new DashboardResponse(
+            totalUsuarios, totalRecursos, totalReservas,
+            reservasPorEstado, reservasHoy, recursoMasReservado
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public List<UsuarioAdminResponse> listarUsuarios() {
+        return userRepository.findAll().stream()
+            .map(u -> new UsuarioAdminResponse(
+                u.getId(), u.getNombre(), u.getEmail(),
+                u.getRol().name(), u.isActivo(), u.getCreado()))
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public UsuarioAdminResponse obtenerUsuario(Long id) {
+        var user = userRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Usuario con id " + id + " no encontrado"));
+        return new UsuarioAdminResponse(
+            user.getId(), user.getNombre(), user.getEmail(),
+            user.getRol().name(), user.isActivo(), user.getCreado());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservaAdminResponse> listarReservas(
+            String estado, Long recursoId, Long usuarioId,
+            LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return reservaRepository.findAll().stream()
+            .filter(r -> estado == null || r.getEstado().name().equalsIgnoreCase(estado))
+            .filter(r -> recursoId == null || r.getRecursoId().equals(recursoId))
+            .filter(r -> usuarioId == null || r.getUsuarioId().equals(usuarioId))
+            .filter(r -> fechaInicio == null || !r.getFechaFin().isBefore(fechaInicio))
+            .filter(r -> fechaFin == null || !r.getFechaInicio().isAfter(fechaFin))
+            .map(this::toReservaAdminResponse)
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ReservaAdminResponse obtenerReserva(Long id) {
+        var reserva = reservaRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
+        return toReservaAdminResponse(reserva);
+    }
+
+    private ReservaAdminResponse toReservaAdminResponse(ReservaEntity r) {
+        return new ReservaAdminResponse(
+            r.getId(), r.getRecursoId(), r.getUsuarioId(),
+            r.getFechaInicio(), r.getFechaFin(), r.getEstado().name());
+    }
+}

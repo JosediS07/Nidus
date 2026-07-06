@@ -8,12 +8,20 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface JpaReservaRepository extends JpaRepository<ReservaEntity, Long> {
 
     List<ReservaEntity> findByUsuarioIdOrderByFechaInicioDesc(Long usuarioId);
 
     List<ReservaEntity> findAllByOrderByFechaInicioDesc();
+
+    long countByEstado(EstadoReserva estado);
+
+    long countByFechaInicioBetween(LocalDateTime inicio, LocalDateTime fin);
+
+    @Query("SELECT r.recursoId FROM ReservaEntity r GROUP BY r.recursoId ORDER BY COUNT(r.id) DESC LIMIT 1")
+    Optional<Long> findTopRecursoId();
 
     @Query("""
         SELECT r FROM ReservaEntity r

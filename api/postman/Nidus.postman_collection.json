@@ -496,6 +496,137 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Admin",
+      "description": "Panel de administración (solo ADMIN) — métricas, usuarios y reservas",
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "dashboard"]
+            },
+            "description": "Métricas del sistema: total de usuarios, recursos, reservas y recurso más reservado."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Tiene métricas', () => {",
+                  "  const d = pm.response.json();",
+                  "  pm.expect(d.totalUsuarios).to.be.a('number');",
+                  "  pm.expect(d.totalReservas).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/usuarios",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "usuarios"]
+            },
+            "description": "Lista todos los usuarios del sistema."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener usuario",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/usuarios/{{usuarioId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "usuarios", "{{usuarioId}}"]
+            },
+            "description": "Obtiene un usuario por ID."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Listar reservas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/reservas",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "reservas"]
+            },
+            "description": "Lista todas las reservas. Filtros opcionales: ?estado=CONFIRMADA&recursoId=1&usuarioId=1&fechaInicio=...&fechaFin=..."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Obtener reserva",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/reservas/{{reservaId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "reservas", "{{reservaId}}"]
+            },
+            "description": "Obtiene cualquier reserva por ID."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 }

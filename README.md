@@ -96,31 +96,47 @@ Para probar endpoints protegidos:
 | PUT | `/api/v1/reservas/{id}` | Modificar una reserva existente | USER (propias), ADMIN |
 | DELETE | `/api/v1/reservas/{id}` | Cancelar una reserva | USER (propias), ADMIN |
 
+### Admin (`/api/v1/admin`)
+
+| Método | Ruta | Descripción | Acceso |
+|--------|------|-------------|--------|
+| GET | `/api/v1/admin/dashboard` | Métricas del sistema | ADMIN |
+| GET | `/api/v1/admin/usuarios` | Listar todos los usuarios | ADMIN |
+| GET | `/api/v1/admin/usuarios/{id}` | Obtener usuario por ID | ADMIN |
+| GET | `/api/v1/admin/reservas` | Listar reservas (con filtros opcionales) | ADMIN |
+| GET | `/api/v1/admin/reservas/{id}` | Obtener cualquier reserva por ID | ADMIN |
+
 ## Pruebas
 
 ```bash
 ./mvnw test
 ```
 
-### Tests unitarios (41 tests)
+### Todos los tests (90 tests)
 
 | Clase | Tests | Descripción |
 |-------|:-----:|-------------|
-| `AuthServiceTest` | 7 | Registro, login, cambio de rol |
+| `AdminControllerTest` | 9 | Dashboard, listado de usuarios y reservas (admin) |
+| `AuthControllerTest` | 7 | Registro, login, cambio de rol |
+| `AuthServiceTest` | 7 | Lógica de autenticación |
 | `JwtServiceTest` | 3 | Generación y validación de tokens |
-| `RecursoServiceTest` | 9 | CRUD de recursos con permisos |
-| `ReservaServiceTest` | 15 | Creación, modificación, cancelación y solapamientos |
-| `EmailNotificacionAdapterTest` | 7 | Envío de correos y captura de errores |
+| `RecursoControllerTest` | 11 | CRUD de recursos |
+| `RecursoServiceTest` | 9 | Lógica de recursos |
+| `RecursoRepositoryTest` | 2 | Persistencia de recursos |
+| `ReservaControllerTest` | 12 | Creación, modificación y cancelación de reservas |
+| `ReservaServiceTest` | 15 | Lógica de reservas y solapamientos |
+| `ReservaRepositoryTest` | 6 | Consultas JPQL de solapamientos |
+| `UserRepositoryTest` | 2 | Persistencia de usuarios |
+| `EmailNotificacionAdapterTest` | 7 | Envío de correos |
 
-### Tests de integración
-
-Requieren base de datos PostgreSQL y las variables de entorno configuradas. No se ejecutan por defecto con `./mvnw test`.
+Los tests se ejecutan contra una base PostgreSQL en Supabase (esquema `nidus_test`). Requieren las variables de entorno `TEST_DB_USER` y `TEST_DB_PASSWORD`.
 
 ## Estructura del proyecto
 
 ```
 api/                              ← módulo Maven del backend
 ├── src/main/java/com/nidus/
+│   ├── admin/                    ← panel de administración (dashboard, usuarios, reservas)
 │   ├── auth/                     ← autenticación y roles (JWT, SecurityConfig)
 │   ├── recurso/                  ← gestión de recursos (CRUD)
 │   ├── reserva/                  ← motor de reservas con detección de solapamientos

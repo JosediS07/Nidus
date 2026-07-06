@@ -11,10 +11,8 @@
    → `features/003-motor-reservas/`
 4. **004 · Notificaciones por correo** — envío automático de notificaciones (confirmación, modificación, cancelación) con Spring Mail + Thymeleaf + @Async.
    → `features/004-notificaciones/`
-
-## Siguiente 🔜
-
-1. **005 · Panel de administración** — métricas, gestión de usuarios y reservas.
+5. **005 · Panel de administración** — métricas (dashboard), listado de usuarios y gestión de reservas con filtros.
+   → `features/005-admin-panel/`
 
 ## Backlog / ideas 💡
 
