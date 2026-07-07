@@ -13,8 +13,10 @@ import com.nidus.reserva.application.port.input.ReservaService;
 import com.nidus.reserva.application.port.output.ReservaRepository;
 import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.reserva.domain.Reserva;
+import com.nidus.reserva.domain.evento.ReservaEvento;
 import com.nidus.shared.exception.InvalidStateException;
 import com.nidus.shared.exception.ResourceNotFoundException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,13 +32,16 @@ public class ReservaServiceImpl implements ReservaService {
     private final UserRepository userRepository;
     private final RecursoService recursoService;
     private final NotificacionPort notificacionPort;
+    private final ApplicationEventPublisher eventPublisher;
 
     public ReservaServiceImpl(ReservaRepository reservaRepository, UserRepository userRepository,
-                              RecursoService recursoService, NotificacionPort notificacionPort) {
+                              RecursoService recursoService, NotificacionPort notificacionPort,
+                              ApplicationEventPublisher eventPublisher) {
         this.reservaRepository = reservaRepository;
         this.userRepository = userRepository;
         this.recursoService = recursoService;
         this.notificacionPort = notificacionPort;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -53,6 +58,10 @@ public class ReservaServiceImpl implements ReservaService {
 
         var guardada = reservaRepository.guardar(reserva);
         notificar(guardada, "confirmacion");
+        eventPublisher.publishEvent(new ReservaEvento(
+            ReservaEvento.CREACION, guardada.getId(), usuarioId,
+            "Reserva creada: recurso " + request.recursoId()
+                + " del " + request.fechaInicio() + " al " + request.fechaFin()));
         return toResponse(guardada);
     }
 
@@ -80,6 +89,10 @@ public class ReservaServiceImpl implements ReservaService {
 
         var guardada = reservaRepository.guardar(reserva);
         notificar(guardada, "modificacion");
+        eventPublisher.publishEvent(new ReservaEvento(
+            ReservaEvento.MODIFICACION, guardada.getId(), usuarioId,
+            "Reserva modificada: nuevas fechas del " + request.fechaInicio()
+                + " al " + request.fechaFin()));
         return toResponse(guardada);
     }
 
@@ -100,6 +113,9 @@ public class ReservaServiceImpl implements ReservaService {
         reserva.setEstado(EstadoReserva.CANCELADA);
         reservaRepository.guardar(reserva);
         notificar(reserva, "cancelacion");
+        eventPublisher.publishEvent(new ReservaEvento(
+            ReservaEvento.CANCELACION, id, usuarioId,
+            "Reserva cancelada"));
     }
 
     @Override

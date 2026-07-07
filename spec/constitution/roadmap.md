@@ -13,6 +13,8 @@
    → `features/004-notificaciones/`
 5. **005 · Panel de administración** — métricas (dashboard), listado de usuarios y gestión de reservas con filtros.
    → `features/005-admin-panel/`
+6. **006 · Historial de reservas** — auditoría de eventos (CREACION, MODIFICACION, CANCELACION) con consulta vía API.
+   → `features/006-historial-reservas/`
 
 ## Backlog / ideas 💡
 

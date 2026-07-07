@@ -7,6 +7,8 @@ import com.nidus.auth.infrastructure.persistence.repository.JpaUserRepository;
 import com.nidus.recurso.infrastructure.persistence.repository.JpaRecursoRepository;
 import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.reserva.infrastructure.persistence.entity.ReservaEntity;
+import com.nidus.reserva.application.service.HistorialReservaService;
+import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
 import com.nidus.reserva.infrastructure.persistence.repository.JpaReservaRepository;
 import com.nidus.shared.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,13 +26,16 @@ public class AdminService {
     private final JpaUserRepository userRepository;
     private final JpaRecursoRepository recursoRepository;
     private final JpaReservaRepository reservaRepository;
+    private final HistorialReservaService historialService;
 
     public AdminService(JpaUserRepository userRepository,
                         JpaRecursoRepository recursoRepository,
-                        JpaReservaRepository reservaRepository) {
+                        JpaReservaRepository reservaRepository,
+                        HistorialReservaService historialService) {
         this.userRepository = userRepository;
         this.recursoRepository = recursoRepository;
         this.reservaRepository = reservaRepository;
+        this.historialService = historialService;
     }
 
     @Transactional(readOnly = true)
@@ -98,6 +103,13 @@ public class AdminService {
         var reserva = reservaRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
         return toReservaAdminResponse(reserva);
+    }
+
+    public List<HistorialReservaEntity> obtenerHistorial(Long reservaId) {
+        if (!reservaRepository.existsById(reservaId)) {
+            throw new ResourceNotFoundException("Reserva con id " + reservaId + " no encontrada");
+        }
+        return historialService.obtenerHistorial(reservaId);
     }
 
     private ReservaAdminResponse toReservaAdminResponse(ReservaEntity r) {

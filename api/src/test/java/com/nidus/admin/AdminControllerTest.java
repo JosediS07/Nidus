@@ -4,6 +4,7 @@ import com.nidus.admin.application.dto.DashboardResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
 import com.nidus.admin.application.service.AdminService;
+import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -119,6 +120,26 @@ class AdminControllerTest {
     @Test
     void obtenerReserva_403_noAdmin() throws Exception {
         mockMvc.perform(get("/api/v1/admin/reservas/1").with(user("user").roles("USER")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void obtenerHistorial_200() throws Exception {
+        var eventos = List.of(
+                new HistorialReservaEntity(1L, 1L, "CREACION", "Reserva creada"),
+                new HistorialReservaEntity(1L, 1L, "MODIFICACION", "Reserva modificada"));
+
+        when(adminService.obtenerHistorial(1L)).thenReturn(eventos);
+
+        mockMvc.perform(get("/api/v1/admin/reservas/1/historial").with(user("admin").roles("ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].tipoEvento").value("CREACION"));
+    }
+
+    @Test
+    void obtenerHistorial_403_noAdmin() throws Exception {
+        mockMvc.perform(get("/api/v1/admin/reservas/1/historial").with(user("user").roles("USER")))
                 .andExpect(status().isForbidden());
     }
 }

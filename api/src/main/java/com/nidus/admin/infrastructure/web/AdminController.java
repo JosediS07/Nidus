@@ -4,6 +4,7 @@ import com.nidus.admin.application.dto.DashboardResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
 import com.nidus.admin.application.service.AdminService;
+import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,5 +53,10 @@ public class AdminController {
     @GetMapping("/reservas/{id}")
     public ResponseEntity<ReservaAdminResponse> obtenerReserva(@PathVariable Long id) {
         return ResponseEntity.ok(adminService.obtenerReserva(id));
+    }
+
+    @GetMapping("/reservas/{id}/historial")
+    public ResponseEntity<List<HistorialReservaEntity>> obtenerHistorial(@PathVariable Long id) {
+        return ResponseEntity.ok(adminService.obtenerHistorial(id));
     }
 }

@@ -625,6 +625,30 @@
               }
             }
           ]
+        },
+        {
+          "name": "Historial de reserva",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/reservas/{{reservaId}}/historial",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "reservas", "{{reservaId}}", "historial"]
+            },
+            "description": "Historial de cambios de una reserva (eventos CREACION, MODIFICACION, CANCELACION)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
         }
       ]
     }
