@@ -5,6 +5,9 @@ import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
 import com.nidus.admin.application.service.AdminService;
 import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,8 +33,8 @@ public class AdminController {
     }
 
     @GetMapping("/usuarios")
-    public ResponseEntity<List<UsuarioAdminResponse>> listarUsuarios() {
-        return ResponseEntity.ok(adminService.listarUsuarios());
+    public ResponseEntity<Page<UsuarioAdminResponse>> listarUsuarios(@PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(adminService.listarUsuarios(pageable));
     }
 
     @GetMapping("/usuarios/{id}")

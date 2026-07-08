@@ -11,6 +11,8 @@ import com.nidus.reserva.application.service.HistorialReservaService;
 import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
 import com.nidus.reserva.infrastructure.persistence.repository.JpaReservaRepository;
 import com.nidus.shared.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,12 +69,11 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
-    public List<UsuarioAdminResponse> listarUsuarios() {
-        return userRepository.findAll().stream()
+    public Page<UsuarioAdminResponse> listarUsuarios(Pageable pageable) {
+        return userRepository.findAll(pageable)
             .map(u -> new UsuarioAdminResponse(
                 u.getId(), u.getNombre(), u.getEmail(),
-                u.getRol().name(), u.isActivo(), u.getCreado()))
-            .toList();
+                u.getRol().name(), u.isActivo(), u.getCreado()));
     }
 
     @Transactional(readOnly = true)
