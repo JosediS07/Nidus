@@ -98,11 +98,13 @@ class AdminControllerTest {
                 new ReservaAdminResponse(1L, 1L, 1L,
                         LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), "CONFIRMADA"));
 
-        when(adminService.listarReservas(null, null, null, null, null)).thenReturn(reservas);
+        var page = new PageImpl<>(reservas, PageRequest.of(0, 20), 1);
+        when(adminService.listarReservas(null, null, null, null, null, any())).thenReturn(page);
 
         mockMvc.perform(get("/api/v1/admin/reservas").with(user("admin").roles("ADMIN")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L));
+                .andExpect(jsonPath("$.content[0].id").value(1L))
+                .andExpect(jsonPath("$.totalElements").value(1));
     }
 
     @Test

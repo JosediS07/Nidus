@@ -11,8 +11,10 @@ import com.nidus.reserva.application.service.HistorialReservaService;
 import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
 import com.nidus.reserva.infrastructure.persistence.repository.JpaReservaRepository;
 import com.nidus.shared.exception.ResourceNotFoundException;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -86,17 +88,34 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReservaAdminResponse> listarReservas(
+    public Page<ReservaAdminResponse> listarReservas(
             String estado, Long recursoId, Long usuarioId,
-            LocalDateTime fechaInicio, LocalDateTime fechaFin) {
-        return reservaRepository.findAll().stream()
-            .filter(r -> estado == null || r.getEstado().name().equalsIgnoreCase(estado))
-            .filter(r -> recursoId == null || r.getRecursoId().equals(recursoId))
-            .filter(r -> usuarioId == null || r.getUsuarioId().equals(usuarioId))
-            .filter(r -> fechaInicio == null || !r.getFechaFin().isBefore(fechaInicio))
-            .filter(r -> fechaFin == null || !r.getFechaInicio().isAfter(fechaFin))
-            .map(this::toReservaAdminResponse)
-            .toList();
+            LocalDateTime fechaInicio, LocalDateTime fechaFin,
+            Pageable pageable) {
+
+        Specification<ReservaEntity> spec = (root, query, cb) -> {
+            var predicates = new ArrayList<Predicate>();
+
+            if (estado != null && !estado.isBlank()) {
+                predicates.add(cb.equal(root.get("estado"), EstadoReserva.valueOf(estado.toUpperCase())));
+            }
+            if (recursoId != null) {
+                predicates.add(cb.equal(root.get("recursoId"), recursoId));
+            }
+            if (usuarioId != null) {
+                predicates.add(cb.equal(root.get("usuarioId"), usuarioId));
+            }
+            if (fechaInicio != null) {
+                predicates.add(cb.greaterThanOrEqualTo(root.get("fechaFin"), fechaInicio));
+            }
+            if (fechaFin != null) {
+                predicates.add(cb.lessThanOrEqualTo(root.get("fechaInicio"), fechaFin));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return reservaRepository.findAll(spec, pageable).map(this::toReservaAdminResponse);
     }
 
     @Transactional(readOnly = true)

@@ -3,6 +3,7 @@ package com.nidus.reserva.infrastructure.persistence.repository;
 import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.reserva.infrastructure.persistence.entity.ReservaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface JpaReservaRepository extends JpaRepository<ReservaEntity, Long> {
+public interface JpaReservaRepository extends JpaRepository<ReservaEntity, Long>, JpaSpecificationExecutor<ReservaEntity> {
 
     List<ReservaEntity> findByUsuarioIdOrderByFechaInicioDesc(Long usuarioId);
 
