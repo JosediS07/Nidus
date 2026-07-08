@@ -3,11 +3,11 @@ package com.nidus.recurso.application.port.input;
 import com.nidus.recurso.application.dto.ActualizarRecursoRequest;
 import com.nidus.recurso.application.dto.CrearRecursoRequest;
 import com.nidus.recurso.application.dto.RecursoResponse;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface RecursoService {
-    List<RecursoResponse> listar();
+    Page<RecursoResponse> listar(Pageable pageable);
     RecursoResponse obtener(Long id);
     RecursoResponse crear(CrearRecursoRequest request);
     RecursoResponse actualizar(Long id, ActualizarRecursoRequest request);

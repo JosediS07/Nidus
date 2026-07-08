@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -42,12 +45,15 @@ class RecursoControllerTest {
     @Test
     void listar_200() throws Exception {
         var response = new RecursoResponse(1L, "Sala A", TipoRecurso.SALA, "Sala principal", 10, true);
-        when(recursoService.listar()).thenReturn(List.of(response));
+        var page = new PageImpl<>(List.of(response), PageRequest.of(0, 20), 1);
+        when(recursoService.listar(any())).thenReturn(page);
 
         mockMvc.perform(get("/api/v1/recursos").with(user("user")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].nombre").value("Sala A"))
-                .andExpect(jsonPath("$[0].tipo").value("SALA"));
+                .andExpect(jsonPath("$.content[0].nombre").value("Sala A"))
+                .andExpect(jsonPath("$.content[0].tipo").value("SALA"))
+                .andExpect(jsonPath("$.totalElements").value(1))
+                .andExpect(jsonPath("$.totalPages").value(1));
     }
 
     @Test

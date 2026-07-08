@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,13 +41,16 @@ class RecursoServiceTest {
     void listar_devuelveSoloActivos() {
         var sala = new Recurso("Sala A", TipoRecurso.SALA, "Sala principal", 10);
         sala.setId(1L);
-        when(recursoRepository.findAllActivos()).thenReturn(List.of(sala));
+        var pageable = PageRequest.of(0, 20);
+        var page = new PageImpl<>(List.of(sala), pageable, 1);
+        when(recursoRepository.findAllActivos(pageable)).thenReturn(page);
 
-        var resultado = recursoService.listar();
+        var resultado = recursoService.listar(pageable);
 
-        assertEquals(1, resultado.size());
-        assertEquals("Sala A", resultado.getFirst().nombre());
-        assertEquals(TipoRecurso.SALA, resultado.getFirst().tipo());
+        assertEquals(1, resultado.getContent().size());
+        assertEquals("Sala A", resultado.getContent().getFirst().nombre());
+        assertEquals(TipoRecurso.SALA, resultado.getContent().getFirst().tipo());
+        assertEquals(1, resultado.getTotalElements());
     }
 
     @Test

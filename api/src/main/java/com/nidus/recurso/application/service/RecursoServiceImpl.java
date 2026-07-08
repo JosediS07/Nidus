@@ -8,10 +8,10 @@ import com.nidus.recurso.application.port.output.RecursoRepository;
 import com.nidus.recurso.domain.Recurso;
 import com.nidus.shared.exception.InvalidStateException;
 import com.nidus.shared.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class RecursoServiceImpl implements RecursoService {
@@ -24,10 +24,9 @@ public class RecursoServiceImpl implements RecursoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<RecursoResponse> listar() {
-        return recursoRepository.findAllActivos().stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<RecursoResponse> listar(Pageable pageable) {
+        return recursoRepository.findAllActivos(pageable)
+                .map(this::toResponse);
     }
 
     @Override

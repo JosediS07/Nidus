@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,9 +45,9 @@ class RecursoRepositoryTest {
         jpaRecursoRepository.save(activo);
         jpaRecursoRepository.save(inactivo);
 
-        var activos = jpaRecursoRepository.findByActivoTrue();
+        var activos = jpaRecursoRepository.findByActivoTrue(PageRequest.of(0, 10));
 
-        assertEquals(1, activos.size());
-        assertEquals("Sala Activa", activos.getFirst().getNombre());
+        assertEquals(1, activos.getContent().size());
+        assertEquals("Sala Activa", activos.getContent().getFirst().getNombre());
     }
 }
