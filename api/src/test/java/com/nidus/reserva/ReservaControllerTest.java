@@ -12,6 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -96,25 +99,29 @@ class ReservaControllerTest {
     @Test
     void listarMisReservas_200() throws Exception {
         var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, EstadoReserva.CONFIRMADA);
+        var page = new PageImpl<>(List.of(reserva), PageRequest.of(0, 20), 1);
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
-        when(reservaService.listarPorUsuario(1L)).thenReturn(List.of(reserva));
+        when(reservaService.listarPorUsuario(1L, PageRequest.of(0, 20))).thenReturn(page);
 
         mockMvc.perform(get("/api/v1/reservas").with(user("user@mail.com").roles("USER")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L))
-                .andExpect(jsonPath("$[0].estado").value("CONFIRMADA"));
+                .andExpect(jsonPath("$.content[0].id").value(1L))
+                .andExpect(jsonPath("$.content[0].estado").value("CONFIRMADA"))
+                .andExpect(jsonPath("$.totalElements").value(1));
     }
 
     @Test
     void listarTodas_200_admin() throws Exception {
         var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, EstadoReserva.CONFIRMADA);
+        var page = new PageImpl<>(List.of(reserva), PageRequest.of(0, 20), 1);
 
-        when(reservaService.listarTodas()).thenReturn(List.of(reserva));
+        when(reservaService.listarTodas(PageRequest.of(0, 20))).thenReturn(page);
 
         mockMvc.perform(get("/api/v1/reservas/todas").with(user("admin@mail.com").roles("ADMIN")))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(1L));
+                .andExpect(jsonPath("$.content[0].id").value(1L))
+                .andExpect(jsonPath("$.totalElements").value(1));
     }
 
     @Test

@@ -4,6 +4,8 @@ import com.nidus.reserva.application.port.output.ReservaRepository;
 import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.reserva.domain.Reserva;
 import com.nidus.reserva.infrastructure.persistence.mapper.ReservaEntityMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -34,17 +36,15 @@ public class ReservaRepositoryAdapter implements ReservaRepository {
     }
 
     @Override
-    public List<Reserva> encontrarPorUsuarioId(Long usuarioId) {
-        return jpaReservaRepository.findByUsuarioIdOrderByFechaInicioDesc(usuarioId).stream()
-                .map(mapper::toDomain)
-                .toList();
+    public Page<Reserva> encontrarPorUsuarioId(Long usuarioId, Pageable pageable) {
+        return jpaReservaRepository.findByUsuarioIdOrderByFechaInicioDesc(usuarioId, pageable)
+                .map(mapper::toDomain);
     }
 
     @Override
-    public List<Reserva> encontrarTodas() {
-        return jpaReservaRepository.findAllByOrderByFechaInicioDesc().stream()
-                .map(mapper::toDomain)
-                .toList();
+    public Page<Reserva> encontrarTodas(Pageable pageable) {
+        return jpaReservaRepository.findAllByOrderByFechaInicioDesc(pageable)
+                .map(mapper::toDomain);
     }
 
     @Override

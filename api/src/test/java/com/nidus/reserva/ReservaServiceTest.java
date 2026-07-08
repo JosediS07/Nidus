@@ -21,6 +21,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -220,25 +223,31 @@ class ReservaServiceTest {
     @Test
     void listarPorUsuario_devuelveReservasDelUsuario() {
         var reserva = new Reserva(1L, recursoId, usuarioId, maniana, pasadoManiana, EstadoReserva.CONFIRMADA, 0);
+        var pageable = PageRequest.of(0, 20);
+        var page = new PageImpl<>(List.of(reserva), pageable, 1);
 
-        when(reservaRepository.encontrarPorUsuarioId(usuarioId)).thenReturn(List.of(reserva));
+        when(reservaRepository.encontrarPorUsuarioId(usuarioId, pageable)).thenReturn(page);
 
-        var resultado = reservaService.listarPorUsuario(usuarioId);
+        var resultado = reservaService.listarPorUsuario(usuarioId, pageable);
 
-        assertEquals(1, resultado.size());
-        assertEquals(usuarioId, resultado.getFirst().usuarioId());
+        assertEquals(1, resultado.getContent().size());
+        assertEquals(usuarioId, resultado.getContent().getFirst().usuarioId());
+        assertEquals(1, resultado.getTotalElements());
     }
 
     @Test
     void listarTodas_devuelveTodas() {
         var r1 = new Reserva(1L, recursoId, 1L, maniana, pasadoManiana, EstadoReserva.CONFIRMADA, 0);
         var r2 = new Reserva(2L, recursoId, 2L, maniana.plusDays(5), pasadoManiana.plusDays(5), EstadoReserva.CONFIRMADA, 0);
+        var pageable = PageRequest.of(0, 20);
+        var page = new PageImpl<>(List.of(r1, r2), pageable, 2);
 
-        when(reservaRepository.encontrarTodas()).thenReturn(List.of(r1, r2));
+        when(reservaRepository.encontrarTodas(pageable)).thenReturn(page);
 
-        var resultado = reservaService.listarTodas();
+        var resultado = reservaService.listarTodas(pageable);
 
-        assertEquals(2, resultado.size());
+        assertEquals(2, resultado.getContent().size());
+        assertEquals(2, resultado.getTotalElements());
     }
 
     @Test

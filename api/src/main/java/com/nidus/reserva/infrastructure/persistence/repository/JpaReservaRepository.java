@@ -10,12 +10,14 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface JpaReservaRepository extends JpaRepository<ReservaEntity, Long>, JpaSpecificationExecutor<ReservaEntity> {
 
-    List<ReservaEntity> findByUsuarioIdOrderByFechaInicioDesc(Long usuarioId);
+    Page<ReservaEntity> findByUsuarioIdOrderByFechaInicioDesc(Long usuarioId, Pageable pageable);
 
-    List<ReservaEntity> findAllByOrderByFechaInicioDesc();
+    Page<ReservaEntity> findAllByOrderByFechaInicioDesc(Pageable pageable);
 
     long countByEstado(EstadoReserva estado);
 

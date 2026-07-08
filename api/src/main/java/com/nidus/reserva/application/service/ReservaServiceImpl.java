@@ -17,6 +17,8 @@ import com.nidus.reserva.domain.evento.ReservaEvento;
 import com.nidus.shared.exception.InvalidStateException;
 import com.nidus.shared.exception.ResourceNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -133,18 +135,16 @@ public class ReservaServiceImpl implements ReservaService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReservaResponse> listarPorUsuario(Long usuarioId) {
-        return reservaRepository.encontrarPorUsuarioId(usuarioId).stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<ReservaResponse> listarPorUsuario(Long usuarioId, Pageable pageable) {
+        return reservaRepository.encontrarPorUsuarioId(usuarioId, pageable)
+                .map(this::toResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReservaResponse> listarTodas() {
-        return reservaRepository.encontrarTodas().stream()
-                .map(this::toResponse)
-                .toList();
+    public Page<ReservaResponse> listarTodas(Pageable pageable) {
+        return reservaRepository.encontrarTodas(pageable)
+                .map(this::toResponse);
     }
 
     private void notificar(Reserva reserva, String tipo) {

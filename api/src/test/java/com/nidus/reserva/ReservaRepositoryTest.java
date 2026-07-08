@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
@@ -93,8 +94,8 @@ class ReservaRepositoryTest {
         jpaReservaRepository.save(r1);
         jpaReservaRepository.save(r2);
 
-        var reservas = jpaReservaRepository.findByUsuarioIdOrderByFechaInicioDesc(1L);
+        var reservas = jpaReservaRepository.findByUsuarioIdOrderByFechaInicioDesc(1L, PageRequest.of(0, 10));
 
-        assertEquals(2, reservas.size());
+        assertEquals(2, reservas.getContent().size());
     }
 }

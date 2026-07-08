@@ -7,13 +7,15 @@ import com.nidus.reserva.application.dto.ReservaResponse;
 import com.nidus.reserva.application.port.input.ReservaService;
 import com.nidus.shared.exception.ResourceNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/reservas")
@@ -38,16 +40,17 @@ public class ReservaController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<List<ReservaResponse>> listarMisReservas(Principal principal) {
+    public ResponseEntity<Page<ReservaResponse>> listarMisReservas(
+            Principal principal, @PageableDefault(size = 20) Pageable pageable) {
         var usuarioId = obtenerUsuarioId(principal);
-        var reservas = reservaService.listarPorUsuario(usuarioId);
+        var reservas = reservaService.listarPorUsuario(usuarioId, pageable);
         return ResponseEntity.ok(reservas);
     }
 
     @GetMapping("/todas")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ReservaResponse>> listarTodas() {
-        return ResponseEntity.ok(reservaService.listarTodas());
+    public ResponseEntity<Page<ReservaResponse>> listarTodas(@PageableDefault(size = 20) Pageable pageable) {
+        return ResponseEntity.ok(reservaService.listarTodas(pageable));
     }
 
     @GetMapping("/{id}")
