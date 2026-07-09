@@ -1,9 +1,14 @@
 package com.nidus.reserva.domain.evento;
 
+import java.time.LocalDateTime;
+
 public record ReservaEvento(
     String tipo,
     Long reservaId,
     Long usuarioId,
+    Long recursoId,
+    LocalDateTime fechaInicio,
+    LocalDateTime fechaFin,
     String descripcion
 ) {
 
