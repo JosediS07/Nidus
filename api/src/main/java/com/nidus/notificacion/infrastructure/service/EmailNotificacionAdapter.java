@@ -58,6 +58,18 @@ public class EmailNotificacionAdapter implements NotificacionPort {
                 variables(nombreUsuario, idReserva, recursoNombre, fechaInicio, fechaFin, "CANCELADA"));
     }
 
+    @Async
+    @Override
+    public void enviarNotificacionCola(String emailDestino, String nombreUsuario,
+                                       String recursoNombre, Long idSolicitud) {
+        var variables = Map.<String, Object>of(
+                "nombreUsuario", nombreUsuario,
+                "recursoNombre", recursoNombre,
+                "idSolicitud", idSolicitud
+        );
+        enviar(emailDestino, "Recurso disponible en Nidus", "email/notificacion-cola", variables);
+    }
+
     private void enviar(String to, String asunto, String template, Map<String, Object> variables) {
         try {
             var mimeMessage = mailSender.createMimeMessage();
