@@ -61,7 +61,8 @@ public class ReservaServiceImpl implements ReservaService {
         var guardada = reservaRepository.guardar(reserva);
         notificar(guardada, "confirmacion");
         eventPublisher.publishEvent(new ReservaEvento(
-            ReservaEvento.CREACION, guardada.getId(), usuarioId,
+            ReservaEvento.CREACION, guardada.getId(), usuarioId, guardada.getRecursoId(),
+            guardada.getFechaInicio(), guardada.getFechaFin(),
             "Reserva creada: recurso " + request.recursoId()
                 + " del " + request.fechaInicio() + " al " + request.fechaFin()));
         return toResponse(guardada);
@@ -92,7 +93,8 @@ public class ReservaServiceImpl implements ReservaService {
         var guardada = reservaRepository.guardar(reserva);
         notificar(guardada, "modificacion");
         eventPublisher.publishEvent(new ReservaEvento(
-            ReservaEvento.MODIFICACION, guardada.getId(), usuarioId,
+            ReservaEvento.MODIFICACION, guardada.getId(), usuarioId, guardada.getRecursoId(),
+            guardada.getFechaInicio(), guardada.getFechaFin(),
             "Reserva modificada: nuevas fechas del " + request.fechaInicio()
                 + " al " + request.fechaFin()));
         return toResponse(guardada);
@@ -116,7 +118,8 @@ public class ReservaServiceImpl implements ReservaService {
         reservaRepository.guardar(reserva);
         notificar(reserva, "cancelacion");
         eventPublisher.publishEvent(new ReservaEvento(
-            ReservaEvento.CANCELACION, id, usuarioId,
+            ReservaEvento.CANCELACION, id, usuarioId, reserva.getRecursoId(),
+            reserva.getFechaInicio(), reserva.getFechaFin(),
             "Reserva cancelada"));
     }
 
