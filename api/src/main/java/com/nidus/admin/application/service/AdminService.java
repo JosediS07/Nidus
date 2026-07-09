@@ -4,6 +4,8 @@ import com.nidus.admin.application.dto.DashboardResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
 import com.nidus.auth.infrastructure.persistence.repository.JpaUserRepository;
+import com.nidus.cola.application.dto.SolicitudColaResponse;
+import com.nidus.cola.application.port.input.SolicitudColaService;
 import com.nidus.recurso.infrastructure.persistence.repository.JpaRecursoRepository;
 import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.reserva.infrastructure.persistence.entity.ReservaEntity;
@@ -31,15 +33,18 @@ public class AdminService {
     private final JpaRecursoRepository recursoRepository;
     private final JpaReservaRepository reservaRepository;
     private final HistorialReservaService historialService;
+    private final SolicitudColaService solicitudColaService;
 
     public AdminService(JpaUserRepository userRepository,
                         JpaRecursoRepository recursoRepository,
                         JpaReservaRepository reservaRepository,
-                        HistorialReservaService historialService) {
+                        HistorialReservaService historialService,
+                        SolicitudColaService solicitudColaService) {
         this.userRepository = userRepository;
         this.recursoRepository = recursoRepository;
         this.reservaRepository = reservaRepository;
         this.historialService = historialService;
+        this.solicitudColaService = solicitudColaService;
     }
 
     @Transactional(readOnly = true)
@@ -123,6 +128,11 @@ public class AdminService {
         var reserva = reservaRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
         return toReservaAdminResponse(reserva);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<SolicitudColaResponse> listarSolicitudesCola(Pageable pageable) {
+        return solicitudColaService.listarTodas(pageable);
     }
 
     public List<HistorialReservaEntity> obtenerHistorial(Long reservaId) {
