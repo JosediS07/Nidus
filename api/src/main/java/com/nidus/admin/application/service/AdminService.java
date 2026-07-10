@@ -1,6 +1,7 @@
 package com.nidus.admin.application.service;
 
 import com.nidus.admin.application.dto.DashboardResponse;
+import com.nidus.admin.application.dto.HistorialResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
 import com.nidus.auth.infrastructure.persistence.repository.JpaUserRepository;
@@ -10,7 +11,6 @@ import com.nidus.recurso.infrastructure.persistence.repository.JpaRecursoReposit
 import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.reserva.infrastructure.persistence.entity.ReservaEntity;
 import com.nidus.reserva.application.service.HistorialReservaService;
-import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
 import com.nidus.reserva.infrastructure.persistence.repository.JpaReservaRepository;
 import com.nidus.shared.exception.ResourceNotFoundException;
 import jakarta.persistence.criteria.Predicate;
@@ -135,11 +135,15 @@ public class AdminService {
         return solicitudColaService.listarTodas(pageable);
     }
 
-    public List<HistorialReservaEntity> obtenerHistorial(Long reservaId) {
+    public List<HistorialResponse> obtenerHistorial(Long reservaId) {
         if (!reservaRepository.existsById(reservaId)) {
             throw new ResourceNotFoundException("Reserva con id " + reservaId + " no encontrada");
         }
-        return historialService.obtenerHistorial(reservaId);
+        return historialService.obtenerHistorial(reservaId).stream()
+                .map(h -> new HistorialResponse(
+                    h.getId(), h.getReservaId(), h.getUsuarioId(),
+                    h.getTipoEvento(), h.getDescripcion(), h.getCreado()))
+                .toList();
     }
 
     private ReservaAdminResponse toReservaAdminResponse(ReservaEntity r) {

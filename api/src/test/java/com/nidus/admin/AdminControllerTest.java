@@ -1,10 +1,10 @@
 package com.nidus.admin;
 
 import com.nidus.admin.application.dto.DashboardResponse;
+import com.nidus.admin.application.dto.HistorialResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
 import com.nidus.admin.application.service.AdminService;
-import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -133,9 +133,10 @@ class AdminControllerTest {
 
     @Test
     void obtenerHistorial_200() throws Exception {
+        var ahora = LocalDateTime.now();
         var eventos = List.of(
-                new HistorialReservaEntity(1L, 1L, "CREACION", "Reserva creada"),
-                new HistorialReservaEntity(1L, 1L, "MODIFICACION", "Reserva modificada"));
+                new HistorialResponse(1L, 1L, 1L, "CREACION", "Reserva creada", ahora),
+                new HistorialResponse(2L, 1L, 1L, "MODIFICACION", "Reserva modificada", ahora));
 
         when(adminService.obtenerHistorial(1L)).thenReturn(eventos);
 

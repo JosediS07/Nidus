@@ -1,11 +1,11 @@
 package com.nidus.admin.infrastructure.web;
 
 import com.nidus.admin.application.dto.DashboardResponse;
+import com.nidus.admin.application.dto.HistorialResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
 import com.nidus.admin.application.service.AdminService;
 import com.nidus.cola.application.dto.SolicitudColaResponse;
-import com.nidus.reserva.infrastructure.persistence.entity.HistorialReservaEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -66,7 +66,7 @@ public class AdminController {
     }
 
     @GetMapping("/reservas/{id}/historial")
-    public ResponseEntity<List<HistorialReservaEntity>> obtenerHistorial(@PathVariable Long id) {
+    public ResponseEntity<List<HistorialResponse>> obtenerHistorial(@PathVariable Long id) {
         return ResponseEntity.ok(adminService.obtenerHistorial(id));
     }
 }
