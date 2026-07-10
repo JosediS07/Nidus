@@ -83,7 +83,7 @@ class ReservaServiceTest {
         assertEquals(1L, resultado.id());
         assertEquals(recursoId, resultado.recursoId());
         assertEquals(usuarioId, resultado.usuarioId());
-        assertEquals(EstadoReserva.CONFIRMADA, resultado.estado());
+        assertEquals("CONFIRMADA", resultado.estado());
         verify(reservaRepository).guardar(any(Reserva.class));
         verify(notificacionPort).enviarConfirmacion(eq("juan@mail.com"), eq("Juan"), eq(1L),
                 eq("Sala A"), any(), any());
@@ -128,7 +128,7 @@ class ReservaServiceTest {
 
         assertEquals(nuevaInicio, resultado.fechaInicio());
         assertEquals(nuevaFin, resultado.fechaFin());
-        assertEquals(EstadoReserva.MODIFICADA, resultado.estado());
+        assertEquals("MODIFICADA", resultado.estado());
         verify(notificacionPort).enviarModificacion(any(), any(), any(), any(), any(), any());
     }
 
@@ -206,7 +206,7 @@ class ReservaServiceTest {
         var resultado = reservaService.obtenerPorId(1L, usuarioId);
 
         assertEquals(1L, resultado.id());
-        assertEquals(EstadoReserva.CONFIRMADA, resultado.estado());
+        assertEquals("CONFIRMADA", resultado.estado());
     }
 
     @Test

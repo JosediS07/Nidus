@@ -193,6 +193,6 @@ public class ReservaServiceImpl implements ReservaService {
 
     private ReservaResponse toResponse(Reserva r) {
         return new ReservaResponse(r.getId(), r.getRecursoId(), r.getUsuarioId(),
-                r.getFechaInicio(), r.getFechaFin(), r.getEstado());
+                r.getFechaInicio(), r.getFechaFin(), r.getEstado().name());
     }
 }

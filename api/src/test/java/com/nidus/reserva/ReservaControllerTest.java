@@ -5,7 +5,6 @@ import com.nidus.auth.domain.Role;
 import com.nidus.auth.domain.User;
 import com.nidus.reserva.application.dto.ReservaResponse;
 import com.nidus.reserva.application.port.input.ReservaService;
-import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.shared.exception.InvalidStateException;
 import com.nidus.shared.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -55,7 +54,7 @@ class ReservaControllerTest {
 
     @Test
     void crear_201() throws Exception {
-        var response = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, EstadoReserva.CONFIRMADA);
+        var response = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA");
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
         when(reservaService.crear(any(), eq(1L))).thenReturn(response);
@@ -98,7 +97,7 @@ class ReservaControllerTest {
 
     @Test
     void listarMisReservas_200() throws Exception {
-        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, EstadoReserva.CONFIRMADA);
+        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA");
         var page = new PageImpl<>(List.of(reserva), PageRequest.of(0, 20), 1);
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
@@ -113,7 +112,7 @@ class ReservaControllerTest {
 
     @Test
     void listarTodas_200_admin() throws Exception {
-        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, EstadoReserva.CONFIRMADA);
+        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA");
         var page = new PageImpl<>(List.of(reserva), PageRequest.of(0, 20), 1);
 
         when(reservaService.listarTodas(PageRequest.of(0, 20))).thenReturn(page);
@@ -132,7 +131,7 @@ class ReservaControllerTest {
 
     @Test
     void obtener_200() throws Exception {
-        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, EstadoReserva.CONFIRMADA);
+        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA");
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
         when(reservaService.obtenerPorId(1L, 1L)).thenReturn(reserva);
@@ -154,7 +153,7 @@ class ReservaControllerTest {
 
     @Test
     void modificar_200() throws Exception {
-        var response = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, EstadoReserva.MODIFICADA);
+        var response = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "MODIFICADA");
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
         when(reservaService.modificar(any(), any(), eq(1L))).thenReturn(response);
