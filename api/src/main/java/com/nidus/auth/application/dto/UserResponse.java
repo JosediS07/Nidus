@@ -1,9 +1,9 @@
 package com.nidus.auth.application.dto;
 
-public record AuthResponse(
+public record UserResponse(
     Long id,
-    String token,
     String nombre,
     String email,
-    String rol
+    String rol,
+    boolean activo
 ) {}
