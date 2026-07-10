@@ -40,7 +40,7 @@ class AuthControllerTest {
     @Test
     void register_201() throws Exception {
         var request = new RegisterRequest("Juan", "juan@mail.com", "123456");
-        var response = new AuthResponse("token", "Juan", "juan@mail.com", "USER");
+        var response = new AuthResponse(1L, "token", "Juan", "juan@mail.com", "USER");
 
         when(authService.registrar(any())).thenReturn(response);
 
@@ -71,7 +71,7 @@ class AuthControllerTest {
     @Test
     void login_200() throws Exception {
         var request = new LoginRequest("juan@mail.com", "123456");
-        var response = new AuthResponse("token", "Juan", "juan@mail.com", "USER");
+        var response = new AuthResponse(1L, "token", "Juan", "juan@mail.com", "USER");
 
         when(authService.login(any())).thenReturn(response);
 

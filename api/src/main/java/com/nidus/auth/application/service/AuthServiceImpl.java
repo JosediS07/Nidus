@@ -4,6 +4,7 @@ import com.nidus.auth.application.dto.AuthResponse;
 import com.nidus.auth.application.dto.CambiarRolRequest;
 import com.nidus.auth.application.dto.LoginRequest;
 import com.nidus.auth.application.dto.RegisterRequest;
+import com.nidus.auth.application.dto.UserResponse;
 import com.nidus.auth.application.port.input.AuthService;
 import com.nidus.auth.application.port.output.TokenService;
 import com.nidus.auth.application.port.output.UserRepository;
@@ -41,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         var token = tokenService.generarToken(user.getEmail(), user.getRol().name());
-        return new AuthResponse(token, user.getNombre(), user.getEmail(), user.getRol().name());
+        return new AuthResponse(user.getId(), token, user.getNombre(), user.getEmail(), user.getRol().name());
     }
 
     @Override
@@ -54,7 +55,15 @@ public class AuthServiceImpl implements AuthService {
         }
 
         var token = tokenService.generarToken(user.getEmail(), user.getRol().name());
-        return new AuthResponse(token, user.getNombre(), user.getEmail(), user.getRol().name());
+        return new AuthResponse(user.getId(), token, user.getNombre(), user.getEmail(), user.getRol().name());
+    }
+
+    @Override
+    public UserResponse obtenerPerfil(String email) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        return new UserResponse(user.getId(), user.getNombre(), user.getEmail(),
+                user.getRol().name(), user.isActivo());
     }
 
     @Transactional
