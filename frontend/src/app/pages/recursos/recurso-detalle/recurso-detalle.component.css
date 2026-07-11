@@ -1,0 +1,16 @@
+.text-primary { color: var(--mat-sys-primary); }
+.text-secondary { color: var(--mat-sys-on-surface-variant); }
+
+.btn-solid { background: var(--mat-sys-primary); color: white; border-radius: 0.5rem; }
+
+.btn-salir-cola {
+  border-color: #fca5a5;
+  color: #dc2626;
+  font-size: 0.8125rem;
+}
+
+.btn-apuntarse-cola {
+  border-color: var(--color-border);
+  color: var(--mat-sys-primary);
+  font-size: 0.8125rem;
+}

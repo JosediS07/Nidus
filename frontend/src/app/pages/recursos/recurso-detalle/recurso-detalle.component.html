@@ -1,0 +1,57 @@
+<div class="page-container max-w-3xl">
+  @if (recurso) {
+    <section class="card mb-5">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h1 class="text-xl font-bold tracking-tight text-primary">{{ recurso.nombre }}</h1>
+          <span class="chip mt-2">{{ recurso.tipo }}</span>
+        </div>
+      </div>
+      @if (recurso.descripcion) {
+        <p class="text-sm mt-3 text-secondary">{{ recurso.descripcion }}</p>
+      }
+      <p class="text-sm mt-2 text-secondary">Capacidad: <strong>{{ recurso.capacidad }}</strong> personas</p>
+    </section>
+
+    <section class="card mb-5">
+      <h2 class="card-header mb-4">Nueva reserva</h2>
+      <form [formGroup]="formReserva" (ngSubmit)="reservar()" class="flex flex-col gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Fecha inicio</mat-label>
+            <input matInput type="datetime-local" formControlName="fechaInicio" />
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Fecha fin</mat-label>
+            <input matInput type="datetime-local" formControlName="fechaFin" />
+          </mat-form-field>
+        </div>
+        @if (reservaError) {
+          <div class="alert-danger">{{ reservaError }}</div>
+        }
+        <button mat-flat-button type="submit" [disabled]="formReserva.invalid || reservando" class="btn-solid self-start h-10">
+          {{ reservando ? 'Reservando...' : 'Reservar' }}
+        </button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2 class="card-header mb-4">Cola de espera</h2>
+      @if (miCola) {
+        <p class="text-sm mb-3 text-secondary">Estás en la cola de este recurso.</p>
+        <button mat-stroked-button (click)="salirCola()" class="btn-salir-cola">
+          Salir de la cola
+        </button>
+      } @else {
+        <button mat-stroked-button (click)="apuntarseCola()" class="btn-apuntarse-cola">
+          Apuntarse a la cola
+        </button>
+      }
+      @if (colaError) {
+        <div class="alert-danger mt-3">{{ colaError }}</div>
+      }
+    </section>
+  } @else {
+    <div class="cargando">Cargando...</div>
+  }
+</div>

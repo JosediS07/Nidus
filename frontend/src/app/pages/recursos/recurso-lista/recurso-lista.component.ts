@@ -1,0 +1,37 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { RecursoService } from '../../../core/services/recurso.service';
+import { RecursoResponse } from '../../../core/models/recurso.models';
+
+@Component({
+  selector: 'app-recurso-lista',
+  standalone: true,
+  imports: [CommonModule, RouterModule, MatButtonModule],
+  templateUrl: './recurso-lista.component.html',
+  styleUrl: './recurso-lista.component.css'
+})
+export class RecursoListaComponent implements OnInit {
+  recursos: RecursoResponse[] = [];
+  total = 0;
+  pagina = 0;
+
+  constructor(private recursoService: RecursoService) {}
+
+  ngOnInit(): void {
+    this.cargar();
+  }
+
+  cargar(page = 0): void {
+    this.pagina = page;
+    this.recursoService.listar(page).subscribe((res) => {
+      this.recursos = res.content;
+      this.total = res.totalElements;
+    });
+  }
+
+  cambiarPagina(e: any): void {
+    this.cargar(e.pageIndex);
+  }
+}
