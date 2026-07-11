@@ -1,0 +1,9 @@
+.text-primary { color: var(--mat-sys-primary); }
+.text-secondary { color: var(--mat-sys-on-surface-variant); }
+.border-subtle { border-color: var(--color-border); }
+.btn-solid {
+  background: var(--mat-sys-primary);
+  color: white;
+  border-radius: 0.5rem;
+  text-decoration: none;
+}

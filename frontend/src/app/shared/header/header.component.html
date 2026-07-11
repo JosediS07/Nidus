@@ -1,0 +1,35 @@
+<header class="bg-white border-b border-subtle">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center gap-8">
+    <a routerLink="/" class="text-xl font-bold tracking-tight no-underline text-primary">
+      Nidus
+    </a>
+
+    @if (authService.getUser(); as user) {
+      <nav aria-label="Navegación principal" class="hidden md:flex items-center gap-1">
+        <a routerLink="/recursos" class="nav-link" routerLinkActive="nav-link-active" [routerLinkActiveOptions]="{exact: true}">Recursos</a>
+        <a routerLink="/reservas" class="nav-link" routerLinkActive="nav-link-active">Mis reservas</a>
+        @if (authService.isAdmin()) {
+          <a routerLink="/dashboard" class="nav-link" routerLinkActive="nav-link-active">Dashboard</a>
+          <a routerLink="/admin/usuarios" class="nav-link" routerLinkActive="nav-link-active">Usuarios</a>
+          <a routerLink="/admin/reservas" class="nav-link" routerLinkActive="nav-link-active">Reservas</a>
+        }
+      </nav>
+
+      <span class="flex-1"></span>
+
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-medium hidden sm:block text-secondary">{{ user.nombre }}</span>
+        <div class="avatar">{{ user.nombre.charAt(0).toUpperCase() }}</div>
+        <button mat-stroked-button (click)="salir()" class="!text-sm border-subtle text-secondary">
+          Salir
+        </button>
+      </div>
+    } @else {
+      <span class="flex-1"></span>
+      <div class="flex items-center gap-3">
+        <a mat-stroked-button routerLink="/login" class="border-subtle text-secondary text-sm">Iniciar sesión</a>
+        <a mat-flat-button routerLink="/register" class="btn-solid text-sm">Registrarse</a>
+      </div>
+    }
+  </div>
+</header>
