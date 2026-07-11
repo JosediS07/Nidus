@@ -1,0 +1,58 @@
+<div class="page-container">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="page-title !mb-0">Mis reservas</h1>
+    <a mat-flat-button routerLink="/reservas/nueva" class="btn-solid text-sm px-4 leading-9">
+      Nueva reserva
+    </a>
+  </div>
+
+  <div class="card overflow-hidden !p-0">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <caption class="sr-only">Lista de mis reservas</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="table-header text-left">Recurso</th>
+            <th scope="col" class="table-header text-left">Inicio</th>
+            <th scope="col" class="table-header text-left">Fin</th>
+            <th scope="col" class="table-header text-left">Estado</th>
+            <th scope="col" class="table-header text-right"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of reservas; track r.id) {
+            <tr class="table-row">
+              <td class="table-cell font-medium">#{{ r.recursoId }}</td>
+              <td class="table-cell text-secondary">{{ r.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="table-cell text-secondary">{{ r.fechaFin | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td class="table-cell">
+                <span class="chip" [class.chip-primary]="r.estado === 'CONFIRMADA'" [class.chip-warn]="r.estado === 'CANCELADA'">{{ r.estado }}</span>
+              </td>
+              <td class="table-cell text-right">
+                @if (r.estado === 'CONFIRMADA') {
+                  <button mat-stroked-button (click)="cancelar(r)" class="btn-cancelar">
+                    Cancelar
+                  </button>
+                }
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="table-cell text-center text-secondary">No tienes reservas</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (total > 20) {
+      <div class="flex items-center justify-between px-6 py-4 border-t border-subtle">
+        <span class="text-sm text-secondary">{{ total }} reservas</span>
+        <div class="flex gap-2">
+          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina - 1})" [disabled]="pagina === 0" class="btn-pagina">Anterior</button>
+          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina + 1})" [disabled]="(pagina + 1) * 20 >= total" class="btn-pagina">Siguiente</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
