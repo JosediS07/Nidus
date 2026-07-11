@@ -1,0 +1,32 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { RecursoResponse, CrearRecursoRequest, ActualizarRecursoRequest } from '../models/recurso.models';
+
+@Injectable({ providedIn: 'root' })
+export class RecursoService {
+  private api = `${environment.apiUrl}/recursos`;
+
+  constructor(private http: HttpClient) {}
+
+  listar(page = 0, size = 20): Observable<any> {
+    return this.http.get<any>(`${this.api}?page=${page}&size=${size}`);
+  }
+
+  obtener(id: number): Observable<RecursoResponse> {
+    return this.http.get<RecursoResponse>(`${this.api}/${id}`);
+  }
+
+  crear(req: CrearRecursoRequest): Observable<RecursoResponse> {
+    return this.http.post<RecursoResponse>(this.api, req);
+  }
+
+  actualizar(id: number, req: ActualizarRecursoRequest): Observable<RecursoResponse> {
+    return this.http.put<RecursoResponse>(`${this.api}/${id}`, req);
+  }
+
+  desactivar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.api}/${id}`);
+  }
+}
