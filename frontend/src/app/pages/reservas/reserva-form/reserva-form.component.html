@@ -1,0 +1,41 @@
+<div class="page-container max-w-lg">
+  <section class="card">
+    <h1 class="text-xl font-bold tracking-tight mb-6 text-primary">{{ editando ? 'Editar reserva' : 'Nueva reserva' }}</h1>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="flex flex-col gap-5">
+      @if (!editando) {
+        <mat-form-field appearance="fill">
+          <mat-label>Recurso</mat-label>
+          <mat-select formControlName="recursoId">
+            @for (r of recursos; track r.id) {
+              <mat-option [value]="r.id">{{ r.nombre }} ({{ r.tipo }})</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+
+      <mat-form-field appearance="fill">
+        <mat-label>Fecha inicio</mat-label>
+        <input matInput type="datetime-local" formControlName="fechaInicio" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Fecha fin</mat-label>
+        <input matInput type="datetime-local" formControlName="fechaFin" />
+      </mat-form-field>
+
+      @if (error) {
+        <div class="alert-danger">{{ error }}</div>
+      }
+
+      <div class="flex gap-3 pt-2">
+        <button mat-flat-button type="submit" [disabled]="form.invalid || guardando" class="btn-solid h-10">
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <a mat-stroked-button routerLink="/reservas" class="border-subtle text-secondary h-10 rounded-lg no-underline text-sm">
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </section>
+</div>

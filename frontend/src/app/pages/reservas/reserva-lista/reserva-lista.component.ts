@@ -1,0 +1,63 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { ReservaService } from '../../../core/services/reserva.service';
+import { ReservaResponse } from '../../../core/models/reserva.models';
+import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
+
+@Component({
+  selector: 'app-reserva-lista',
+  standalone: true,
+  imports: [CommonModule, RouterModule, MatButtonModule, MatDialogModule, MatSnackBarModule],
+  templateUrl: './reserva-lista.component.html',
+  styleUrl: './reserva-lista.component.css'
+})
+export class ReservaListaComponent implements OnInit {
+  reservas: ReservaResponse[] = [];
+  total = 0;
+  pagina = 0;
+
+  constructor(
+    private reservaService: ReservaService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) {}
+
+  ngOnInit(): void {
+    this.cargar();
+  }
+
+  cargar(page = 0): void {
+    this.pagina = page;
+    this.reservaService.listarMisReservas(page).subscribe((res) => {
+      this.reservas = res.content;
+      this.total = res.totalElements;
+    });
+  }
+
+  cambiarPagina(e: any): void {
+    this.cargar(e.pageIndex);
+  }
+
+  cancelar(r: ReservaResponse): void {
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        titulo: 'Cancelar reserva',
+        mensaje: `¿Cancelar la reserva #${r.id}?`,
+        confirmarTexto: 'Cancelar',
+      }
+    });
+
+    ref.afterClosed().subscribe((ok) => {
+      if (ok) {
+        this.reservaService.cancelar(r.id).subscribe(() => {
+          this.snackBar.open('Reserva cancelada', 'Cerrar', { duration: 3000 });
+          this.cargar();
+        });
+      }
+    });
+  }
+}
