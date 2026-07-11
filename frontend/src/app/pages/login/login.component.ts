@@ -1,0 +1,46 @@
+import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
+
+@Component({
+  selector: 'app-login',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, MatButtonModule, MatInputModule],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
+})
+export class LoginComponent {
+  private fb = inject(FormBuilder);
+  form = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+  });
+  cargando = false;
+  error = '';
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  enviar(): void {
+    if (this.form.invalid) return;
+    this.cargando = true;
+    this.error = '';
+
+    this.authService.login(this.form.value as any).subscribe({
+      next: () => {
+        const destino = this.authService.isAdmin() ? '/dashboard' : '/recursos';
+        this.router.navigate([destino]);
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Error al iniciar sesión';
+        this.cargando = false;
+      }
+    });
+  }
+}

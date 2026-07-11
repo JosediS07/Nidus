@@ -1,0 +1,9 @@
+.text-primary { color: var(--mat-sys-primary); }
+.text-secondary { color: var(--mat-sys-on-surface-variant); }
+.btn-solid { background: var(--mat-sys-primary); color: white; border-radius: 0.5rem; }
+
+.enlace-auth {
+  color: var(--mat-sys-primary);
+  font-weight: 500;
+  text-decoration: none;
+}

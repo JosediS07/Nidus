@@ -1,0 +1,44 @@
+import { Component, inject } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../core/services/auth.service';
+
+@Component({
+  selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, MatButtonModule, MatInputModule],
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css'
+})
+export class RegisterComponent {
+  private fb = inject(FormBuilder);
+  form = this.fb.group({
+    nombre: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+  });
+  cargando = false;
+  error = '';
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  enviar(): void {
+    if (this.form.invalid) return;
+    this.cargando = true;
+    this.error = '';
+
+    this.authService.register(this.form.value as any).subscribe({
+      next: () => this.router.navigate(['/recursos']),
+      error: (err) => {
+        this.error = err.error?.message || 'Error al registrarse';
+        this.cargando = false;
+      }
+    });
+  }
+}
