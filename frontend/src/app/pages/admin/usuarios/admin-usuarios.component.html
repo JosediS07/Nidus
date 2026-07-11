@@ -1,0 +1,49 @@
+<div class="page-container">
+  <h1 class="page-title">Usuarios</h1>
+
+  <div class="card overflow-hidden !p-0">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <caption class="sr-only">Lista de usuarios</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="table-header text-left">ID</th>
+            <th scope="col" class="table-header text-left">Nombre</th>
+            <th scope="col" class="table-header text-left">Email</th>
+            <th scope="col" class="table-header text-left">Rol</th>
+            <th scope="col" class="table-header text-left">Activo</th>
+            <th scope="col" class="table-header text-left">Registrado</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of usuarios; track u.id) {
+            <tr class="table-row">
+              <td class="table-cell text-secondary">{{ u.id }}</td>
+              <td class="table-cell font-medium">{{ u.nombre }}</td>
+              <td class="table-cell">{{ u.email }}</td>
+              <td class="table-cell"><span class="chip" [class.chip-primary]="u.rol === 'ADMIN'">{{ u.rol }}</span></td>
+              <td class="table-cell">
+                <span class="chip" [class.chip-primary]="u.activo" [class.chip-warn]="!u.activo">{{ u.activo ? 'Sí' : 'No' }}</span>
+              </td>
+              <td class="table-cell text-secondary">{{ u.creado | date:'dd/MM/yyyy' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="table-cell text-center text-secondary">No hay usuarios</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (total > 20) {
+      <div class="flex items-center justify-between px-6 py-4 border-t border-subtle">
+        <span class="text-sm text-secondary">{{ total }} usuarios</span>
+        <div class="flex gap-2">
+          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina - 1})" [disabled]="pagina === 0" class="btn-pagina">Anterior</button>
+          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina + 1})" [disabled]="(pagina + 1) * 20 >= total" class="btn-pagina">Siguiente</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
