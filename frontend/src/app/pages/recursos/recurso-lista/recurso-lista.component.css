@@ -1,0 +1,8 @@
+.enlace-recurso {
+  color: var(--mat-sys-primary);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.text-primary { color: var(--mat-sys-primary); }
+.border-subtle { border-color: var(--color-border); }
