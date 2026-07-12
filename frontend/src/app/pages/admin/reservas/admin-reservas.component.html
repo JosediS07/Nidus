@@ -33,6 +33,7 @@
             <th scope="col" class="table-header text-left">Inicio</th>
             <th scope="col" class="table-header text-left">Fin</th>
             <th scope="col" class="table-header text-left">Estado</th>
+            <th scope="col" class="table-header text-left">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -46,10 +47,13 @@
               <td class="table-cell">
                 <span class="chip" [class.chip-primary]="r.estado === 'CONFIRMADA'" [class.chip-warn]="r.estado === 'CANCELADA'">{{ r.estado }}</span>
               </td>
+              <td class="table-cell">
+                <button mat-stroked-button (click)="confirmarCancelar(r)" [disabled]="r.estado === 'CANCELADA'">Cancelar</button>
+              </td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="6" class="table-cell text-center text-secondary">No hay reservas</td>
+              <td colspan="7" class="table-cell text-center text-secondary">No hay reservas</td>
             </tr>
           }
         </tbody>

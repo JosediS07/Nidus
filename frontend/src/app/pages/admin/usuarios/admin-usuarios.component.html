@@ -1,5 +1,8 @@
 <div class="page-container">
-  <h1 class="page-title">Usuarios</h1>
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="page-title !mb-0">Usuarios</h1>
+    <button mat-flat-button color="primary" (click)="abrirCrear()">+ Nuevo usuario</button>
+  </div>
 
   <div class="card overflow-hidden !p-0">
     <div class="overflow-x-auto">
@@ -11,8 +14,8 @@
             <th scope="col" class="table-header text-left">Nombre</th>
             <th scope="col" class="table-header text-left">Email</th>
             <th scope="col" class="table-header text-left">Rol</th>
-            <th scope="col" class="table-header text-left">Activo</th>
             <th scope="col" class="table-header text-left">Registrado</th>
+            <th scope="col" class="table-header text-left">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -22,10 +25,11 @@
               <td class="table-cell font-medium">{{ u.nombre }}</td>
               <td class="table-cell">{{ u.email }}</td>
               <td class="table-cell"><span class="chip" [class.chip-primary]="u.rol === 'ADMIN'">{{ u.rol }}</span></td>
-              <td class="table-cell">
-                <span class="chip" [class.chip-primary]="u.activo" [class.chip-warn]="!u.activo">{{ u.activo ? 'Sí' : 'No' }}</span>
-              </td>
               <td class="table-cell text-secondary">{{ u.creado | date:'dd/MM/yyyy' }}</td>
+              <td class="table-cell">
+                <button mat-stroked-button (click)="abrirEditar(u)" class="!mr-2">Editar</button>
+                <button mat-stroked-button (click)="confirmarEliminar(u)">Eliminar</button>
+              </td>
             </tr>
           } @empty {
             <tr>
