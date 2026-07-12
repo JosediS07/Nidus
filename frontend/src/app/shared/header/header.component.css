@@ -7,3 +7,7 @@
   border-radius: 0.5rem;
   text-decoration: none;
 }
+
+.admin-nav-link { color: #22d3ee; }
+.admin-nav-link:hover { color: #67e8f9; }
+.admin-nav-link.nav-link-active { color: #67e8f9; }
