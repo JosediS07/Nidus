@@ -12,6 +12,8 @@ export const routes: Routes = [
   { path: 'reservas/:id/editar', loadComponent: () => import('./pages/reservas/reserva-form/reserva-form.component').then((c) => c.ReservaFormComponent), canActivate: [AuthGuard] },
   { path: 'admin/usuarios', loadComponent: () => import('./pages/admin/usuarios/admin-usuarios.component').then((c) => c.AdminUsuariosComponent), canActivate: [AuthGuard, AdminGuard] },
   { path: 'admin/reservas', loadComponent: () => import('./pages/admin/reservas/admin-reservas.component').then((c) => c.AdminReservasComponent), canActivate: [AuthGuard, AdminGuard] },
+  { path: 'admin/recursos', loadComponent: () => import('./pages/admin/recursos/admin-recursos.component').then((c) => c.AdminRecursosComponent), canActivate: [AuthGuard, AdminGuard] },
+  { path: 'admin/cola', loadComponent: () => import('./pages/admin/cola/admin-cola.component').then((c) => c.AdminColaComponent), canActivate: [AuthGuard, AdminGuard] },
   { path: '', redirectTo: '/recursos', pathMatch: 'full' },
   { path: '**', redirectTo: '/recursos' },
 ];

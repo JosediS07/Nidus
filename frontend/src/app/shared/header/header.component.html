@@ -9,9 +9,12 @@
         <a routerLink="/recursos" class="nav-link" routerLinkActive="nav-link-active" [routerLinkActiveOptions]="{exact: true}">Recursos</a>
         <a routerLink="/reservas" class="nav-link" routerLinkActive="nav-link-active">Mis reservas</a>
         @if (authService.isAdmin()) {
-          <a routerLink="/dashboard" class="nav-link" routerLinkActive="nav-link-active">Dashboard</a>
-          <a routerLink="/admin/usuarios" class="nav-link" routerLinkActive="nav-link-active">Usuarios</a>
-          <a routerLink="/admin/reservas" class="nav-link" routerLinkActive="nav-link-active">Reservas</a>
+          <span class="text-sm opacity-40 select-none mx-1">|</span>
+          <a routerLink="/dashboard" class="nav-link admin-nav-link" routerLinkActive="nav-link-active">Dashboard</a>
+          <a routerLink="/admin/usuarios" class="nav-link admin-nav-link" routerLinkActive="nav-link-active">Usuarios</a>
+          <a routerLink="/admin/recursos" class="nav-link admin-nav-link" routerLinkActive="nav-link-active">Gestión recursos</a>
+          <a routerLink="/admin/reservas" class="nav-link admin-nav-link" routerLinkActive="nav-link-active">Gestión reservas</a>
+          <a routerLink="/admin/cola" class="nav-link admin-nav-link" routerLinkActive="nav-link-active">Cola</a>
         }
       </nav>
 
