@@ -1,0 +1,51 @@
+<div class="page-container">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="page-title !mb-0">Recursos</h1>
+    <button mat-flat-button color="primary" (click)="abrirCrear()">+ Nuevo recurso</button>
+  </div>
+
+  <div class="card overflow-hidden !p-0">
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <caption class="sr-only">Lista de recursos</caption>
+        <thead>
+          <tr>
+            <th scope="col" class="table-header text-left">ID</th>
+            <th scope="col" class="table-header text-left">Nombre</th>
+            <th scope="col" class="table-header text-left">Tipo</th>
+            <th scope="col" class="table-header text-left">Capacidad</th>
+            <th scope="col" class="table-header text-left">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (r of recursos; track r.id) {
+            <tr class="table-row">
+              <td class="table-cell text-secondary">{{ r.id }}</td>
+              <td class="table-cell font-medium">{{ r.nombre }}</td>
+              <td class="table-cell text-secondary">{{ r.tipo }}</td>
+              <td class="table-cell">{{ r.capacidad }}</td>
+              <td class="table-cell">
+                <button mat-stroked-button (click)="abrirEditar(r)" class="!mr-2">Editar</button>
+                <button mat-stroked-button (click)="confirmarEliminar(r)">Eliminar</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="table-cell text-center text-secondary">No hay recursos</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (total > 20) {
+      <div class="flex items-center justify-between px-6 py-4 border-t border-subtle">
+        <span class="text-sm text-secondary">{{ total }} recursos</span>
+        <div class="flex gap-2">
+          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina - 1})" [disabled]="pagina === 0" class="btn-pagina">Anterior</button>
+          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina + 1})" [disabled]="(pagina + 1) * 20 >= total" class="btn-pagina">Siguiente</button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

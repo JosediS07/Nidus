@@ -11,13 +11,13 @@ export interface CrearRecursoRequest {
   nombre: string;
   tipo: string;
   descripcion: string;
-  capacidad: number;
+  capacidad?: number;
 }
 
 export interface ActualizarRecursoRequest {
-  nombre: string;
-  tipo: string;
-  descripcion: string;
-  capacidad: number;
-  activo: boolean;
+  nombre?: string;
+  tipo?: string;
+  descripcion?: string;
+  capacidad?: number;
+  activo?: boolean;
 }
