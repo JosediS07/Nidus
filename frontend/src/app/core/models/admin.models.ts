@@ -1,5 +1,3 @@
-import { ReservaResponse } from './reserva.models';
-
 export interface DashboardResponse {
   totalUsuarios: number;
   totalRecursos: number;
@@ -16,6 +14,19 @@ export interface UsuarioAdminResponse {
   rol: string;
   activo: boolean;
   creado: string;
+}
+
+export interface CrearUsuarioAdminRequest {
+  nombre: string;
+  email: string;
+  password: string;
+  rol: string;
+}
+
+export interface ActualizarUsuarioAdminRequest {
+  nombre?: string;
+  email?: string;
+  activo?: boolean;
 }
 
 export interface ReservaAdminResponse {
@@ -42,4 +53,8 @@ export interface SolicitudColaResponse {
   usuarioId: number;
   estado: string;
   creado: string;
+}
+
+export interface CambiarRolRequest {
+  rol: string;
 }

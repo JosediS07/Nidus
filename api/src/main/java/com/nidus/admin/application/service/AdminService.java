@@ -1,22 +1,34 @@
 package com.nidus.admin.application.service;
 
+import com.nidus.admin.application.dto.ActualizarUsuarioAdminRequest;
+import com.nidus.admin.application.dto.CrearUsuarioAdminRequest;
 import com.nidus.admin.application.dto.DashboardResponse;
 import com.nidus.admin.application.dto.HistorialResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
+import com.nidus.auth.infrastructure.persistence.entity.UserEntity;
 import com.nidus.auth.infrastructure.persistence.repository.JpaUserRepository;
 import com.nidus.cola.application.dto.SolicitudColaResponse;
 import com.nidus.cola.application.port.input.SolicitudColaService;
+import com.nidus.cola.infrastructure.persistence.entity.SolicitudColaEntity;
+import com.nidus.cola.infrastructure.persistence.repository.JpaSolicitudColaRepository;
+import com.nidus.recurso.application.dto.ActualizarRecursoRequest;
+import com.nidus.recurso.application.dto.CrearRecursoRequest;
+import com.nidus.recurso.application.dto.RecursoResponse;
+import com.nidus.recurso.application.port.input.RecursoService;
 import com.nidus.recurso.infrastructure.persistence.repository.JpaRecursoRepository;
+import com.nidus.reserva.application.port.input.ReservaService;
 import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.reserva.infrastructure.persistence.entity.ReservaEntity;
 import com.nidus.reserva.application.service.HistorialReservaService;
 import com.nidus.reserva.infrastructure.persistence.repository.JpaReservaRepository;
+import com.nidus.shared.exception.DuplicateResourceException;
 import com.nidus.shared.exception.ResourceNotFoundException;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,17 +46,29 @@ public class AdminService {
     private final JpaReservaRepository reservaRepository;
     private final HistorialReservaService historialService;
     private final SolicitudColaService solicitudColaService;
+    private final RecursoService recursoService;
+    private final ReservaService reservaService;
+    private final PasswordEncoder passwordEncoder;
+    private final JpaSolicitudColaRepository jpaSolicitudColaRepository;
 
     public AdminService(JpaUserRepository userRepository,
                         JpaRecursoRepository recursoRepository,
                         JpaReservaRepository reservaRepository,
                         HistorialReservaService historialService,
-                        SolicitudColaService solicitudColaService) {
+                        SolicitudColaService solicitudColaService,
+                        RecursoService recursoService,
+                        ReservaService reservaService,
+                        PasswordEncoder passwordEncoder,
+                        JpaSolicitudColaRepository jpaSolicitudColaRepository) {
         this.userRepository = userRepository;
         this.recursoRepository = recursoRepository;
         this.reservaRepository = reservaRepository;
         this.historialService = historialService;
         this.solicitudColaService = solicitudColaService;
+        this.recursoService = recursoService;
+        this.reservaService = reservaService;
+        this.passwordEncoder = passwordEncoder;
+        this.jpaSolicitudColaRepository = jpaSolicitudColaRepository;
     }
 
     @Transactional(readOnly = true)
@@ -144,6 +168,95 @@ public class AdminService {
                     h.getId(), h.getReservaId(), h.getUsuarioId(),
                     h.getTipoEvento(), h.getDescripcion(), h.getCreado()))
                 .toList();
+    }
+
+    // ── Usuarios ──────────────────────────────────
+
+    @Transactional
+    public UsuarioAdminResponse crearUsuario(CrearUsuarioAdminRequest request) {
+        if (userRepository.existsByEmail(request.email())) {
+            throw new DuplicateResourceException("El email " + request.email() + " ya está registrado");
+        }
+        var entity = new UserEntity(request.nombre(), request.email(),
+                passwordEncoder.encode(request.password()), request.rol());
+        var guardado = userRepository.save(entity);
+        return toUsuarioAdminResponse(guardado);
+    }
+
+    @Transactional
+    public UsuarioAdminResponse actualizarUsuario(Long id, ActualizarUsuarioAdminRequest request) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario con id " + id + " no encontrado"));
+        if (request.nombre() != null) user.setNombre(request.nombre());
+        if (request.email() != null) user.setEmail(request.email());
+        if (request.activo() != null) user.setActivo(request.activo());
+        var guardado = userRepository.save(user);
+        return toUsuarioAdminResponse(guardado);
+    }
+
+    @Transactional
+    public void eliminarUsuario(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Usuario con id " + id + " no encontrado");
+        }
+        userRepository.deleteById(id);
+    }
+
+    // ── Recursos ──────────────────────────────────
+
+    @Transactional(readOnly = true)
+    public Page<RecursoResponse> listarRecursos(Pageable pageable) {
+        return recursoRepository.findAll(pageable)
+                .map(r -> new RecursoResponse(
+                    r.getId(), r.getNombre(), r.getTipo(), r.getDescripcion(), r.getCapacidad(), r.isActivo()));
+    }
+
+    @Transactional(readOnly = true)
+    public RecursoResponse obtenerRecurso(Long id) {
+        var r = recursoRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recurso con id " + id + " no encontrado"));
+        return new RecursoResponse(
+            r.getId(), r.getNombre(), r.getTipo(), r.getDescripcion(), r.getCapacidad(), r.isActivo());
+    }
+
+    @Transactional
+    public RecursoResponse crearRecurso(CrearRecursoRequest request) {
+        return recursoService.crear(request);
+    }
+
+    @Transactional
+    public RecursoResponse actualizarRecurso(Long id, ActualizarRecursoRequest request) {
+        return recursoService.actualizar(id, request);
+    }
+
+    @Transactional
+    public void eliminarRecurso(Long id) {
+        if (!recursoRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Recurso con id " + id + " no encontrado");
+        }
+        recursoRepository.deleteById(id);
+    }
+
+    // ── Reservas ──────────────────────────────────
+
+    @Transactional
+    public void cancelarReserva(Long id, Long adminUserId) {
+        reservaService.cancelar(id, adminUserId);
+    }
+
+    // ── Cola de espera ────────────────────────────
+
+    @Transactional
+    public void eliminarSolicitudCola(Long id) {
+        var solicitud = jpaSolicitudColaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Solicitud con id " + id + " no encontrada"));
+        jpaSolicitudColaRepository.delete(solicitud);
+    }
+
+    private UsuarioAdminResponse toUsuarioAdminResponse(UserEntity u) {
+        return new UsuarioAdminResponse(
+            u.getId(), u.getNombre(), u.getEmail(),
+            u.getRol().name(), u.isActivo(), u.getCreado());
     }
 
     private ReservaAdminResponse toReservaAdminResponse(ReservaEntity r) {
