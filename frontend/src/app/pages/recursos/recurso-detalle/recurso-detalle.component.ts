@@ -28,6 +28,8 @@ export class RecursoDetalleComponent implements OnInit {
   recursoId!: number;
   recurso?: RecursoResponse;
   miCola: any = null;
+  cargando = false;
+  error = '';
   reservando = false;
   reservaError = '';
   colaError = '';
@@ -44,7 +46,17 @@ export class RecursoDetalleComponent implements OnInit {
 
   ngOnInit(): void {
     this.recursoId = Number(this.route.snapshot.paramMap.get('id'));
-    this.recursoService.obtener(this.recursoId).subscribe((r) => (this.recurso = r));
+    this.cargando = true;
+    this.recursoService.obtener(this.recursoId).subscribe({
+      next: (r) => {
+        this.recurso = r;
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Error al cargar recurso';
+        this.cargando = false;
+      }
+    });
     this.cargarCola();
   }
 

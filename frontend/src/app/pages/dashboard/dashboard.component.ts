@@ -12,11 +12,28 @@ import { DashboardResponse } from '../../core/models/admin.models';
 })
 export class DashboardComponent implements OnInit {
   data?: DashboardResponse;
+  cargando = false;
+  error = '';
 
   constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
-    this.adminService.dashboard().subscribe((d) => (this.data = d));
+    this.cargar();
+  }
+
+  cargar(): void {
+    this.cargando = true;
+    this.error = '';
+    this.adminService.dashboard().subscribe({
+      next: (d) => {
+        this.data = d;
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Error al cargar dashboard';
+        this.cargando = false;
+      }
+    });
   }
 
   get reservasPorEstadoArr() {

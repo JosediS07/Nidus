@@ -1,5 +1,9 @@
 <div class="page-container max-w-3xl">
-  @if (recurso) {
+  @if (cargando) {
+    <div class="cargando">Cargando...</div>
+  } @else if (error) {
+    <div class="alert-danger">{{ error }}</div>
+  } @else if (recurso) {
     <section class="card mb-5">
       <div class="flex items-start justify-between mb-4">
         <div>
@@ -51,7 +55,5 @@
         <div class="alert-danger mt-3">{{ colaError }}</div>
       }
     </section>
-  } @else {
-    <div class="cargando">Cargando...</div>
   }
 </div>

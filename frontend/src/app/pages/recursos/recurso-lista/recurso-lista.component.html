@@ -2,39 +2,46 @@
   <h1 class="page-title">Recursos</h1>
 
   <div class="card overflow-hidden !p-0">
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <caption class="sr-only">Lista de recursos disponibles</caption>
-        <thead>
-          <tr>
-            <th scope="col" class="table-header text-left">Nombre</th>
-            <th scope="col" class="table-header text-left">Tipo</th>
-            <th scope="col" class="table-header text-left">Capacidad</th>
-            <th scope="col" class="table-header text-left">Descripción</th>
-            <th scope="col" class="table-header text-right"></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (r of recursos; track r.id) {
-            <tr class="table-row">
-              <td class="table-cell">
-                <a [routerLink]="['/recursos', r.id]" class="enlace-recurso">{{ r.nombre }}</a>
-              </td>
-              <td class="table-cell"><span class="chip">{{ r.tipo }}</span></td>
-              <td class="table-cell text-secondary">{{ r.capacidad }}</td>
-              <td class="table-cell text-secondary truncate-cell">{{ r.descripcion }}</td>
-              <td class="table-cell text-right">
-                <a mat-stroked-button [routerLink]="['/recursos', r.id]" class="border-subtle text-primary text-sm">Reservar</a>
-              </td>
-            </tr>
-          } @empty {
+    @if (cargando) {
+      <div class="cargando">Cargando...</div>
+    } @else if (error) {
+      <div class="alert-danger m-4">{{ error }}</div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <caption class="sr-only">Lista de recursos disponibles</caption>
+          <thead>
             <tr>
-              <td colspan="5" class="table-cell text-center text-secondary">No hay recursos disponibles</td>
+              <th scope="col" class="table-header text-left">Nombre</th>
+              <th scope="col" class="table-header text-left">Tipo</th>
+              <th scope="col" class="table-header text-left">Capacidad</th>
+              <th scope="col" class="table-header text-left">Descripción</th>
+              <th scope="col" class="table-header text-right"></th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @for (r of recursos; track r.id) {
+              <tr class="table-row">
+                <td class="table-cell">
+                  <a [routerLink]="['/recursos', r.id]" class="enlace-recurso">{{ r.nombre }}</a>
+                </td>
+                <td class="table-cell"><span class="chip">{{ r.tipo }}</span></td>
+                <td class="table-cell text-secondary">{{ r.capacidad }}</td>
+                <td class="table-cell text-secondary truncate-cell">{{ r.descripcion }}</td>
+                <td class="table-cell text-right">
+                  <a mat-stroked-button [routerLink]="['/recursos', r.id]" class="border-subtle text-primary text-sm">Reservar</a>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="table-cell text-center text-secondary">No hay recursos disponibles</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
 
     @if (total > 20) {
       <div class="flex items-center justify-between px-6 py-4 border-t border-subtle">
@@ -45,5 +52,4 @@
         </div>
       </div>
     }
-  </div>
 </div>

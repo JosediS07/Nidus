@@ -1,7 +1,11 @@
 <div class="page-container">
   <h1 class="page-title">Dashboard</h1>
 
-  @if (data) {
+  @if (cargando) {
+    <div class="cargando">Cargando...</div>
+  } @else if (error) {
+    <div class="alert-danger">{{ error }}</div>
+  } @else if (data) {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
       <div class="card flex items-center gap-4">
         <div class="icon-box">
@@ -65,7 +69,5 @@
         </div>
       </div>
     </div>
-  } @else {
-    <div class="cargando">Cargando...</div>
   }
 </div>

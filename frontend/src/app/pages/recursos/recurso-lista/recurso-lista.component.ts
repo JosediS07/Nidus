@@ -16,6 +16,8 @@ export class RecursoListaComponent implements OnInit {
   recursos: RecursoResponse[] = [];
   total = 0;
   pagina = 0;
+  cargando = false;
+  error = '';
 
   constructor(private recursoService: RecursoService) {}
 
@@ -25,9 +27,18 @@ export class RecursoListaComponent implements OnInit {
 
   cargar(page = 0): void {
     this.pagina = page;
-    this.recursoService.listar(page).subscribe((res) => {
-      this.recursos = res.content;
-      this.total = res.totalElements;
+    this.cargando = true;
+    this.error = '';
+    this.recursoService.listar(page).subscribe({
+      next: (res) => {
+        this.recursos = res.content;
+        this.total = res.totalElements;
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Error al cargar recursos';
+        this.cargando = false;
+      }
     });
   }
 

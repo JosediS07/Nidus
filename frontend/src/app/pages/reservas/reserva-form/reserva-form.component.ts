@@ -40,7 +40,10 @@ export class ReservaFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.recursoService.listar(0, 100).subscribe((res) => (this.recursos = res.content));
+    this.recursoService.listar(0, 100).subscribe({
+      next: (res) => (this.recursos = res.content),
+      error: (err) => { this.error = err.error?.message || 'Error al cargar recursos'; }
+    });
 
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {

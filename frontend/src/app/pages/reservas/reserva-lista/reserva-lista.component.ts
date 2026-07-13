@@ -19,6 +19,8 @@ export class ReservaListaComponent implements OnInit {
   reservas: ReservaResponse[] = [];
   total = 0;
   pagina = 0;
+  cargando = false;
+  error = '';
 
   constructor(
     private reservaService: ReservaService,
@@ -32,9 +34,18 @@ export class ReservaListaComponent implements OnInit {
 
   cargar(page = 0): void {
     this.pagina = page;
-    this.reservaService.listarMisReservas(page).subscribe((res) => {
-      this.reservas = res.content;
-      this.total = res.totalElements;
+    this.cargando = true;
+    this.error = '';
+    this.reservaService.listarMisReservas(page).subscribe({
+      next: (res) => {
+        this.reservas = res.content;
+        this.total = res.totalElements;
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Error al cargar reservas';
+        this.cargando = false;
+      }
     });
   }
 
