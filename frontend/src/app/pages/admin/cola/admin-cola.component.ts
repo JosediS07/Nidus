@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { AdminService } from '../../../core/services/admin.service';
 import { SolicitudColaResponse } from '../../../core/models/admin.models';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
@@ -9,7 +10,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-admin-cola',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './admin-cola.component.html',
   styleUrl: './admin-cola.component.css'
 })
@@ -20,7 +21,7 @@ export class AdminColaComponent implements OnInit {
   cargando = false;
   error = '';
 
-  constructor(private adminService: AdminService, private dialog: MatDialog) {}
+  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -56,7 +57,15 @@ export class AdminColaComponent implements OnInit {
     });
     ref.afterClosed().subscribe((confirmado) => {
       if (confirmado) {
-        this.adminService.eliminarSolicitudCola(s.id).subscribe(() => this.cargar(this.pagina));
+        this.adminService.eliminarSolicitudCola(s.id).subscribe({
+          next: () => {
+            this.snackBar.open('Solicitud eliminada', 'Cerrar', { duration: 3000 });
+            this.cargar(this.pagina);
+          },
+          error: (err) => {
+            this.snackBar.open(err.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
+          }
+        });
       }
     });
   }

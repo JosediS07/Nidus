@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -15,7 +16,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-admin-recursos',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, FormsModule],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, FormsModule],
   templateUrl: './admin-recursos.component.html',
   styleUrl: './admin-recursos.component.css'
 })
@@ -26,7 +27,7 @@ export class AdminRecursosComponent implements OnInit {
   cargando = false;
   error = '';
 
-  constructor(private adminService: AdminService, private dialog: MatDialog) {}
+  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -56,14 +57,20 @@ export class AdminRecursosComponent implements OnInit {
   abrirCrear(): void {
     const ref = this.dialog.open(RecursoDialogComponent, { width: '500px' });
     ref.afterClosed().subscribe((result) => {
-      if (result) this.cargar(0);
+      if (result) {
+        this.snackBar.open('Recurso creado', 'Cerrar', { duration: 3000 });
+        this.cargar(0);
+      }
     });
   }
 
   abrirEditar(recurso: RecursoResponse): void {
     const ref = this.dialog.open(RecursoDialogComponent, { width: '500px', data: recurso });
     ref.afterClosed().subscribe((result) => {
-      if (result) this.cargar(this.pagina);
+      if (result) {
+        this.snackBar.open('Recurso actualizado', 'Cerrar', { duration: 3000 });
+        this.cargar(this.pagina);
+      }
     });
   }
 
@@ -73,7 +80,15 @@ export class AdminRecursosComponent implements OnInit {
     });
     ref.afterClosed().subscribe((confirmado) => {
       if (confirmado) {
-        this.adminService.eliminarRecurso(recurso.id).subscribe(() => this.cargar(this.pagina));
+        this.adminService.eliminarRecurso(recurso.id).subscribe({
+          next: () => {
+            this.snackBar.open('Recurso eliminado', 'Cerrar', { duration: 3000 });
+            this.cargar(this.pagina);
+          },
+          error: (err) => {
+            this.snackBar.open(err.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
+          }
+        });
       }
     });
   }

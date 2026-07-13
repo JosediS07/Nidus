@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { AdminService } from '../../../core/services/admin.service';
 import { UsuarioAdminResponse } from '../../../core/models/admin.models';
 import { UsuarioDialogComponent } from './usuario-dialog.component';
@@ -10,7 +11,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-admin-usuarios',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './admin-usuarios.component.html',
   styleUrl: './admin-usuarios.component.css'
 })
@@ -21,7 +22,7 @@ export class AdminUsuariosComponent implements OnInit {
   cargando = false;
   error = '';
 
-  constructor(private adminService: AdminService, private dialog: MatDialog) {}
+  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -51,14 +52,20 @@ export class AdminUsuariosComponent implements OnInit {
   abrirCrear(): void {
     const ref = this.dialog.open(UsuarioDialogComponent, { width: '500px' });
     ref.afterClosed().subscribe((result) => {
-      if (result) this.cargar(0);
+      if (result) {
+        this.snackBar.open('Usuario creado', 'Cerrar', { duration: 3000 });
+        this.cargar(0);
+      }
     });
   }
 
   abrirEditar(u: UsuarioAdminResponse): void {
     const ref = this.dialog.open(UsuarioDialogComponent, { width: '500px', data: u });
     ref.afterClosed().subscribe((result) => {
-      if (result) this.cargar(this.pagina);
+      if (result) {
+        this.snackBar.open('Usuario actualizado', 'Cerrar', { duration: 3000 });
+        this.cargar(this.pagina);
+      }
     });
   }
 
@@ -68,7 +75,15 @@ export class AdminUsuariosComponent implements OnInit {
     });
     ref.afterClosed().subscribe((confirmado) => {
       if (confirmado) {
-        this.adminService.eliminarUsuario(u.id).subscribe(() => this.cargar(this.pagina));
+        this.adminService.eliminarUsuario(u.id).subscribe({
+          next: () => {
+            this.snackBar.open('Usuario eliminado', 'Cerrar', { duration: 3000 });
+            this.cargar(this.pagina);
+          },
+          error: (err) => {
+            this.snackBar.open(err.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
+          }
+        });
       }
     });
   }

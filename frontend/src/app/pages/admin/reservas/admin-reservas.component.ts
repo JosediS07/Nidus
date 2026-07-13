@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -13,7 +14,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-admin-reservas',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule],
   templateUrl: './admin-reservas.component.html',
   styleUrl: './admin-reservas.component.css'
 })
@@ -28,7 +29,7 @@ export class AdminReservasComponent implements OnInit {
   filtroRecursoId: number | null = null;
   filtroUsuarioId: number | null = null;
 
-  constructor(private adminService: AdminService, private dialog: MatDialog) {}
+  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -73,7 +74,15 @@ export class AdminReservasComponent implements OnInit {
     });
     ref.afterClosed().subscribe((confirmado) => {
       if (confirmado) {
-        this.adminService.cancelarReserva(r.id).subscribe(() => this.cargar(this.pagina));
+        this.adminService.cancelarReserva(r.id).subscribe({
+          next: () => {
+            this.snackBar.open('Reserva cancelada', 'Cerrar', { duration: 3000 });
+            this.cargar(this.pagina);
+          },
+          error: (err) => {
+            this.snackBar.open(err.error?.message || 'Error al cancelar', 'Cerrar', { duration: 4000 });
+          }
+        });
       }
     });
   }
