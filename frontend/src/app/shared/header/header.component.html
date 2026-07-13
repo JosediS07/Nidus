@@ -21,8 +21,8 @@
       <span class="flex-1"></span>
 
       <div class="flex items-center gap-3">
-        <span class="text-sm font-medium hidden sm:block text-secondary">{{ user.nombre }}</span>
-        <div class="avatar">{{ user.nombre.charAt(0).toUpperCase() }}</div>
+        <a routerLink="/perfil" class="text-sm font-medium hidden sm:block text-secondary hover:underline">{{ user.nombre }}</a>
+        <a routerLink="/perfil" class="avatar no-underline cursor-pointer">{{ user.nombre.charAt(0).toUpperCase() }}</a>
         <button mat-stroked-button (click)="salir()" class="!text-sm border-subtle text-secondary">
           Salir
         </button>

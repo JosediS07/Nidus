@@ -11,4 +11,5 @@ public interface AuthService {
     AuthResponse login(LoginRequest request);
     void cambiarRol(Long userId, CambiarRolRequest request);
     UserResponse obtenerPerfil(String email);
+    UserResponse actualizarPerfil(String email, ActualizarPerfilRequest request);
 }

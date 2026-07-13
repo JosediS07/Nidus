@@ -14,6 +14,7 @@ export const routes: Routes = [
   { path: 'admin/reservas', loadComponent: () => import('./pages/admin/reservas/admin-reservas.component').then((c) => c.AdminReservasComponent), canActivate: [AuthGuard, AdminGuard] },
   { path: 'admin/recursos', loadComponent: () => import('./pages/admin/recursos/admin-recursos.component').then((c) => c.AdminRecursosComponent), canActivate: [AuthGuard, AdminGuard] },
   { path: 'admin/cola', loadComponent: () => import('./pages/admin/cola/admin-cola.component').then((c) => c.AdminColaComponent), canActivate: [AuthGuard, AdminGuard] },
+  { path: 'perfil', loadComponent: () => import('./pages/perfil/perfil.component').then((c) => c.PerfilComponent), canActivate: [AuthGuard] },
   { path: '', redirectTo: '/recursos', pathMatch: 'full' },
   { path: '**', redirectTo: '/recursos' },
 ];

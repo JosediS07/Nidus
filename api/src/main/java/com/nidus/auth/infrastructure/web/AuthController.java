@@ -1,5 +1,6 @@
 package com.nidus.auth.infrastructure.web;
 
+import com.nidus.auth.application.dto.ActualizarPerfilRequest;
 import com.nidus.auth.application.dto.AuthResponse;
 import com.nidus.auth.application.dto.CambiarRolRequest;
 import com.nidus.auth.application.dto.LoginRequest;
@@ -38,6 +39,12 @@ public class AuthController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<UserResponse> perfil(Principal principal) {
         return ResponseEntity.ok(authService.obtenerPerfil(principal.getName()));
+    }
+
+    @PutMapping("/me")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<UserResponse> actualizarPerfil(Principal principal, @Valid @RequestBody ActualizarPerfilRequest request) {
+        return ResponseEntity.ok(authService.actualizarPerfil(principal.getName(), request));
     }
 
     @PutMapping("/usuarios/{id}/rol")

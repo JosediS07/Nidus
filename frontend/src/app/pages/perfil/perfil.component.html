@@ -1,0 +1,40 @@
+<div class="page-container max-w-xl">
+  <h1 class="page-title">Mi perfil</h1>
+
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="guardar()" class="flex flex-col gap-4">
+      <mat-form-field appearance="fill">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" />
+      </mat-form-field>
+
+      <hr class="border-subtle my-2" />
+
+      <p class="text-sm text-secondary">Cambiar contraseña (dejar en blanco para mantener la actual)</p>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Nueva contraseña</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Confirmar nueva contraseña</mat-label>
+        <input matInput type="password" formControlName="confirmarPassword" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Contraseña actual</mat-label>
+        <input matInput type="password" formControlName="currentPassword" />
+      </mat-form-field>
+
+      <button mat-flat-button type="submit" [disabled]="form.invalid || guardando" class="btn-solid self-start h-10">
+        {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+    </form>
+  </div>
+</div>

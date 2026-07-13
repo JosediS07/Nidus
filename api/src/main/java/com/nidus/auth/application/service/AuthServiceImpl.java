@@ -1,5 +1,6 @@
 package com.nidus.auth.application.service;
 
+import com.nidus.auth.application.dto.ActualizarPerfilRequest;
 import com.nidus.auth.application.dto.AuthResponse;
 import com.nidus.auth.application.dto.CambiarRolRequest;
 import com.nidus.auth.application.dto.LoginRequest;
@@ -73,5 +74,26 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario con id " + userId + " no encontrado"));
         user.setRol(request.rol());
         userRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public UserResponse actualizarPerfil(String email, ActualizarPerfilRequest request) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        if (request.currentPassword() != null && request.password() != null) {
+            if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
+                throw new BadCredentialsException("Contraseña actual incorrecta");
+            }
+            user.setPassword(passwordEncoder.encode(request.password()));
+        }
+
+        if (request.nombre() != null) user.setNombre(request.nombre());
+        if (request.email() != null) user.setEmail(request.email());
+
+        var guardado = userRepository.save(user);
+        return new UserResponse(guardado.getId(), guardado.getNombre(), guardado.getEmail(),
+                guardado.getRol().name(), guardado.isActivo());
     }
 }

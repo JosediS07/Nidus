@@ -35,6 +35,10 @@ export class AuthService {
     return this.http.get<UserResponse>(`${this.api}/me`);
   }
 
+  actualizarPerfil(req: any): Observable<UserResponse> {
+    return this.http.put<UserResponse>(`${this.api}/me`, req);
+  }
+
   getToken(): string | null {
     return localStorage.getItem('token');
   }
