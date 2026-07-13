@@ -18,6 +18,8 @@ export class AdminUsuariosComponent implements OnInit {
   usuarios: UsuarioAdminResponse[] = [];
   total = 0;
   pagina = 0;
+  cargando = false;
+  error = '';
 
   constructor(private adminService: AdminService, private dialog: MatDialog) {}
 
@@ -27,9 +29,18 @@ export class AdminUsuariosComponent implements OnInit {
 
   cargar(page = 0): void {
     this.pagina = page;
-    this.adminService.listarUsuarios(page).subscribe((res: any) => {
-      this.usuarios = res.content;
-      this.total = res.totalElements;
+    this.cargando = true;
+    this.error = '';
+    this.adminService.listarUsuarios(page).subscribe({
+      next: (res: any) => {
+        this.usuarios = res.content;
+        this.total = res.totalElements;
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Error al cargar usuarios';
+        this.cargando = false;
+      }
     });
   }
 

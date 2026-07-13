@@ -21,6 +21,8 @@ export class AdminReservasComponent implements OnInit {
   reservas: ReservaAdminResponse[] = [];
   total = 0;
   pagina = 0;
+  cargando = false;
+  error = '';
 
   filtroEstado = '';
   filtroRecursoId: number | null = null;
@@ -34,14 +36,23 @@ export class AdminReservasComponent implements OnInit {
 
   cargar(page = 0): void {
     this.pagina = page;
+    this.cargando = true;
+    this.error = '';
     const params: any = { page, size: 20 };
     if (this.filtroEstado) params.estado = this.filtroEstado;
     if (this.filtroRecursoId) params.recursoId = this.filtroRecursoId;
     if (this.filtroUsuarioId) params.usuarioId = this.filtroUsuarioId;
 
-    this.adminService.listarReservas(params).subscribe((res) => {
-      this.reservas = res.content;
-      this.total = res.totalElements;
+    this.adminService.listarReservas(params).subscribe({
+      next: (res) => {
+        this.reservas = res.content;
+        this.total = res.totalElements;
+        this.cargando = false;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Error al cargar reservas';
+        this.cargando = false;
+      }
     });
   }
 

@@ -5,38 +5,45 @@
   </div>
 
   <div class="card overflow-hidden !p-0">
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <caption class="sr-only">Lista de recursos</caption>
-        <thead>
-          <tr>
-            <th scope="col" class="table-header text-left">ID</th>
-            <th scope="col" class="table-header text-left">Nombre</th>
-            <th scope="col" class="table-header text-left">Tipo</th>
-            <th scope="col" class="table-header text-left">Capacidad</th>
-            <th scope="col" class="table-header text-left">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (r of recursos; track r.id) {
-            <tr class="table-row">
-              <td class="table-cell text-secondary">{{ r.id }}</td>
-              <td class="table-cell font-medium">{{ r.nombre }}</td>
-              <td class="table-cell text-secondary">{{ r.tipo }}</td>
-              <td class="table-cell">{{ r.capacidad }}</td>
-              <td class="table-cell">
-                <button mat-stroked-button (click)="abrirEditar(r)" class="!mr-2">Editar</button>
-                <button mat-stroked-button (click)="confirmarEliminar(r)">Eliminar</button>
-              </td>
-            </tr>
-          } @empty {
+    @if (cargando) {
+      <div class="cargando">Cargando...</div>
+    } @else if (error) {
+      <div class="alert-danger m-4">{{ error }}</div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <caption class="sr-only">Lista de recursos</caption>
+          <thead>
             <tr>
-              <td colspan="5" class="table-cell text-center text-secondary">No hay recursos</td>
+              <th scope="col" class="table-header text-left">ID</th>
+              <th scope="col" class="table-header text-left">Nombre</th>
+              <th scope="col" class="table-header text-left">Tipo</th>
+              <th scope="col" class="table-header text-left">Capacidad</th>
+              <th scope="col" class="table-header text-left">Acciones</th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @for (r of recursos; track r.id) {
+              <tr class="table-row">
+                <td class="table-cell text-secondary">{{ r.id }}</td>
+                <td class="table-cell font-medium">{{ r.nombre }}</td>
+                <td class="table-cell text-secondary">{{ r.tipo }}</td>
+                <td class="table-cell">{{ r.capacidad }}</td>
+                <td class="table-cell">
+                  <button mat-stroked-button (click)="abrirEditar(r)" class="!mr-2">Editar</button>
+                  <button mat-stroked-button (click)="confirmarEliminar(r)">Eliminar</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="table-cell text-center text-secondary">No hay recursos</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
 
     @if (total > 20) {
       <div class="flex items-center justify-between px-6 py-4 border-t border-subtle">
@@ -47,5 +54,4 @@
         </div>
       </div>
     }
-  </div>
 </div>

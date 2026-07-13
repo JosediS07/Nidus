@@ -2,50 +2,56 @@
   <h1 class="page-title">Cola de espera</h1>
 
   <div class="card overflow-hidden !p-0">
-    <div class="overflow-x-auto">
-      <table class="w-full">
-        <caption class="sr-only">Solicitudes en cola de espera</caption>
-        <thead>
-          <tr>
-            <th scope="col" class="table-header text-left">ID</th>
-            <th scope="col" class="table-header text-left">Recurso</th>
-            <th scope="col" class="table-header text-left">Usuario</th>
-            <th scope="col" class="table-header text-left">Estado</th>
-            <th scope="col" class="table-header text-left">Solicitado</th>
-            <th scope="col" class="table-header text-left">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (s of solicitudes; track s.id) {
-            <tr class="table-row">
-              <td class="table-cell text-secondary">{{ s.id }}</td>
-              <td class="table-cell font-medium">#{{ s.recursoId }}</td>
-              <td class="table-cell text-secondary">#{{ s.usuarioId }}</td>
-              <td class="table-cell">
-                <span class="chip" [class.chip-primary]="s.estado === 'PENDIENTE'" [class.chip-warn]="s.estado === 'CANCELADA'">{{ s.estado }}</span>
-              </td>
-              <td class="table-cell text-secondary">{{ s.creado | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td class="table-cell">
-                <button mat-stroked-button (click)="confirmarEliminar(s)">Eliminar</button>
-              </td>
-            </tr>
-          } @empty {
+    @if (cargando) {
+      <div class="cargando">Cargando...</div>
+    } @else if (error) {
+      <div class="alert-danger m-4">{{ error }}</div>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <caption class="sr-only">Solicitudes en cola de espera</caption>
+          <thead>
             <tr>
-              <td colspan="6" class="table-cell text-center text-secondary">No hay solicitudes en cola</td>
+              <th scope="col" class="table-header text-left">ID</th>
+              <th scope="col" class="table-header text-left">Recurso</th>
+              <th scope="col" class="table-header text-left">Usuario</th>
+              <th scope="col" class="table-header text-left">Estado</th>
+              <th scope="col" class="table-header text-left">Solicitado</th>
+              <th scope="col" class="table-header text-left">Acciones</th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    @if (total > 20) {
-      <div class="flex items-center justify-between px-6 py-4 border-t border-subtle">
-        <span class="text-sm text-secondary">{{ total }} solicitudes</span>
-        <div class="flex gap-2">
-          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina - 1})" [disabled]="pagina === 0" class="btn-pagina">Anterior</button>
-          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina + 1})" [disabled]="(pagina + 1) * 20 >= total" class="btn-pagina">Siguiente</button>
-        </div>
+          </thead>
+          <tbody>
+            @for (s of solicitudes; track s.id) {
+              <tr class="table-row">
+                <td class="table-cell text-secondary">{{ s.id }}</td>
+                <td class="table-cell font-medium">#{{ s.recursoId }}</td>
+                <td class="table-cell text-secondary">#{{ s.usuarioId }}</td>
+                <td class="table-cell">
+                  <span class="chip" [class.chip-primary]="s.estado === 'PENDIENTE'" [class.chip-warn]="s.estado === 'CANCELADA'">{{ s.estado }}</span>
+                </td>
+                <td class="table-cell text-secondary">{{ s.creado | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td class="table-cell">
+                  <button mat-stroked-button (click)="confirmarEliminar(s)">Eliminar</button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="table-cell text-center text-secondary">No hay solicitudes en cola</td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
+
+      @if (total > 20) {
+        <div class="flex items-center justify-between px-6 py-4 border-t border-subtle">
+          <span class="text-sm text-secondary">{{ total }} solicitudes</span>
+          <div class="flex gap-2">
+            <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina - 1})" [disabled]="pagina === 0" class="btn-pagina">Anterior</button>
+            <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina + 1})" [disabled]="(pagina + 1) * 20 >= total" class="btn-pagina">Siguiente</button>
+          </div>
+        </div>
+      }
     }
   </div>
 </div>
