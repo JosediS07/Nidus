@@ -10,8 +10,8 @@ export class ReservaService {
 
   constructor(private http: HttpClient) {}
 
-  crear(req: CrearReservaRequest): Observable<ReservaResponse> {
-    return this.http.post<ReservaResponse>(this.api, req);
+  crear(peticion: CrearReservaRequest): Observable<ReservaResponse> {
+    return this.http.post<ReservaResponse>(this.api, peticion);
   }
 
   listarMisReservas(page = 0, size = 20): Observable<any> {
@@ -26,8 +26,8 @@ export class ReservaService {
     return this.http.get<ReservaResponse>(`${this.api}/${id}`);
   }
 
-  modificar(id: number, req: ModificarReservaRequest): Observable<ReservaResponse> {
-    return this.http.put<ReservaResponse>(`${this.api}/${id}`, req);
+  modificar(id: number, peticion: ModificarReservaRequest): Observable<ReservaResponse> {
+    return this.http.put<ReservaResponse>(`${this.api}/${id}`, peticion);
   }
 
   cancelar(id: number): Observable<void> {

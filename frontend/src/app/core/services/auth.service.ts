@@ -11,18 +11,18 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(req: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.api}/login`, req).pipe(
-      map((res) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('user', JSON.stringify(res));
-        return res;
+  login(peticion: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.api}/login`, peticion).pipe(
+      map((respuesta) => {
+        localStorage.setItem('token', respuesta.token);
+        localStorage.setItem('user', JSON.stringify(respuesta));
+        return respuesta;
       })
     );
   }
 
-  register(req: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.api}/register`, req).pipe(
+  register(peticion: RegisterRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.api}/register`, peticion).pipe(
       map((res) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('user', JSON.stringify(res));
@@ -35,8 +35,8 @@ export class AuthService {
     return this.http.get<UserResponse>(`${this.api}/me`);
   }
 
-  actualizarPerfil(req: any): Observable<UserResponse> {
-    return this.http.put<UserResponse>(`${this.api}/me`, req);
+  actualizarPerfil(peticion: any): Observable<UserResponse> {
+    return this.http.put<UserResponse>(`${this.api}/me`, peticion);
   }
 
   getToken(): string | null {

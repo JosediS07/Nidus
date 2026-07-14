@@ -18,12 +18,12 @@ export class RecursoService {
     return this.http.get<RecursoResponse>(`${this.api}/${id}`);
   }
 
-  crear(req: CrearRecursoRequest): Observable<RecursoResponse> {
-    return this.http.post<RecursoResponse>(this.api, req);
+  crear(peticion: CrearRecursoRequest): Observable<RecursoResponse> {
+    return this.http.post<RecursoResponse>(this.api, peticion);
   }
 
-  actualizar(id: number, req: ActualizarRecursoRequest): Observable<RecursoResponse> {
-    return this.http.put<RecursoResponse>(`${this.api}/${id}`, req);
+  actualizar(id: number, peticion: ActualizarRecursoRequest): Observable<RecursoResponse> {
+    return this.http.put<RecursoResponse>(`${this.api}/${id}`, peticion);
   }
 
   desactivar(id: number): Observable<void> {
