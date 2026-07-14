@@ -50,26 +50,30 @@ export class AdminRecursosComponent implements OnInit {
     });
   }
 
-  cambiarPagina(e: any): void {
-    this.cargar(e.pageIndex);
+  cambiarPagina(evento: any): void {
+    this.cargar(evento.pageIndex);
   }
 
   abrirCrear(): void {
     const ref = this.dialog.open(RecursoDialogComponent, { width: '500px' });
-    ref.afterClosed().subscribe((result) => {
-      if (result) {
-        this.snackBar.open('Recurso creado', 'Cerrar', { duration: 3000 });
-        this.cargar(0);
+    ref.afterClosed().subscribe({
+      next: (result) => {
+        if (result) {
+          this.snackBar.open('Recurso creado', 'Cerrar', { duration: 3000 });
+          this.cargar(0);
+        }
       }
     });
   }
 
   abrirEditar(recurso: RecursoResponse): void {
     const ref = this.dialog.open(RecursoDialogComponent, { width: '500px', data: recurso });
-    ref.afterClosed().subscribe((result) => {
-      if (result) {
-        this.snackBar.open('Recurso actualizado', 'Cerrar', { duration: 3000 });
-        this.cargar(this.pagina);
+    ref.afterClosed().subscribe({
+      next: (result) => {
+        if (result) {
+          this.snackBar.open('Recurso actualizado', 'Cerrar', { duration: 3000 });
+          this.cargar(this.pagina);
+        }
       }
     });
   }
@@ -78,17 +82,19 @@ export class AdminRecursosComponent implements OnInit {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: { titulo: 'Eliminar recurso', mensaje: `¿Eliminar "${recurso.nombre}"?` }
     });
-    ref.afterClosed().subscribe((confirmado) => {
-      if (confirmado) {
-        this.adminService.eliminarRecurso(recurso.id).subscribe({
-          next: () => {
-            this.snackBar.open('Recurso eliminado', 'Cerrar', { duration: 3000 });
-            this.cargar(this.pagina);
-          },
-          error: (err) => {
-            this.snackBar.open(err.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
-          }
-        });
+    ref.afterClosed().subscribe({
+      next: (confirmado) => {
+        if (confirmado) {
+          this.adminService.eliminarRecurso(recurso.id).subscribe({
+            next: () => {
+              this.snackBar.open('Recurso eliminado', 'Cerrar', { duration: 3000 });
+              this.cargar(this.pagina);
+            },
+            error: (error) => {
+              this.snackBar.open(error.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
+            }
+          });
+        }
       }
     });
   }

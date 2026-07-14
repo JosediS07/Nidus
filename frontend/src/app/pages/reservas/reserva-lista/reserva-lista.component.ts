@@ -49,8 +49,8 @@ export class ReservaListaComponent implements OnInit {
     });
   }
 
-  cambiarPagina(e: any): void {
-    this.cargar(e.pageIndex);
+  cambiarPagina(evento: any): void {
+    this.cargar(evento.pageIndex);
   }
 
   cancelar(r: ReservaResponse): void {
@@ -62,12 +62,19 @@ export class ReservaListaComponent implements OnInit {
       }
     });
 
-    ref.afterClosed().subscribe((ok) => {
-      if (ok) {
-        this.reservaService.cancelar(r.id).subscribe(() => {
-          this.snackBar.open('Reserva cancelada', 'Cerrar', { duration: 3000 });
-          this.cargar();
-        });
+    ref.afterClosed().subscribe({
+      next: (confirmado) => {
+        if (confirmado) {
+          this.reservaService.cancelar(r.id).subscribe({
+            next: () => {
+              this.snackBar.open('Reserva cancelada', 'Cerrar', { duration: 3000 });
+              this.cargar();
+            },
+            error: (error) => {
+              this.snackBar.open(error.error?.message || 'Error al cancelar', 'Cerrar', { duration: 4000 });
+            }
+          });
+        }
       }
     });
   }

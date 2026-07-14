@@ -44,28 +44,30 @@ export class AdminColaComponent implements OnInit {
     });
   }
 
-  cambiarPagina(e: any): void {
-    this.cargar(e.pageIndex);
+  cambiarPagina(evento: any): void {
+    this.cargar(evento.pageIndex);
   }
 
-  confirmarEliminar(s: SolicitudColaResponse): void {
+  confirmarEliminar(solicitud: SolicitudColaResponse): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: {
         titulo: 'Eliminar solicitud',
-        mensaje: `¿Eliminar la solicitud #${s.id} de la cola?`
+        mensaje: `¿Eliminar la solicitud #${solicitud.id} de la cola?`
       }
     });
-    ref.afterClosed().subscribe((confirmado) => {
-      if (confirmado) {
-        this.adminService.eliminarSolicitudCola(s.id).subscribe({
-          next: () => {
-            this.snackBar.open('Solicitud eliminada', 'Cerrar', { duration: 3000 });
-            this.cargar(this.pagina);
-          },
-          error: (err) => {
-            this.snackBar.open(err.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
-          }
-        });
+    ref.afterClosed().subscribe({
+      next: (confirmado) => {
+        if (confirmado) {
+          this.adminService.eliminarSolicitudCola(solicitud.id).subscribe({
+            next: () => {
+              this.snackBar.open('Solicitud eliminada', 'Cerrar', { duration: 3000 });
+              this.cargar(this.pagina);
+            },
+            error: (error) => {
+              this.snackBar.open(error.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
+            }
+          });
+        }
       }
     });
   }

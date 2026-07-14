@@ -45,45 +45,51 @@ export class AdminUsuariosComponent implements OnInit {
     });
   }
 
-  cambiarPagina(e: any): void {
-    this.cargar(e.pageIndex);
+  cambiarPagina(evento: any): void {
+    this.cargar(evento.pageIndex);
   }
 
   abrirCrear(): void {
     const ref = this.dialog.open(UsuarioDialogComponent, { width: '500px' });
-    ref.afterClosed().subscribe((result) => {
-      if (result) {
-        this.snackBar.open('Usuario creado', 'Cerrar', { duration: 3000 });
-        this.cargar(0);
+    ref.afterClosed().subscribe({
+      next: (result) => {
+        if (result) {
+          this.snackBar.open('Usuario creado', 'Cerrar', { duration: 3000 });
+          this.cargar(0);
+        }
       }
     });
   }
 
-  abrirEditar(u: UsuarioAdminResponse): void {
-    const ref = this.dialog.open(UsuarioDialogComponent, { width: '500px', data: u });
-    ref.afterClosed().subscribe((result) => {
-      if (result) {
-        this.snackBar.open('Usuario actualizado', 'Cerrar', { duration: 3000 });
-        this.cargar(this.pagina);
+  abrirEditar(usuario: UsuarioAdminResponse): void {
+    const ref = this.dialog.open(UsuarioDialogComponent, { width: '500px', data: usuario });
+    ref.afterClosed().subscribe({
+      next: (result) => {
+        if (result) {
+          this.snackBar.open('Usuario actualizado', 'Cerrar', { duration: 3000 });
+          this.cargar(this.pagina);
+        }
       }
     });
   }
 
-  confirmarEliminar(u: UsuarioAdminResponse): void {
+  confirmarEliminar(usuario: UsuarioAdminResponse): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
-      data: { titulo: 'Eliminar usuario', mensaje: `¿Eliminar a "${u.nombre}" (${u.email})?` }
+      data: { titulo: 'Eliminar usuario', mensaje: `¿Eliminar a "${usuario.nombre}" (${usuario.email})?` }
     });
-    ref.afterClosed().subscribe((confirmado) => {
-      if (confirmado) {
-        this.adminService.eliminarUsuario(u.id).subscribe({
-          next: () => {
-            this.snackBar.open('Usuario eliminado', 'Cerrar', { duration: 3000 });
-            this.cargar(this.pagina);
-          },
-          error: (err) => {
-            this.snackBar.open(err.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
-          }
-        });
+    ref.afterClosed().subscribe({
+      next: (confirmado) => {
+        if (confirmado) {
+          this.adminService.eliminarUsuario(usuario.id).subscribe({
+            next: () => {
+              this.snackBar.open('Usuario eliminado', 'Cerrar', { duration: 3000 });
+              this.cargar(this.pagina);
+            },
+            error: (error) => {
+              this.snackBar.open(error.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
+            }
+          });
+        }
       }
     });
   }

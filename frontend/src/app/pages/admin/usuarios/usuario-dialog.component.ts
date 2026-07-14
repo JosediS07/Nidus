@@ -73,14 +73,20 @@ export class UsuarioDialogComponent {
       this.adminService.actualizarUsuario(this.data.id, {
         nombre: this.nombre,
         email: this.email
-      }).subscribe(() => this.dialogRef.close(true));
+      }).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: () => this.dialogRef.close(false)
+      });
     } else {
       this.adminService.crearUsuario({
         nombre: this.nombre,
         email: this.email,
         password: this.password,
         rol: this.rol
-      }).subscribe(() => this.dialogRef.close(true));
+      }).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: () => this.dialogRef.close(false)
+      });
     }
   }
 }

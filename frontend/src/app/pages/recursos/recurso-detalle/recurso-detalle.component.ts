@@ -84,9 +84,12 @@ export class RecursoDetalleComponent implements OnInit {
   }
 
   cargarCola(): void {
-    this.colaService.listar(this.recursoId).subscribe((res: any) => {
-      const userId = this.authService.getUser()?.id;
-      this.miCola = res.content?.find((s: any) => s.usuarioId === userId) || null;
+    this.colaService.listar(this.recursoId).subscribe({
+      next: (respuesta: any) => {
+        const userId = this.authService.getUser()?.id;
+        this.miCola = respuesta.content?.find((solicitud: any) => solicitud.usuarioId === userId) || null;
+      },
+      error: () => {}
     });
   }
 

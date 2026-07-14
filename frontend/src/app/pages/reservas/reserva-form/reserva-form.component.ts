@@ -41,7 +41,7 @@ export class ReservaFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.recursoService.listar(0, 100).subscribe({
-      next: (res) => (this.recursos = res.content),
+      next: (respuesta) => (this.recursos = respuesta.content),
       error: (err) => { this.error = err.error?.message || 'Error al cargar recursos'; }
     });
 
@@ -49,11 +49,14 @@ export class ReservaFormComponent implements OnInit {
     if (id) {
       this.editando = true;
       this.reservaId = Number(id);
-      this.reservaService.obtener(this.reservaId).subscribe((r) => {
-        this.form.patchValue({
-          fechaInicio: this.toLocalDatetime(r.fechaInicio),
-          fechaFin: this.toLocalDatetime(r.fechaFin),
-        });
+      this.reservaService.obtener(this.reservaId).subscribe({
+        next: (reserva) => {
+          this.form.patchValue({
+            fechaInicio: this.toLocalDatetime(reserva.fechaInicio),
+            fechaFin: this.toLocalDatetime(reserva.fechaFin),
+          });
+        },
+        error: (error) => { this.error = error.error?.message || 'Error al cargar reserva'; }
       });
     }
   }

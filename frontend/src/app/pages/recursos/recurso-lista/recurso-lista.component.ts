@@ -30,9 +30,9 @@ export class RecursoListaComponent implements OnInit {
     this.cargando = true;
     this.error = '';
     this.recursoService.listar(page).subscribe({
-      next: (res) => {
-        this.recursos = res.content;
-        this.total = res.totalElements;
+      next: (respuesta) => {
+        this.recursos = respuesta.content;
+        this.total = respuesta.totalElements;
         this.cargando = false;
       },
       error: (err) => {
@@ -42,7 +42,7 @@ export class RecursoListaComponent implements OnInit {
     });
   }
 
-  cambiarPagina(e: any): void {
-    this.cargar(e.pageIndex);
+  cambiarPagina(evento: any): void {
+    this.cargar(evento.pageIndex);
   }
 }

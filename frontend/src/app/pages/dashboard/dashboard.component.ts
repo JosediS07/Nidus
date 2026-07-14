@@ -25,8 +25,8 @@ export class DashboardComponent implements OnInit {
     this.cargando = true;
     this.error = '';
     this.adminService.dashboard().subscribe({
-      next: (d) => {
-        this.data = d;
+      next: (datos) => {
+        this.data = datos;
         this.cargando = false;
       },
       error: (err) => {

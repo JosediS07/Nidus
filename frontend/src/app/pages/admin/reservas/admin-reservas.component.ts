@@ -57,32 +57,34 @@ export class AdminReservasComponent implements OnInit {
     });
   }
 
-  cambiarPagina(e: any): void {
-    this.cargar(e.pageIndex);
+  cambiarPagina(evento: any): void {
+    this.cargar(evento.pageIndex);
   }
 
   buscar(): void {
     this.cargar(0);
   }
 
-  confirmarCancelar(r: ReservaAdminResponse): void {
+  confirmarCancelar(reserva: ReservaAdminResponse): void {
     const ref = this.dialog.open(ConfirmDialogComponent, {
       data: {
         titulo: 'Cancelar reserva',
-        mensaje: `¿Cancelar la reserva #${r.id}?`
+        mensaje: `¿Cancelar la reserva #${reserva.id}?`
       }
     });
-    ref.afterClosed().subscribe((confirmado) => {
-      if (confirmado) {
-        this.adminService.cancelarReserva(r.id).subscribe({
-          next: () => {
-            this.snackBar.open('Reserva cancelada', 'Cerrar', { duration: 3000 });
-            this.cargar(this.pagina);
-          },
-          error: (err) => {
-            this.snackBar.open(err.error?.message || 'Error al cancelar', 'Cerrar', { duration: 4000 });
-          }
-        });
+    ref.afterClosed().subscribe({
+      next: (confirmado) => {
+        if (confirmado) {
+          this.adminService.cancelarReserva(reserva.id).subscribe({
+            next: () => {
+              this.snackBar.open('Reserva cancelada', 'Cerrar', { duration: 3000 });
+              this.cargar(this.pagina);
+            },
+            error: (error) => {
+              this.snackBar.open(error.error?.message || 'Error al cancelar', 'Cerrar', { duration: 4000 });
+            }
+          });
+        }
       }
     });
   }

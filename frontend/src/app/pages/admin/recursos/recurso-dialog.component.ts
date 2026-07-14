@@ -74,9 +74,12 @@ export class RecursoDialogComponent {
       descripcion: this.descripcion,
       capacidad: this.capacidad || undefined
     };
-    const req = this.data
+    const peticion = this.data
       ? this.adminService.actualizarRecurso(this.data.id, body)
       : this.adminService.crearRecurso(body);
-    req.subscribe(() => this.dialogRef.close(true));
+    peticion.subscribe({
+      next: () => this.dialogRef.close(true),
+      error: () => this.dialogRef.close(false)
+    });
   }
 }

@@ -34,8 +34,8 @@ export class PerfilComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.me().subscribe({
-      next: (u) => {
-        this.form.patchValue({ nombre: u.nombre, email: u.email });
+      next: (usuario) => {
+        this.form.patchValue({ nombre: usuario.nombre, email: usuario.email });
       },
       error: () => this.snackBar.open('Error al cargar perfil', 'Cerrar', { duration: 3000 })
     });
@@ -56,7 +56,7 @@ export class PerfilComponent implements OnInit {
     }
 
     this.authService.actualizarPerfil(body).subscribe({
-      next: (u) => {
+      next: () => {
         this.snackBar.open('Perfil actualizado', 'Cerrar', { duration: 3000 });
         this.form.patchValue({ password: '', confirmarPassword: '', currentPassword: '' });
         this.guardando = false;
