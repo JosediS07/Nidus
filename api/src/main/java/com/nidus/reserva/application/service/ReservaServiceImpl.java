@@ -187,12 +187,12 @@ public class ReservaServiceImpl implements ReservaService {
 
     private boolean esAdmin(Long usuarioId) {
         return userRepository.findById(usuarioId)
-                .map(u -> u.getRol().name().equals("ADMIN"))
+                .map(usuario -> usuario.getRol().name().equals("ADMIN"))
                 .orElse(false);
     }
 
-    private ReservaResponse toResponse(Reserva r) {
-        return new ReservaResponse(r.getId(), r.getRecursoId(), r.getUsuarioId(),
-                r.getFechaInicio(), r.getFechaFin(), r.getEstado().name());
+    private ReservaResponse toResponse(Reserva reserva) {
+        return new ReservaResponse(reserva.getId(), reserva.getRecursoId(), reserva.getUsuarioId(),
+                reserva.getFechaInicio(), reserva.getFechaFin(), reserva.getEstado().name());
     }
 }

@@ -74,7 +74,8 @@ public class RecursoServiceImpl implements RecursoService {
         recursoRepository.save(recurso);
     }
 
-    private RecursoResponse toResponse(Recurso r) {
-        return new RecursoResponse(r.getId(), r.getNombre(), r.getTipo(), r.getDescripcion(), r.getCapacidad(), r.isActivo());
+    private RecursoResponse toResponse(Recurso recurso) {
+        return new RecursoResponse(recurso.getId(), recurso.getNombre(), recurso.getTipo(),
+                recurso.getDescripcion(), recurso.getCapacidad(), recurso.isActivo());
     }
 }

@@ -7,27 +7,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReservaEntityMapper {
 
-    public ReservaEntity toEntity(Reserva domain) {
+    public ReservaEntity toEntity(Reserva dominio) {
         return new ReservaEntity(
-            domain.getId(),
-            domain.getRecursoId(),
-            domain.getUsuarioId(),
-            domain.getFechaInicio(),
-            domain.getFechaFin(),
-            domain.getEstado(),
-            domain.getVersion()
+            dominio.getId(),
+            dominio.getRecursoId(),
+            dominio.getUsuarioId(),
+            dominio.getFechaInicio(),
+            dominio.getFechaFin(),
+            dominio.getEstado(),
+            dominio.getVersion()
         );
     }
 
-    public Reserva toDomain(ReservaEntity entity) {
+    public Reserva toDomain(ReservaEntity entidad) {
         return new Reserva(
-            entity.getId(),
-            entity.getRecursoId(),
-            entity.getUsuarioId(),
-            entity.getFechaInicio(),
-            entity.getFechaFin(),
-            entity.getEstado(),
-            entity.getVersion()
+            entidad.getId(),
+            entidad.getRecursoId(),
+            entidad.getUsuarioId(),
+            entidad.getFechaInicio(),
+            entidad.getFechaFin(),
+            entidad.getEstado(),
+            entidad.getVersion()
         );
     }
 }

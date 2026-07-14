@@ -105,7 +105,8 @@ public class SolicitudColaServiceImpl implements SolicitudColaService {
         }
     }
 
-    private SolicitudColaResponse toResponse(SolicitudColaEntity e) {
-        return new SolicitudColaResponse(e.getId(), e.getRecursoId(), e.getUsuarioId(), e.getEstado().name(), e.getCreado());
+    private SolicitudColaResponse toResponse(SolicitudColaEntity solicitud) {
+        return new SolicitudColaResponse(solicitud.getId(), solicitud.getRecursoId(), solicitud.getUsuarioId(),
+                solicitud.getEstado().name(), solicitud.getCreado());
     }
 }

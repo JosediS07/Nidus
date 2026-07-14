@@ -80,7 +80,7 @@ public class AdminService {
         Map<String, Long> reservasPorEstado = Arrays.stream(EstadoReserva.values())
             .collect(Collectors.toMap(
                 Enum::name,
-                e -> reservaRepository.countByEstado(e)
+                estado -> reservaRepository.countByEstado(estado)
             ));
 
         LocalDateTime hoyInicio = LocalDate.now().atStartOfDay();
@@ -89,7 +89,7 @@ public class AdminService {
 
         String recursoMasReservado = reservaRepository.findTopRecursoId()
             .map(id -> recursoRepository.findById(id)
-                .map(r -> r.getNombre())
+                .map(recurso -> recurso.getNombre())
                 .orElse("—"))
             .orElse("—");
 
@@ -102,9 +102,9 @@ public class AdminService {
     @Transactional(readOnly = true)
     public Page<UsuarioAdminResponse> listarUsuarios(Pageable pageable) {
         return userRepository.findAll(pageable)
-            .map(u -> new UsuarioAdminResponse(
-                u.getId(), u.getNombre(), u.getEmail(),
-                u.getRol().name(), u.isActivo(), u.getCreado()));
+            .map(usuario -> new UsuarioAdminResponse(
+                usuario.getId(), usuario.getNombre(), usuario.getEmail(),
+                usuario.getRol().name(), usuario.isActivo(), usuario.getCreado()));
     }
 
     @Transactional(readOnly = true)
@@ -170,8 +170,6 @@ public class AdminService {
                 .toList();
     }
 
-    // ── Usuarios ──────────────────────────────────
-
     @Transactional
     public UsuarioAdminResponse crearUsuario(CrearUsuarioAdminRequest request) {
         if (userRepository.existsByEmail(request.email())) {
@@ -202,21 +200,21 @@ public class AdminService {
         userRepository.deleteById(id);
     }
 
-    // ── Recursos ──────────────────────────────────
-
     @Transactional(readOnly = true)
     public Page<RecursoResponse> listarRecursos(Pageable pageable) {
         return recursoRepository.findAll(pageable)
-                .map(r -> new RecursoResponse(
-                    r.getId(), r.getNombre(), r.getTipo(), r.getDescripcion(), r.getCapacidad(), r.isActivo()));
+                .map(recurso -> new RecursoResponse(
+                    recurso.getId(), recurso.getNombre(), recurso.getTipo(),
+                    recurso.getDescripcion(), recurso.getCapacidad(), recurso.isActivo()));
     }
 
     @Transactional(readOnly = true)
     public RecursoResponse obtenerRecurso(Long id) {
-        var r = recursoRepository.findById(id)
+        var recurso = recursoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso con id " + id + " no encontrado"));
         return new RecursoResponse(
-            r.getId(), r.getNombre(), r.getTipo(), r.getDescripcion(), r.getCapacidad(), r.isActivo());
+            recurso.getId(), recurso.getNombre(), recurso.getTipo(),
+            recurso.getDescripcion(), recurso.getCapacidad(), recurso.isActivo());
     }
 
     @Transactional
@@ -237,14 +235,10 @@ public class AdminService {
         recursoRepository.deleteById(id);
     }
 
-    // ── Reservas ──────────────────────────────────
-
     @Transactional
     public void cancelarReserva(Long id, Long adminUserId) {
         reservaService.cancelar(id, adminUserId);
     }
-
-    // ── Cola de espera ────────────────────────────
 
     @Transactional
     public void eliminarSolicitudCola(Long id) {
@@ -253,15 +247,15 @@ public class AdminService {
         jpaSolicitudColaRepository.delete(solicitud);
     }
 
-    private UsuarioAdminResponse toUsuarioAdminResponse(UserEntity u) {
+    private UsuarioAdminResponse toUsuarioAdminResponse(UserEntity usuario) {
         return new UsuarioAdminResponse(
-            u.getId(), u.getNombre(), u.getEmail(),
-            u.getRol().name(), u.isActivo(), u.getCreado());
+            usuario.getId(), usuario.getNombre(), usuario.getEmail(),
+            usuario.getRol().name(), usuario.isActivo(), usuario.getCreado());
     }
 
-    private ReservaAdminResponse toReservaAdminResponse(ReservaEntity r) {
+    private ReservaAdminResponse toReservaAdminResponse(ReservaEntity reserva) {
         return new ReservaAdminResponse(
-            r.getId(), r.getRecursoId(), r.getUsuarioId(),
-            r.getFechaInicio(), r.getFechaFin(), r.getEstado().name());
+            reserva.getId(), reserva.getRecursoId(), reserva.getUsuarioId(),
+            reserva.getFechaInicio(), reserva.getFechaFin(), reserva.getEstado().name());
     }
 }
