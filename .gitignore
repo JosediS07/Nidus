@@ -20,5 +20,13 @@ Thumbs.db
 ### Local config ###
 **/application-local.yaml
 
+### Logs ###
+*.log
+
+### Environment files ###
+.env
+.env.local
+.env.production
+
 ### Agent rules ###
 AGENTS.md

@@ -18,4 +18,4 @@ spring:
 
 app:
   jwt:
-    secret: "301OdDgIHlQQQH6D6TF15rXZC6ludvZZ185iV+/Ak+8="
+    secret: "VGVzdFNlY3JldEZvck5pZHVzVGVzdHNPbmx5MTIzNDU2Nzg5MA=="

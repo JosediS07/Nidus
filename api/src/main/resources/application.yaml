@@ -21,7 +21,7 @@ spring:
 app:
   admin:
     email: ${ADMIN_EMAIL:admin@nidus.com}
-    password: ${ADMIN_PASSWORD:admin123}
+    password: ${ADMIN_PASSWORD}
   jwt:
     secret: ${JWT_SECRET}
     expiration: ${JWT_EXPIRATION:86400000}

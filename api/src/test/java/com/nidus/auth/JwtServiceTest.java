@@ -5,11 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(classes = JwtService.class, properties = {
-    "app.jwt.secret=301OdDgIHlQQQH6D6TF15rXZC6ludvZZ185iV+/Ak+8=",
+@SpringBootTest(classes = JwtService.class)
+@TestPropertySource(properties = {
+    "app.jwt.secret=VGVzdFNlY3JldEZvck5pZHVzVGVzdHNPbmx5MTIzNDU2Nzg5MA==",
     "app.jwt.expiration=86400000"
 })
 class JwtServiceTest {
