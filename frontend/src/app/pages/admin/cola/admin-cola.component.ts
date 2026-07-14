@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -12,7 +12,8 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './admin-cola.component.html',
-  styleUrl: './admin-cola.component.css'
+  styleUrl: './admin-cola.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminColaComponent implements OnInit {
   solicitudes: SolicitudColaResponse[] = [];
@@ -31,7 +32,7 @@ export class AdminColaComponent implements OnInit {
     return this.total > this.TAMANIO_PAGINA;
   }
 
-  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
+  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -46,6 +47,7 @@ export class AdminColaComponent implements OnInit {
         this.solicitudes = res.content;
         this.total = res.totalElements;
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = err.error?.message || 'Error al cargar cola';
@@ -72,12 +74,14 @@ export class AdminColaComponent implements OnInit {
             next: () => {
               this.snackBar.open('Solicitud eliminada', 'Cerrar', { duration: 3000 });
               this.cargar(this.pagina);
+              this.cdr.markForCheck();
             },
             error: (error) => {
               this.snackBar.open(error.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
             }
           });
         }
+        this.cdr.markForCheck();
       }
     });
   }

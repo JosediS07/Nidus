@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,7 +13,8 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
   standalone: true,
   imports: [CommonModule, RouterModule, MatButtonModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './reserva-lista.component.html',
-  styleUrl: './reserva-lista.component.css'
+  styleUrl: './reserva-lista.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ReservaListaComponent implements OnInit {
   reservas: ReservaResponse[] = [];
@@ -35,7 +36,8 @@ export class ReservaListaComponent implements OnInit {
   constructor(
     private reservaService: ReservaService,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +53,7 @@ export class ReservaListaComponent implements OnInit {
         this.reservas = res.content;
         this.total = res.totalElements;
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = err.error?.message || 'Error al cargar reservas';

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -13,7 +13,8 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule],
   templateUrl: './admin-usuarios.component.html',
-  styleUrl: './admin-usuarios.component.css'
+  styleUrl: './admin-usuarios.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminUsuariosComponent implements OnInit {
   usuarios: UsuarioAdminResponse[] = [];
@@ -32,7 +33,7 @@ export class AdminUsuariosComponent implements OnInit {
     return this.total > this.TAMANIO_PAGINA;
   }
 
-  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
+  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -47,6 +48,7 @@ export class AdminUsuariosComponent implements OnInit {
         this.usuarios = res.content;
         this.total = res.totalElements;
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = err.error?.message || 'Error al cargar usuarios';
@@ -67,6 +69,7 @@ export class AdminUsuariosComponent implements OnInit {
           this.snackBar.open('Usuario creado', 'Cerrar', { duration: 3000 });
           this.cargar(0);
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -79,6 +82,7 @@ export class AdminUsuariosComponent implements OnInit {
           this.snackBar.open('Usuario actualizado', 'Cerrar', { duration: 3000 });
           this.cargar(this.pagina);
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -94,12 +98,14 @@ export class AdminUsuariosComponent implements OnInit {
             next: () => {
               this.snackBar.open('Usuario eliminado', 'Cerrar', { duration: 3000 });
               this.cargar(this.pagina);
+              this.cdr.markForCheck();
             },
             error: (error) => {
               this.snackBar.open(error.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
             }
           });
         }
+        this.cdr.markForCheck();
       }
     });
   }

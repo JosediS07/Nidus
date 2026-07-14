@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -18,7 +18,8 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, FormsModule],
   templateUrl: './admin-recursos.component.html',
-  styleUrl: './admin-recursos.component.css'
+  styleUrl: './admin-recursos.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminRecursosComponent implements OnInit {
   recursos: RecursoResponse[] = [];
@@ -37,7 +38,7 @@ export class AdminRecursosComponent implements OnInit {
     return this.total > this.TAMANIO_PAGINA;
   }
 
-  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
+  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -52,6 +53,7 @@ export class AdminRecursosComponent implements OnInit {
         this.recursos = res.content;
         this.total = res.totalElements;
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = err.error?.message || 'Error al cargar recursos';
@@ -72,6 +74,7 @@ export class AdminRecursosComponent implements OnInit {
           this.snackBar.open('Recurso creado', 'Cerrar', { duration: 3000 });
           this.cargar(0);
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -84,6 +87,7 @@ export class AdminRecursosComponent implements OnInit {
           this.snackBar.open('Recurso actualizado', 'Cerrar', { duration: 3000 });
           this.cargar(this.pagina);
         }
+        this.cdr.markForCheck();
       }
     });
   }
@@ -99,12 +103,14 @@ export class AdminRecursosComponent implements OnInit {
             next: () => {
               this.snackBar.open('Recurso eliminado', 'Cerrar', { duration: 3000 });
               this.cargar(this.pagina);
+              this.cdr.markForCheck();
             },
             error: (error) => {
               this.snackBar.open(error.error?.message || 'Error al eliminar', 'Cerrar', { duration: 4000 });
             }
           });
         }
+        this.cdr.markForCheck();
       }
     });
   }

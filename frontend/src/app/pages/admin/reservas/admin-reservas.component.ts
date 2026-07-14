@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
@@ -16,7 +16,8 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule],
   templateUrl: './admin-reservas.component.html',
-  styleUrl: './admin-reservas.component.css'
+  styleUrl: './admin-reservas.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminReservasComponent implements OnInit {
   reservas: ReservaAdminResponse[] = [];
@@ -39,7 +40,7 @@ export class AdminReservasComponent implements OnInit {
     return this.total > this.TAMANIO_PAGINA;
   }
 
-  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
+  constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.cargar();
@@ -59,6 +60,7 @@ export class AdminReservasComponent implements OnInit {
         this.reservas = res.content;
         this.total = res.totalElements;
         this.cargando = false;
+        this.cdr.markForCheck();
       },
       error: (err) => {
         this.error = err.error?.message || 'Error al cargar reservas';
@@ -89,12 +91,14 @@ export class AdminReservasComponent implements OnInit {
             next: () => {
               this.snackBar.open('Reserva cancelada', 'Cerrar', { duration: 3000 });
               this.cargar(this.pagina);
+              this.cdr.markForCheck();
             },
             error: (error) => {
               this.snackBar.open(error.error?.message || 'Error al cancelar', 'Cerrar', { duration: 4000 });
             }
           });
         }
+        this.cdr.markForCheck();
       }
     });
   }
