@@ -29,6 +29,16 @@ export class AdminReservasComponent implements OnInit {
   filtroRecursoId: number | null = null;
   filtroUsuarioId: number | null = null;
 
+  private readonly TAMANIO_PAGINA = 20;
+
+  get hayPaginaSiguiente(): boolean {
+    return (this.pagina + 1) * this.TAMANIO_PAGINA < this.total;
+  }
+
+  get hayPaginacion(): boolean {
+    return this.total > this.TAMANIO_PAGINA;
+  }
+
   constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {

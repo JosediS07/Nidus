@@ -1,6 +1,6 @@
 <div class="page-container max-w-lg">
   <section class="card">
-    <h1 class="text-xl font-bold tracking-tight mb-6 text-primary">{{ editando ? 'Editar reserva' : 'Nueva reserva' }}</h1>
+    <h1 class="text-xl font-bold tracking-tight mb-6 text-primary">{{ tituloPagina }}</h1>
 
     <form [formGroup]="form" (ngSubmit)="guardar()" class="flex flex-col gap-5">
       @if (!editando) {
@@ -30,7 +30,7 @@
 
       <div class="flex gap-3 pt-2">
         <button mat-flat-button type="submit" [disabled]="form.invalid || guardando" class="btn-solid h-10">
-          {{ guardando ? 'Guardando...' : 'Guardar' }}
+          {{ textoBoton }}
         </button>
         <a mat-stroked-button routerLink="/reservas" class="border-subtle text-secondary h-10 rounded-lg no-underline text-sm">
           Cancelar

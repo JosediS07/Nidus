@@ -13,9 +13,21 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class HeaderComponent {
   constructor(
-    public authService: AuthService,
+    private authService: AuthService,
     private router: Router
   ) {}
+
+  get usuario() {
+    return this.authService.getUser();
+  }
+
+  get esAdmin() {
+    return this.authService.isAdmin();
+  }
+
+  get inicialUsuario() {
+    return this.usuario?.nombre.charAt(0).toUpperCase() || '';
+  }
 
   salir(): void {
     this.authService.logout();

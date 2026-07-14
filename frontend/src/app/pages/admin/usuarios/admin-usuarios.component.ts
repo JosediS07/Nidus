@@ -22,6 +22,16 @@ export class AdminUsuariosComponent implements OnInit {
   cargando = false;
   error = '';
 
+  private readonly TAMANIO_PAGINA = 20;
+
+  get hayPaginaSiguiente(): boolean {
+    return (this.pagina + 1) * this.TAMANIO_PAGINA < this.total;
+  }
+
+  get hayPaginacion(): boolean {
+    return this.total > this.TAMANIO_PAGINA;
+  }
+
   constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {

@@ -4,11 +4,11 @@
       Nidus
     </a>
 
-    @if (authService.getUser(); as user) {
+    @if (usuario; as user) {
       <nav aria-label="Navegación principal" class="hidden md:flex items-center gap-1">
         <a routerLink="/recursos" class="nav-link" routerLinkActive="nav-link-active" [routerLinkActiveOptions]="{exact: true}">Recursos</a>
         <a routerLink="/reservas" class="nav-link" routerLinkActive="nav-link-active">Mis reservas</a>
-        @if (authService.isAdmin()) {
+        @if (esAdmin) {
           <span class="text-sm opacity-40 select-none mx-1">|</span>
           <a routerLink="/dashboard" class="nav-link admin-nav-link" routerLinkActive="nav-link-active">Dashboard</a>
           <a routerLink="/admin/usuarios" class="nav-link admin-nav-link" routerLinkActive="nav-link-active">Usuarios</a>
@@ -22,7 +22,7 @@
 
       <div class="flex items-center gap-3">
         <a routerLink="/perfil" class="text-sm font-medium hidden sm:block text-secondary hover:underline">{{ user.nombre }}</a>
-        <a routerLink="/perfil" class="avatar no-underline cursor-pointer">{{ user.nombre.charAt(0).toUpperCase() }}</a>
+        <a routerLink="/perfil" class="avatar no-underline cursor-pointer">{{ inicialUsuario }}</a>
         <button mat-stroked-button (click)="salir()" class="!text-sm border-subtle text-secondary">
           Salir
         </button>

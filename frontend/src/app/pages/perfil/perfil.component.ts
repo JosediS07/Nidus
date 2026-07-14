@@ -17,6 +17,10 @@ export class PerfilComponent implements OnInit {
   form;
   guardando = false;
 
+  get textoBoton() {
+    return this.guardando ? 'Guardando...' : 'Guardar cambios';
+  }
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,

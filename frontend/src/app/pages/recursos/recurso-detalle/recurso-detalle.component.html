@@ -34,7 +34,7 @@
           <div class="alert-danger">{{ reservaError }}</div>
         }
         <button mat-flat-button type="submit" [disabled]="formReserva.invalid || reservando" class="btn-solid self-start h-10">
-          {{ reservando ? 'Reservando...' : 'Reservar' }}
+          {{ textoBoton }}
         </button>
       </form>
     </section>

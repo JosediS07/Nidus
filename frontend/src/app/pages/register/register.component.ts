@@ -28,6 +28,22 @@ export class RegisterComponent {
     private router: Router
   ) {}
 
+  get nombreInvalido() {
+    return this.form.get('nombre')?.invalid && this.form.get('nombre')?.touched;
+  }
+
+  get emailInvalido() {
+    return this.form.get('email')?.invalid && this.form.get('email')?.touched;
+  }
+
+  get passwordInvalido() {
+    return this.form.get('password')?.invalid && this.form.get('password')?.touched;
+  }
+
+  get textoBoton() {
+    return this.cargando ? 'Creando...' : 'Registrarse';
+  }
+
   enviar(): void {
     if (this.form.invalid) return;
     this.cargando = true;

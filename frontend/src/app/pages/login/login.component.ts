@@ -27,6 +27,18 @@ export class LoginComponent {
     private router: Router
   ) {}
 
+  get emailInvalido() {
+    return this.form.get('email')?.invalid && this.form.get('email')?.touched;
+  }
+
+  get passwordInvalido() {
+    return this.form.get('password')?.invalid && this.form.get('password')?.touched;
+  }
+
+  get textoBoton() {
+    return this.cargando ? 'Entrando...' : 'Entrar';
+  }
+
   enviar(): void {
     if (this.form.invalid) return;
     this.cargando = true;

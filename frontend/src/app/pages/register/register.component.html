@@ -10,7 +10,7 @@
         <mat-form-field appearance="fill">
           <mat-label>Nombre</mat-label>
           <input matInput formControlName="nombre" />
-          @if (form.get('nombre')?.invalid && form.get('nombre')?.touched) {
+          @if (nombreInvalido) {
             <mat-error>El nombre es obligatorio</mat-error>
           }
         </mat-form-field>
@@ -18,7 +18,7 @@
         <mat-form-field appearance="fill">
           <mat-label>Email</mat-label>
           <input matInput type="email" formControlName="email" />
-          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          @if (emailInvalido) {
             <mat-error>Email inválido</mat-error>
           }
         </mat-form-field>
@@ -26,7 +26,7 @@
         <mat-form-field appearance="fill">
           <mat-label>Contraseña</mat-label>
           <input matInput type="password" formControlName="password" />
-          @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          @if (passwordInvalido) {
             <mat-error>Mínimo 6 caracteres</mat-error>
           }
         </mat-form-field>
@@ -36,7 +36,7 @@
         }
 
         <button mat-flat-button type="submit" [disabled]="form.invalid || cargando" class="btn-solid h-11">
-          {{ cargando ? 'Creando...' : 'Registrarse' }}
+          {{ textoBoton }}
         </button>
       </form>
 

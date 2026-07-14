@@ -34,6 +34,10 @@ export class RecursoDetalleComponent implements OnInit {
   reservaError = '';
   colaError = '';
 
+  get textoBoton() {
+    return this.reservando ? 'Reservando...' : 'Reservar';
+  }
+
   constructor(
     private route: ActivatedRoute,
     private recursoService: RecursoService,
@@ -48,8 +52,8 @@ export class RecursoDetalleComponent implements OnInit {
     this.recursoId = Number(this.route.snapshot.paramMap.get('id'));
     this.cargando = true;
     this.recursoService.obtener(this.recursoId).subscribe({
-      next: (r) => {
-        this.recurso = r;
+      next: (recurso) => {
+        this.recurso = recurso;
         this.cargando = false;
       },
       error: (err) => {

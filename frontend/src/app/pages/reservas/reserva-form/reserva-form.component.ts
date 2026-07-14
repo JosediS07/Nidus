@@ -31,6 +31,14 @@ export class ReservaFormComponent implements OnInit {
   guardando = false;
   error = '';
 
+  get tituloPagina() {
+    return this.editando ? 'Editar reserva' : 'Nueva reserva';
+  }
+
+  get textoBoton() {
+    return this.guardando ? 'Guardando...' : 'Guardar';
+  }
+
   constructor(
     private reservaService: ReservaService,
     private recursoService: RecursoService,
