@@ -76,14 +76,7 @@ public class ReservaServiceImpl implements ReservaService {
         var reserva = reservaRepository.encontrarPorId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reserva con id " + id + " no encontrada"));
 
-        if (!reserva.getUsuarioId().equals(usuarioId) && !esAdmin(usuarioId)) {
-            throw new InvalidStateException("No tienes permiso para modificar esta reserva");
-        }
-
-        if (reserva.getEstado() == EstadoReserva.CANCELADA) {
-            throw new InvalidStateException("No se puede modificar una reserva cancelada");
-        }
-
+        validarPuedeModificar(reserva, usuarioId);
         validarSinSolapamiento(reserva.getRecursoId(), request.fechaInicio(), request.fechaFin(), id);
 
         reserva.setFechaInicio(request.fechaInicio());
@@ -92,12 +85,25 @@ public class ReservaServiceImpl implements ReservaService {
 
         var guardada = reservaRepository.guardar(reserva);
         notificar(guardada, "modificacion");
+        publicarEventoModificacion(guardada, request, usuarioId);
+        return toResponse(guardada);
+    }
+
+    private void validarPuedeModificar(Reserva reserva, Long usuarioId) {
+        if (!reserva.getUsuarioId().equals(usuarioId) && !esAdmin(usuarioId)) {
+            throw new InvalidStateException("No tienes permiso para modificar esta reserva");
+        }
+        if (reserva.getEstado() == EstadoReserva.CANCELADA) {
+            throw new InvalidStateException("No se puede modificar una reserva cancelada");
+        }
+    }
+
+    private void publicarEventoModificacion(Reserva guardada, ModificarReservaRequest request, Long usuarioId) {
         eventPublisher.publishEvent(new ReservaEvento(
             ReservaEvento.MODIFICACION, guardada.getId(), usuarioId, guardada.getRecursoId(),
             guardada.getFechaInicio(), guardada.getFechaFin(),
             "Reserva modificada: nuevas fechas del " + request.fechaInicio()
                 + " al " + request.fechaFin()));
-        return toResponse(guardada);
     }
 
     @Override

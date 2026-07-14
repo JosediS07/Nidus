@@ -43,28 +43,41 @@ export class PerfilComponent implements OnInit {
 
   guardar(): void {
     if (this.form.invalid) return;
-    if (this.form.value.password && this.form.value.password !== this.form.value.confirmarPassword) {
-      this.snackBar.open('Las contraseñas no coinciden', 'Cerrar', { duration: 4000 });
-      return;
-    }
+    if (!this.validarContrasenas()) return;
 
     this.guardando = true;
+    const body = this.construirBody();
+    this.authService.actualizarPerfil(body).subscribe(this.handleActualizarResponse());
+  }
+
+  private validarContrasenas(): boolean {
+    if (this.form.value.password && this.form.value.password !== this.form.value.confirmarPassword) {
+      this.snackBar.open('Las contraseñas no coinciden', 'Cerrar', { duration: 4000 });
+      return false;
+    }
+    return true;
+  }
+
+  private construirBody(): any {
     const body: any = { nombre: this.form.value.nombre, email: this.form.value.email };
     if (this.form.value.password) {
       body.password = this.form.value.password;
       body.currentPassword = this.form.value.currentPassword;
     }
+    return body;
+  }
 
-    this.authService.actualizarPerfil(body).subscribe({
+  private handleActualizarResponse() {
+    return {
       next: () => {
         this.snackBar.open('Perfil actualizado', 'Cerrar', { duration: 3000 });
         this.form.patchValue({ password: '', confirmarPassword: '', currentPassword: '' });
         this.guardando = false;
       },
-      error: (err) => {
+      error: (err: any) => {
         this.snackBar.open(err.error?.message || 'Error al actualizar', 'Cerrar', { duration: 4000 });
         this.guardando = false;
       }
-    });
+    };
   }
 }

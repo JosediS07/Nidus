@@ -76,16 +76,20 @@ export class ReservaFormComponent implements OnInit {
       ? this.reservaService.modificar(this.reservaId!, { fechaInicio: req.fechaInicio, fechaFin: req.fechaFin })
       : this.reservaService.crear(req);
 
-    action.subscribe({
+    action.subscribe(this.handleGuardarResponse());
+  }
+
+  private handleGuardarResponse() {
+    return {
       next: () => {
         this.snackBar.open('Reserva guardada', 'Cerrar', { duration: 3000 });
         this.router.navigate(['/reservas']);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error = err.error?.message || 'Error al guardar';
         this.guardando = false;
       }
-    });
+    };
   }
 
   private toLocalDatetime(iso: string): string {

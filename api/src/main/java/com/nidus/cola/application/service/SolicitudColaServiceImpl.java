@@ -82,27 +82,31 @@ public class SolicitudColaServiceImpl implements SolicitudColaService {
         }
 
         try {
-            var solicitudOpt = solicitudColaRepository.encontrarPrimeraPendientePorRecurso(evento.recursoId());
-            if (solicitudOpt.isEmpty()) {
-                return;
-            }
-
-            var solicitud = solicitudOpt.get();
-            var usuario = userRepository.findById(solicitud.getUsuarioId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
-            var recurso = recursoService.obtener(evento.recursoId());
-
-            notificacionPort.enviarNotificacionCola(
-                    usuario.getEmail(), usuario.getNombre(), recurso.nombre(), solicitud.getId());
-
-            solicitud.setEstado(EstadoSolicitud.NOTIFICADA);
-            solicitudColaRepository.guardar(solicitud);
-
-            log.info("Notificada solicitud {} de cola para recurso {} a usuario {}",
-                    solicitud.getId(), evento.recursoId(), usuario.getEmail());
+            notificarSiguienteEnCola(evento);
         } catch (Exception e) {
             log.error("Error al procesar cola de espera tras cancelación: {}", e.getMessage());
         }
+    }
+
+    private void notificarSiguienteEnCola(ReservaEvento evento) {
+        var solicitudOpt = solicitudColaRepository.encontrarPrimeraPendientePorRecurso(evento.recursoId());
+        if (solicitudOpt.isEmpty()) {
+            return;
+        }
+
+        var solicitud = solicitudOpt.get();
+        var usuario = userRepository.findById(solicitud.getUsuarioId())
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+        var recurso = recursoService.obtener(evento.recursoId());
+
+        notificacionPort.enviarNotificacionCola(
+                usuario.getEmail(), usuario.getNombre(), recurso.nombre(), solicitud.getId());
+
+        solicitud.setEstado(EstadoSolicitud.NOTIFICADA);
+        solicitudColaRepository.guardar(solicitud);
+
+        log.info("Notificada solicitud {} de cola para recurso {} a usuario {}",
+                solicitud.getId(), evento.recursoId(), usuario.getEmail());
     }
 
     private SolicitudColaResponse toResponse(SolicitudColaEntity solicitud) {

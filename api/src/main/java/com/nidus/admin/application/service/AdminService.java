@@ -77,26 +77,29 @@ public class AdminService {
         long totalRecursos = recursoRepository.count();
         long totalReservas = reservaRepository.count();
 
-        Map<String, Long> reservasPorEstado = Arrays.stream(EstadoReserva.values())
-            .collect(Collectors.toMap(
-                Enum::name,
-                estado -> reservaRepository.countByEstado(estado)
-            ));
+        return new DashboardResponse(
+            totalUsuarios, totalRecursos, totalReservas,
+            obtenerReservasPorEstado(), obtenerReservasHoy(), obtenerRecursoMasReservado()
+        );
+    }
 
+    private Map<String, Long> obtenerReservasPorEstado() {
+        return Arrays.stream(EstadoReserva.values())
+            .collect(Collectors.toMap(Enum::name, estado -> reservaRepository.countByEstado(estado)));
+    }
+
+    private long obtenerReservasHoy() {
         LocalDateTime hoyInicio = LocalDate.now().atStartOfDay();
         LocalDateTime hoyFin = LocalDate.now().atTime(LocalTime.MAX);
-        long reservasHoy = reservaRepository.countByFechaInicioBetween(hoyInicio, hoyFin);
+        return reservaRepository.countByFechaInicioBetween(hoyInicio, hoyFin);
+    }
 
-        String recursoMasReservado = reservaRepository.findTopRecursoId()
+    private String obtenerRecursoMasReservado() {
+        return reservaRepository.findTopRecursoId()
             .map(id -> recursoRepository.findById(id)
                 .map(recurso -> recurso.getNombre())
                 .orElse("—"))
             .orElse("—");
-
-        return new DashboardResponse(
-            totalUsuarios, totalRecursos, totalReservas,
-            reservasPorEstado, reservasHoy, recursoMasReservado
-        );
     }
 
     @Transactional(readOnly = true)
@@ -121,8 +124,15 @@ public class AdminService {
             String estado, Long recursoId, Long usuarioId,
             LocalDateTime fechaInicio, LocalDateTime fechaFin,
             Pageable pageable) {
+        Specification<ReservaEntity> spec = construirFiltroReservas(
+                estado, recursoId, usuarioId, fechaInicio, fechaFin);
+        return reservaRepository.findAll(spec, pageable).map(this::toReservaAdminResponse);
+    }
 
-        Specification<ReservaEntity> spec = (root, query, cb) -> {
+    private Specification<ReservaEntity> construirFiltroReservas(
+            String estado, Long recursoId, Long usuarioId,
+            LocalDateTime fechaInicio, LocalDateTime fechaFin) {
+        return (root, query, cb) -> {
             var predicates = new ArrayList<Predicate>();
 
             if (estado != null && !estado.isBlank()) {
@@ -143,8 +153,6 @@ public class AdminService {
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
-
-        return reservaRepository.findAll(spec, pageable).map(this::toReservaAdminResponse);
     }
 
     @Transactional(readOnly = true)
