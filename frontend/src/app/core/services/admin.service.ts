@@ -15,13 +15,9 @@ export class AdminService {
 
   constructor(private http: HttpClient) {}
 
-  // ── Dashboard ──────────────────────────────────
-
   dashboard(): Observable<DashboardResponse> {
     return this.http.get<DashboardResponse>(`${this.api}/dashboard`);
   }
-
-  // ── Usuarios ──────────────────────────────────
 
   listarUsuarios(page = 0, size = 20): Observable<any> {
     return this.http.get<any>(`${this.api}/usuarios?page=${page}&size=${size}`);
@@ -47,8 +43,6 @@ export class AdminService {
     return this.http.delete<void>(`${this.api}/usuarios/${id}`);
   }
 
-  // ── Recursos ──────────────────────────────────
-
   listarRecursos(page = 0, size = 20): Observable<any> {
     return this.http.get<any>(`${this.api}/recursos?page=${page}&size=${size}`);
   }
@@ -69,8 +63,6 @@ export class AdminService {
     return this.http.delete<void>(`${this.api}/recursos/${id}`);
   }
 
-  // ── Reservas ──────────────────────────────────
-
   listarReservas(params?: any): Observable<any> {
     return this.http.get<any>(`${this.api}/reservas`, { params });
   }
@@ -86,8 +78,6 @@ export class AdminService {
   obtenerHistorial(reservaId: number): Observable<HistorialResponse[]> {
     return this.http.get<HistorialResponse[]>(`${this.api}/reservas/${reservaId}/historial`);
   }
-
-  // ── Cola de espera ────────────────────────────
 
   listarCola(page = 0, size = 20): Observable<any> {
     return this.http.get<any>(`${this.api}/cola?page=${page}&size=${size}`);

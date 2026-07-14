@@ -45,8 +45,6 @@ public class AdminController {
         return ResponseEntity.ok(adminService.dashboard());
     }
 
-    // ── Usuarios ──────────────────────────────────
-
     @GetMapping("/usuarios")
     public ResponseEntity<Page<UsuarioAdminResponse>> listarUsuarios(@PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(adminService.listarUsuarios(pageable));
@@ -80,8 +78,6 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // ── Recursos ──────────────────────────────────
-
     @GetMapping("/recursos")
     public ResponseEntity<Page<RecursoResponse>> listarRecursos(@PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(adminService.listarRecursos(pageable));
@@ -108,8 +104,6 @@ public class AdminController {
         adminService.eliminarRecurso(id);
         return ResponseEntity.noContent().build();
     }
-
-    // ── Reservas ──────────────────────────────────
 
     @GetMapping("/reservas")
     public ResponseEntity<Page<ReservaAdminResponse>> listarReservas(
@@ -139,8 +133,6 @@ public class AdminController {
     public ResponseEntity<List<HistorialResponse>> obtenerHistorial(@PathVariable Long id) {
         return ResponseEntity.ok(adminService.obtenerHistorial(id));
     }
-
-    // ── Cola de espera ────────────────────────────
 
     @GetMapping("/cola")
     public ResponseEntity<Page<SolicitudColaResponse>> listarSolicitudesCola(@PageableDefault(size = 20) Pageable pageable) {
