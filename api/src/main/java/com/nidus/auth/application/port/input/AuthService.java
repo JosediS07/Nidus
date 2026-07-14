@@ -4,6 +4,7 @@ import com.nidus.auth.application.dto.AuthResponse;
 import com.nidus.auth.application.dto.CambiarRolRequest;
 import com.nidus.auth.application.dto.LoginRequest;
 import com.nidus.auth.application.dto.RegisterRequest;
+import com.nidus.auth.application.dto.ActualizarPerfilRequest;
 import com.nidus.auth.application.dto.UserResponse;
 
 public interface AuthService {
