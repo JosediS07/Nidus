@@ -46,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(user.getId(), token, user.getNombre(), user.getEmail(), user.getRol().name());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public AuthResponse login(LoginRequest request) {
         var user = userRepository.findByEmail(request.email())
@@ -59,6 +60,7 @@ public class AuthServiceImpl implements AuthService {
         return new AuthResponse(user.getId(), token, user.getNombre(), user.getEmail(), user.getRol().name());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserResponse obtenerPerfil(String email) {
         var user = userRepository.findByEmail(email)
