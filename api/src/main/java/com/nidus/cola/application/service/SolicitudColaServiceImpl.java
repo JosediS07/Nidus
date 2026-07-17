@@ -5,7 +5,7 @@ import com.nidus.cola.application.dto.SolicitudColaResponse;
 import com.nidus.cola.application.port.input.SolicitudColaService;
 import com.nidus.cola.application.port.output.SolicitudColaRepository;
 import com.nidus.cola.domain.EstadoSolicitud;
-import com.nidus.cola.infrastructure.persistence.entity.SolicitudColaEntity;
+import com.nidus.cola.domain.SolicitudCola;
 import com.nidus.notificacion.application.port.NotificacionPort;
 import com.nidus.recurso.application.port.input.RecursoService;
 import com.nidus.reserva.domain.evento.ReservaEvento;
@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+
+import java.time.LocalDateTime;
 
 @Service
 public class SolicitudColaServiceImpl implements SolicitudColaService {
@@ -42,8 +44,8 @@ public class SolicitudColaServiceImpl implements SolicitudColaService {
     @Override
     @Transactional
     public SolicitudColaResponse apuntarse(Long recursoId, Long usuarioId) {
-        var entity = new SolicitudColaEntity(recursoId, usuarioId);
-        var guardada = solicitudColaRepository.guardar(entity);
+        var solicitud = new SolicitudCola(null, recursoId, usuarioId, EstadoSolicitud.PENDIENTE, LocalDateTime.now());
+        var guardada = solicitudColaRepository.guardar(solicitud);
         return toResponse(guardada);
     }
 
@@ -64,15 +66,22 @@ public class SolicitudColaServiceImpl implements SolicitudColaService {
     @Override
     @Transactional
     public void salir(Long id, Long usuarioId) {
-        var entity = solicitudColaRepository.encontrarPorId(id)
+        var solicitud = solicitudColaRepository.encontrarPorId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Solicitud con id " + id + " no encontrada"));
 
-        if (!entity.getUsuarioId().equals(usuarioId)) {
+        if (!solicitud.usuarioId().equals(usuarioId)) {
             throw new com.nidus.shared.exception.InvalidStateException("No tienes permiso para cancelar esta solicitud");
         }
 
-        entity.setEstado(EstadoSolicitud.CANCELADA);
-        solicitudColaRepository.guardar(entity);
+        solicitudColaRepository.guardar(solicitud.conEstado(EstadoSolicitud.CANCELADA));
+    }
+
+    @Override
+    @Transactional
+    public void eliminar(Long id) {
+        var solicitud = solicitudColaRepository.encontrarPorId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Solicitud con id " + id + " no encontrada"));
+        solicitudColaRepository.guardar(solicitud.conEstado(EstadoSolicitud.CANCELADA));
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -95,22 +104,21 @@ public class SolicitudColaServiceImpl implements SolicitudColaService {
         }
 
         var solicitud = solicitudOpt.get();
-        var usuario = userRepository.findById(solicitud.getUsuarioId())
+        var usuario = userRepository.findById(solicitud.usuarioId())
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
         var recurso = recursoService.obtener(evento.recursoId());
 
         notificacionPort.enviarNotificacionCola(
-                usuario.getEmail(), usuario.getNombre(), recurso.nombre(), solicitud.getId());
+                usuario.getEmail(), usuario.getNombre(), recurso.nombre(), solicitud.id());
 
-        solicitud.setEstado(EstadoSolicitud.NOTIFICADA);
-        solicitudColaRepository.guardar(solicitud);
+        solicitudColaRepository.guardar(solicitud.conEstado(EstadoSolicitud.NOTIFICADA));
 
         log.info("Notificada solicitud {} de cola para recurso {} a usuario {}",
-                solicitud.getId(), evento.recursoId(), usuario.getEmail());
+                solicitud.id(), evento.recursoId(), usuario.getEmail());
     }
 
-    private SolicitudColaResponse toResponse(SolicitudColaEntity solicitud) {
-        return new SolicitudColaResponse(solicitud.getId(), solicitud.getRecursoId(), solicitud.getUsuarioId(),
-                solicitud.getEstado().name(), solicitud.getCreado());
+    private SolicitudColaResponse toResponse(SolicitudCola solicitud) {
+        return new SolicitudColaResponse(solicitud.id(), solicitud.recursoId(), solicitud.usuarioId(),
+                solicitud.estado().name(), solicitud.creado());
     }
 }

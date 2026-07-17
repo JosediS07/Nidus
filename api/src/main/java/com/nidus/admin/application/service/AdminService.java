@@ -10,8 +10,7 @@ import com.nidus.auth.infrastructure.persistence.entity.UserEntity;
 import com.nidus.auth.infrastructure.persistence.repository.JpaUserRepository;
 import com.nidus.cola.application.dto.SolicitudColaResponse;
 import com.nidus.cola.application.port.input.SolicitudColaService;
-import com.nidus.cola.infrastructure.persistence.entity.SolicitudColaEntity;
-import com.nidus.cola.infrastructure.persistence.repository.JpaSolicitudColaRepository;
+
 import com.nidus.recurso.application.dto.ActualizarRecursoRequest;
 import com.nidus.recurso.application.dto.CrearRecursoRequest;
 import com.nidus.recurso.application.dto.RecursoResponse;
@@ -49,7 +48,6 @@ public class AdminService {
     private final RecursoService recursoService;
     private final ReservaService reservaService;
     private final PasswordEncoder passwordEncoder;
-    private final JpaSolicitudColaRepository jpaSolicitudColaRepository;
 
     public AdminService(JpaUserRepository userRepository,
                         JpaRecursoRepository recursoRepository,
@@ -58,8 +56,7 @@ public class AdminService {
                         SolicitudColaService solicitudColaService,
                         RecursoService recursoService,
                         ReservaService reservaService,
-                        PasswordEncoder passwordEncoder,
-                        JpaSolicitudColaRepository jpaSolicitudColaRepository) {
+                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.recursoRepository = recursoRepository;
         this.reservaRepository = reservaRepository;
@@ -68,7 +65,6 @@ public class AdminService {
         this.recursoService = recursoService;
         this.reservaService = reservaService;
         this.passwordEncoder = passwordEncoder;
-        this.jpaSolicitudColaRepository = jpaSolicitudColaRepository;
     }
 
     @Transactional(readOnly = true)
@@ -250,9 +246,7 @@ public class AdminService {
 
     @Transactional
     public void eliminarSolicitudCola(Long id) {
-        var solicitud = jpaSolicitudColaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Solicitud con id " + id + " no encontrada"));
-        jpaSolicitudColaRepository.delete(solicitud);
+        solicitudColaService.eliminar(id);
     }
 
     private UsuarioAdminResponse toUsuarioAdminResponse(UserEntity usuario) {

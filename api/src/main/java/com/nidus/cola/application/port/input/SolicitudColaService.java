@@ -13,4 +13,6 @@ public interface SolicitudColaService {
     Page<SolicitudColaResponse> listarTodas(Pageable pageable);
 
     void salir(Long id, Long usuarioId);
+
+    void eliminar(Long id);
 }
