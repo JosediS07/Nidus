@@ -6,7 +6,7 @@ import com.nidus.admin.application.dto.DashboardResponse;
 import com.nidus.admin.application.dto.HistorialResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
-import com.nidus.admin.application.service.AdminService;
+import com.nidus.admin.application.port.input.AdminServicePort;
 import com.nidus.auth.application.dto.CambiarRolRequest;
 import com.nidus.auth.application.port.input.AuthService;
 import com.nidus.cola.application.dto.SolicitudColaResponse;
@@ -32,10 +32,10 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-    private final AdminService adminService;
+    private final AdminServicePort adminService;
     private final AuthService authService;
 
-    public AdminController(AdminService adminService, AuthService authService) {
+    public AdminController(AdminServicePort adminService, AuthService authService) {
         this.adminService = adminService;
         this.authService = authService;
     }

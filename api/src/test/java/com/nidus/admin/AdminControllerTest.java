@@ -4,7 +4,7 @@ import com.nidus.admin.application.dto.DashboardResponse;
 import com.nidus.admin.application.dto.HistorialResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
-import com.nidus.admin.application.service.AdminService;
+import com.nidus.admin.application.port.input.AdminServicePort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,7 +35,7 @@ class AdminControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private AdminService adminService;
+    private AdminServicePort adminService;
 
     @Test
     void dashboard_200() throws Exception {

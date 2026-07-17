@@ -6,6 +6,7 @@ import com.nidus.admin.application.dto.DashboardResponse;
 import com.nidus.admin.application.dto.HistorialResponse;
 import com.nidus.admin.application.dto.ReservaAdminResponse;
 import com.nidus.admin.application.dto.UsuarioAdminResponse;
+import com.nidus.admin.application.port.input.AdminServicePort;
 import com.nidus.auth.infrastructure.persistence.entity.UserEntity;
 import com.nidus.auth.infrastructure.persistence.repository.JpaUserRepository;
 import com.nidus.cola.application.dto.SolicitudColaResponse;
@@ -38,7 +39,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class AdminService {
+public class AdminServiceImpl implements AdminServicePort {
 
     private final JpaUserRepository userRepository;
     private final JpaRecursoRepository recursoRepository;
