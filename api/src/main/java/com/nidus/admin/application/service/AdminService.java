@@ -169,8 +169,8 @@ public class AdminService {
         }
         return historialService.obtenerHistorial(reservaId).stream()
                 .map(h -> new HistorialResponse(
-                    h.getId(), h.getReservaId(), h.getUsuarioId(),
-                    h.getTipoEvento(), h.getDescripcion(), h.getCreado()))
+                    h.id(), h.reservaId(), h.usuarioId(),
+                    h.tipoEvento(), h.descripcion(), h.creado()))
                 .toList();
     }
 
