@@ -62,7 +62,7 @@ export class ReservaListaComponent implements OnInit {
     });
   }
 
-  cambiarPagina(evento: any): void {
+  cambiarPagina(evento: { pageIndex: number }): void {
     this.cargar(evento.pageIndex);
   }
 

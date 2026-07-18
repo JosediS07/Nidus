@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { AdminService } from '../../../core/services/admin.service';
-import { RecursoResponse } from '../../../core/models/recurso.models';
+import { RecursoResponse, CrearRecursoRequest } from '../../../core/models/recurso.models';
 
 @Component({
   selector: 'app-recurso-dialog',
@@ -68,18 +68,26 @@ export class RecursoDialogComponent {
 
   guardar(): void {
     if (!this.nombre || !this.tipo) return;
-    const body: any = {
-      nombre: this.nombre,
-      tipo: this.tipo,
-      descripcion: this.descripcion,
-      capacidad: this.capacidad || undefined
-    };
-    const peticion = this.data
-      ? this.adminService.actualizarRecurso(this.data.id, body)
-      : this.adminService.crearRecurso(body);
-    peticion.subscribe({
-      next: () => this.dialogRef.close(true),
-      error: () => this.dialogRef.close(false)
-    });
+    if (this.data) {
+      this.adminService.actualizarRecurso(this.data.id, {
+        nombre: this.nombre,
+        tipo: this.tipo,
+        descripcion: this.descripcion,
+        capacidad: this.capacidad || undefined
+      }).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: () => this.dialogRef.close(false)
+      });
+    } else {
+      this.adminService.crearRecurso({
+        nombre: this.nombre,
+        tipo: this.tipo,
+        descripcion: this.descripcion,
+        capacidad: this.capacidad || undefined
+      } as CrearRecursoRequest).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: () => this.dialogRef.close(false)
+      });
+    }
   }
 }

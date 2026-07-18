@@ -10,6 +10,7 @@ import { ReservaService } from '../../../core/services/reserva.service';
 import { ColaService } from '../../../core/services/cola.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { RecursoResponse } from '../../../core/models/recurso.models';
+import { SolicitudColaResponse } from '../../../core/models/admin.models';
 
 @Component({
   selector: 'app-recurso-detalle',
@@ -27,7 +28,7 @@ export class RecursoDetalleComponent implements OnInit {
 
   recursoId!: number;
   recurso?: RecursoResponse;
-  miCola: any = null;
+  miCola: SolicitudColaResponse | null = null;
   cargando = false;
   error = '';
   reservando = false;
@@ -89,9 +90,9 @@ export class RecursoDetalleComponent implements OnInit {
 
   cargarCola(): void {
     this.colaService.listar(this.recursoId).subscribe({
-      next: (respuesta: any) => {
+      next: (respuesta) => {
         const userId = this.authService.getUser()?.id;
-        this.miCola = respuesta.content?.find((solicitud: any) => solicitud.usuarioId === userId) || null;
+        this.miCola = respuesta.content?.find((solicitud: SolicitudColaResponse) => solicitud.usuarioId === userId) || null;
       },
       error: () => {}
     });
@@ -110,6 +111,7 @@ export class RecursoDetalleComponent implements OnInit {
   }
 
   salirCola(): void {
+    if (!this.miCola) return;
     this.colaService.salir(this.miCola.id).subscribe({
       next: () => {
         this.miCola = null;

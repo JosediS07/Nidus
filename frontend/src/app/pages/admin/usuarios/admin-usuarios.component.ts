@@ -44,7 +44,7 @@ export class AdminUsuariosComponent implements OnInit {
     this.cargando = true;
     this.error = '';
     this.adminService.listarUsuarios(page).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.usuarios = res.content;
         this.total = res.totalElements;
         this.cargando = false;
@@ -57,7 +57,7 @@ export class AdminUsuariosComponent implements OnInit {
     });
   }
 
-  cambiarPagina(evento: any): void {
+  cambiarPagina(evento: { pageIndex: number }): void {
     this.cargar(evento.pageIndex);
   }
 

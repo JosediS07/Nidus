@@ -49,7 +49,7 @@ export class AdminRecursosComponent implements OnInit {
     this.cargando = true;
     this.error = '';
     this.adminService.listarRecursos(page).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.recursos = res.content;
         this.total = res.totalElements;
         this.cargando = false;
@@ -62,7 +62,7 @@ export class AdminRecursosComponent implements OnInit {
     });
   }
 
-  cambiarPagina(evento: any): void {
+  cambiarPagina(evento: { pageIndex: number }): void {
     this.cargar(evento.pageIndex);
   }
 

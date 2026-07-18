@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { LoginRequest } from '../../core/models/auth.models';
 
 @Component({
   selector: 'app-login',
@@ -44,7 +45,7 @@ export class LoginComponent {
     this.cargando = true;
     this.error = '';
 
-    this.authService.login(this.form.value as any).subscribe({
+    this.authService.login(this.form.value as LoginRequest).subscribe({
       next: () => {
         const destino = this.authService.isAdmin() ? '/dashboard' : '/recursos';
         this.router.navigate([destino]);

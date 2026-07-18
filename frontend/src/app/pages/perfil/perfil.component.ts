@@ -4,7 +4,9 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
+import { ActualizarPerfilRequest } from '../../core/models/auth.models';
 
 @Component({
   selector: 'app-perfil',
@@ -62,11 +64,11 @@ export class PerfilComponent implements OnInit {
     return true;
   }
 
-  private construirBody(): any {
-    const body: any = { nombre: this.form.value.nombre, email: this.form.value.email };
+  private construirBody(): ActualizarPerfilRequest {
+    const body: ActualizarPerfilRequest = { nombre: this.form.value.nombre ?? '', email: this.form.value.email ?? '' };
     if (this.form.value.password) {
       body.password = this.form.value.password;
-      body.currentPassword = this.form.value.currentPassword;
+      body.currentPassword = this.form.value.currentPassword ?? undefined;
     }
     return body;
   }
@@ -78,7 +80,7 @@ export class PerfilComponent implements OnInit {
         this.form.patchValue({ password: '', confirmarPassword: '', currentPassword: '' });
         this.guardando = false;
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.snackBar.open(err.error?.message || 'Error al actualizar', 'Cerrar', { duration: 4000 });
         this.guardando = false;
       }

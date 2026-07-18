@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
-import { ReservaAdminResponse } from '../../../core/models/admin.models';
+import { ReservaAdminResponse, ListarReservasParams } from '../../../core/models/admin.models';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
@@ -50,7 +50,7 @@ export class AdminReservasComponent implements OnInit {
     this.pagina = page;
     this.cargando = true;
     this.error = '';
-    const params: any = { page, size: 20 };
+    const params: ListarReservasParams = { page, size: 20 };
     if (this.filtroEstado) params.estado = this.filtroEstado;
     if (this.filtroRecursoId) params.recursoId = this.filtroRecursoId;
     if (this.filtroUsuarioId) params.usuarioId = this.filtroUsuarioId;
@@ -69,7 +69,7 @@ export class AdminReservasComponent implements OnInit {
     });
   }
 
-  cambiarPagina(evento: any): void {
+  cambiarPagina(evento: { pageIndex: number }): void {
     this.cargar(evento.pageIndex);
   }
 

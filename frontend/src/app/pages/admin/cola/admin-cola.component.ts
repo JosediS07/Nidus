@@ -43,7 +43,7 @@ export class AdminColaComponent implements OnInit {
     this.cargando = true;
     this.error = '';
     this.adminService.listarCola(page).subscribe({
-      next: (res: any) => {
+      next: (res) => {
         this.solicitudes = res.content;
         this.total = res.totalElements;
         this.cargando = false;
@@ -56,7 +56,7 @@ export class AdminColaComponent implements OnInit {
     });
   }
 
-  cambiarPagina(evento: any): void {
+  cambiarPagina(evento: { pageIndex: number }): void {
     this.cargar(evento.pageIndex);
   }
 

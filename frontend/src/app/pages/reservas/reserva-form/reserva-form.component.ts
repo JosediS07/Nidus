@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ReservaService } from '../../../core/services/reserva.service';
 import { RecursoService } from '../../../core/services/recurso.service';
 import { RecursoResponse } from '../../../core/models/recurso.models';
@@ -93,7 +94,7 @@ export class ReservaFormComponent implements OnInit {
         this.snackBar.open('Reserva guardada', 'Cerrar', { duration: 3000 });
         this.router.navigate(['/reservas']);
       },
-      error: (err: any) => {
+      error: (err: HttpErrorResponse) => {
         this.error = err.error?.message || 'Error al guardar';
         this.guardando = false;
       }
