@@ -58,3 +58,13 @@ export interface SolicitudColaResponse {
 export interface CambiarRolRequest {
   rol: string;
 }
+
+export interface ListarReservasParams {
+  page: number;
+  size: number;
+  estado?: string;
+  recursoId?: number;
+  usuarioId?: number;
+  fechaInicio?: string;
+  fechaFin?: string;
+}

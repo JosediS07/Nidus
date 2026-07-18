@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Page } from '../models/pagination.models';
 import { CrearReservaRequest, ModificarReservaRequest, ReservaResponse } from '../models/reserva.models';
 
 @Injectable({ providedIn: 'root' })
@@ -14,12 +15,12 @@ export class ReservaService {
     return this.http.post<ReservaResponse>(this.api, peticion);
   }
 
-  listarMisReservas(page = 0, size = 20): Observable<any> {
-    return this.http.get<any>(`${this.api}?page=${page}&size=${size}`);
+  listarMisReservas(page = 0, size = 20): Observable<Page<ReservaResponse>> {
+    return this.http.get<Page<ReservaResponse>>(`${this.api}?page=${page}&size=${size}`);
   }
 
-  listarTodas(page = 0, size = 20): Observable<any> {
-    return this.http.get<any>(`${this.api}/todas?page=${page}&size=${size}`);
+  listarTodas(page = 0, size = 20): Observable<Page<ReservaResponse>> {
+    return this.http.get<Page<ReservaResponse>>(`${this.api}/todas?page=${page}&size=${size}`);
   }
 
   obtener(id: number): Observable<ReservaResponse> {

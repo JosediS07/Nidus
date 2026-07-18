@@ -24,3 +24,10 @@ export interface UserResponse {
   rol: string;
   activo: boolean;
 }
+
+export interface ActualizarPerfilRequest {
+  nombre?: string;
+  email?: string;
+  password?: string;
+  currentPassword?: string;
+}

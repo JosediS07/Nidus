@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Page } from '../models/pagination.models';
 import {
   DashboardResponse, UsuarioAdminResponse, ReservaAdminResponse,
   HistorialResponse, SolicitudColaResponse, CrearUsuarioAdminRequest,
-  ActualizarUsuarioAdminRequest, CambiarRolRequest
+  ActualizarUsuarioAdminRequest, CambiarRolRequest, ListarReservasParams
 } from '../models/admin.models';
 import { RecursoResponse, CrearRecursoRequest, ActualizarRecursoRequest } from '../models/recurso.models';
 
@@ -19,8 +20,8 @@ export class AdminService {
     return this.http.get<DashboardResponse>(`${this.api}/dashboard`);
   }
 
-  listarUsuarios(page = 0, size = 20): Observable<any> {
-    return this.http.get<any>(`${this.api}/usuarios?page=${page}&size=${size}`);
+  listarUsuarios(page = 0, size = 20): Observable<Page<UsuarioAdminResponse>> {
+    return this.http.get<Page<UsuarioAdminResponse>>(`${this.api}/usuarios?page=${page}&size=${size}`);
   }
 
   obtenerUsuario(id: number): Observable<UsuarioAdminResponse> {
@@ -43,8 +44,8 @@ export class AdminService {
     return this.http.delete<void>(`${this.api}/usuarios/${id}`);
   }
 
-  listarRecursos(page = 0, size = 20): Observable<any> {
-    return this.http.get<any>(`${this.api}/recursos?page=${page}&size=${size}`);
+  listarRecursos(page = 0, size = 20): Observable<Page<RecursoResponse>> {
+    return this.http.get<Page<RecursoResponse>>(`${this.api}/recursos?page=${page}&size=${size}`);
   }
 
   obtenerRecurso(id: number): Observable<RecursoResponse> {
@@ -63,8 +64,16 @@ export class AdminService {
     return this.http.delete<void>(`${this.api}/recursos/${id}`);
   }
 
-  listarReservas(params?: any): Observable<any> {
-    return this.http.get<any>(`${this.api}/reservas`, { params });
+  listarReservas(params: ListarReservasParams): Observable<Page<ReservaAdminResponse>> {
+    let httpParams = new HttpParams()
+      .set('page', params.page)
+      .set('size', params.size);
+    if (params.estado) httpParams = httpParams.set('estado', params.estado);
+    if (params.recursoId) httpParams = httpParams.set('recursoId', params.recursoId);
+    if (params.usuarioId) httpParams = httpParams.set('usuarioId', params.usuarioId);
+    if (params.fechaInicio) httpParams = httpParams.set('fechaInicio', params.fechaInicio);
+    if (params.fechaFin) httpParams = httpParams.set('fechaFin', params.fechaFin);
+    return this.http.get<Page<ReservaAdminResponse>>(`${this.api}/reservas`, { params: httpParams });
   }
 
   obtenerReserva(id: number): Observable<ReservaAdminResponse> {
@@ -79,8 +88,8 @@ export class AdminService {
     return this.http.get<HistorialResponse[]>(`${this.api}/reservas/${reservaId}/historial`);
   }
 
-  listarCola(page = 0, size = 20): Observable<any> {
-    return this.http.get<any>(`${this.api}/cola?page=${page}&size=${size}`);
+  listarCola(page = 0, size = 20): Observable<Page<SolicitudColaResponse>> {
+    return this.http.get<Page<SolicitudColaResponse>>(`${this.api}/cola?page=${page}&size=${size}`);
   }
 
   eliminarSolicitudCola(id: number): Observable<void> {

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { Page } from '../models/pagination.models';
 import { RecursoResponse, CrearRecursoRequest, ActualizarRecursoRequest } from '../models/recurso.models';
 
 @Injectable({ providedIn: 'root' })
@@ -10,8 +11,8 @@ export class RecursoService {
 
   constructor(private http: HttpClient) {}
 
-  listar(page = 0, size = 20): Observable<any> {
-    return this.http.get<any>(`${this.api}?page=${page}&size=${size}`);
+  listar(page = 0, size = 20): Observable<Page<RecursoResponse>> {
+    return this.http.get<Page<RecursoResponse>>(`${this.api}?page=${page}&size=${size}`);
   }
 
   obtener(id: number): Observable<RecursoResponse> {

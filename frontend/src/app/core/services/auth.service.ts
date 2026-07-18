@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, RegisterRequest, AuthResponse, UserResponse } from '../models/auth.models';
+import { LoginRequest, RegisterRequest, AuthResponse, UserResponse, ActualizarPerfilRequest } from '../models/auth.models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -35,7 +35,7 @@ export class AuthService {
     return this.http.get<UserResponse>(`${this.api}/me`);
   }
 
-  actualizarPerfil(peticion: any): Observable<UserResponse> {
+  actualizarPerfil(peticion: ActualizarPerfilRequest): Observable<UserResponse> {
     return this.http.put<UserResponse>(`${this.api}/me`, peticion);
   }
 
