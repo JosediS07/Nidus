@@ -50,7 +50,7 @@ public class AdminServiceImpl implements AdminServicePort {
     private final ReservaService reservaService;
     private final PasswordEncoder passwordEncoder;
 
-    public AdminService(JpaUserRepository userRepository,
+    public AdminServiceImpl(JpaUserRepository userRepository,
                         JpaRecursoRepository recursoRepository,
                         JpaReservaRepository reservaRepository,
                         HistorialReservaService historialService,
