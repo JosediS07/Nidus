@@ -1,5 +1,6 @@
 package com.nidus.shared.exception;
 
+import com.nidus.shared.exception.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -9,38 +10,37 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<Map<String, Object>> handleDuplicate(DuplicateResourceException ex) {
+    public ResponseEntity<ErrorResponse> handleDuplicate(DuplicateResourceException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(cuerpo("conflict", ex.getMessage(), 409));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(cuerpo("unauthorized", ex.getMessage(), 401));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(ResourceNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(cuerpo("not_found", ex.getMessage(), 404));
     }
 
     @ExceptionHandler(InvalidStateException.class)
-    public ResponseEntity<Map<String, Object>> handleInvalidState(InvalidStateException ex) {
+    public ResponseEntity<ErrorResponse> handleInvalidState(InvalidStateException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(cuerpo("conflict", ex.getMessage(), 409));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(cuerpo("forbidden", "Acceso denegado", 403));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
         var mensajes = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .toList();
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGeneral(Exception ex) {
+    public ResponseEntity<ErrorResponse> handleGeneral(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(cuerpo(
                 "internal_error",
                 "Error interno del servidor",
@@ -61,12 +61,7 @@ public class GlobalExceptionHandler {
         ));
     }
 
-    private Map<String, Object> cuerpo(String error, String message, int status) {
-        return Map.of(
-                "error", error,
-                "message", message,
-                "status", status,
-                "timestamp", LocalDateTime.now().toString()
-        );
+    private ErrorResponse cuerpo(String error, String message, int status) {
+        return new ErrorResponse(error, message, status, LocalDateTime.now());
     }
 }
