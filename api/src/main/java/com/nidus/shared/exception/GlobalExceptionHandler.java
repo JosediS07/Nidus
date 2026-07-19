@@ -1,6 +1,7 @@
 package com.nidus.shared.exception;
 
 import com.nidus.shared.exception.dto.ErrorResponse;
+import com.nidus.shared.exception.dto.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -41,14 +42,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex) {
-        var mensajes = ex.getBindingResult().getFieldErrors().stream()
-                .map(e -> e.getField() + ": " + e.getDefaultMessage())
+        var errores = ex.getBindingResult().getFieldErrors().stream()
+                .map(e -> new ValidationError(e.getField(), e.getDefaultMessage(), e.getRejectedValue()))
                 .toList();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(cuerpo(
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(new ErrorResponse(
                 "validation_error",
-                "Datos inválidos: " + String.join("; ", mensajes),
-                400
+                "Datos inválidos",
+                422,
+                LocalDateTime.now(),
+                errores
         ));
     }
 
