@@ -54,7 +54,7 @@ class ReservaControllerTest {
 
     @Test
     void crear_201() throws Exception {
-        var response = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA");
+        var response = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA", "User", "Sala A");
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
         when(reservaService.crear(any(), eq(1L))).thenReturn(response);
@@ -83,7 +83,7 @@ class ReservaControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.error").value("conflict"));
+                .andExpect(jsonPath("$.error").value("invalid_state"));
     }
 
     @Test
@@ -92,12 +92,12 @@ class ReservaControllerTest {
                         .with(user("user@mail.com").roles("USER"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"recursoId\": null, \"fechaInicio\": null, \"fechaFin\": null}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
     void listarMisReservas_200() throws Exception {
-        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA");
+        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA", "User", "Sala A");
         var page = new PageImpl<>(List.of(reserva), PageRequest.of(0, 20), 1);
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
@@ -112,7 +112,7 @@ class ReservaControllerTest {
 
     @Test
     void listarTodas_200_admin() throws Exception {
-        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA");
+        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA", "User", "Sala A");
         var page = new PageImpl<>(List.of(reserva), PageRequest.of(0, 20), 1);
 
         when(reservaService.listarTodas(PageRequest.of(0, 20))).thenReturn(page);
@@ -131,7 +131,7 @@ class ReservaControllerTest {
 
     @Test
     void obtener_200() throws Exception {
-        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA");
+        var reserva = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "CONFIRMADA", "User", "Sala A");
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
         when(reservaService.obtenerPorId(1L, 1L)).thenReturn(reserva);
@@ -153,7 +153,7 @@ class ReservaControllerTest {
 
     @Test
     void modificar_200() throws Exception {
-        var response = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "MODIFICADA");
+        var response = new ReservaResponse(1L, 1L, 1L, maniana, pasadoManiana, "MODIFICADA", "User", "Sala A");
 
         when(userRepository.findByEmail("user@mail.com")).thenReturn(Optional.of(usuarioConId(1L)));
         when(reservaService.modificar(any(), any(), eq(1L))).thenReturn(response);
@@ -184,7 +184,7 @@ class ReservaControllerTest {
 
         mockMvc.perform(delete("/api/v1/reservas/1").with(user("user@mail.com").roles("USER")))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.error").value("conflict"));
+                .andExpect(jsonPath("$.error").value("invalid_state"));
     }
 
     @Test
@@ -200,7 +200,7 @@ class ReservaControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.error").value("conflict"));
+                .andExpect(jsonPath("$.error").value("invalid_state"));
     }
 
     private String jsonCrear(Long recursoId, LocalDateTime inicio, LocalDateTime fin) {

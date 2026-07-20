@@ -20,6 +20,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class SolicitudColaServiceImpl implements SolicitudColaService {
@@ -118,7 +119,13 @@ public class SolicitudColaServiceImpl implements SolicitudColaService {
     }
 
     private SolicitudColaResponse toResponse(SolicitudCola solicitud) {
+        var usuarioNombre = userRepository.findById(solicitud.usuarioId())
+                .map(u -> u.getNombre())
+                .orElse("—");
+        var recursoNombre = Optional.ofNullable(recursoService.obtener(solicitud.recursoId()))
+                .map(r -> r.nombre())
+                .orElse("—");
         return new SolicitudColaResponse(solicitud.id(), solicitud.recursoId(), solicitud.usuarioId(),
-                solicitud.estado().name(), solicitud.creado());
+                solicitud.estado().name(), solicitud.creado(), usuarioNombre, recursoNombre);
     }
 }

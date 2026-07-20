@@ -8,5 +8,7 @@ public record ReservaResponse(
     Long usuarioId,
     LocalDateTime fechaInicio,
     LocalDateTime fechaFin,
-    String estado
+    String estado,
+    String usuarioNombre,
+    String recursoNombre
 ) {}

@@ -96,10 +96,11 @@ class AdminControllerTest {
     void listarReservas_200() throws Exception {
         var reservas = List.of(
                 new ReservaAdminResponse(1L, 1L, 1L,
-                        LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), "CONFIRMADA"));
+                        LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), "CONFIRMADA",
+                        "Admin", "Sala A"));
 
         var page = new PageImpl<>(reservas, PageRequest.of(0, 20), 1);
-        when(adminService.listarReservas(null, null, null, null, null, any())).thenReturn(page);
+        when(adminService.listarReservas(any(), any(), any(), any(), any(), any())).thenReturn(page);
 
         mockMvc.perform(get("/api/v1/admin/reservas").with(user("admin").roles("ADMIN")))
                 .andExpect(status().isOk())
@@ -116,7 +117,8 @@ class AdminControllerTest {
     @Test
     void obtenerReserva_200() throws Exception {
         var reserva = new ReservaAdminResponse(1L, 1L, 1L,
-                LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), "CONFIRMADA");
+                LocalDateTime.now().plusDays(1), LocalDateTime.now().plusDays(2), "CONFIRMADA",
+                "Admin", "Sala A");
 
         when(adminService.obtenerReserva(1L)).thenReturn(reserva);
 

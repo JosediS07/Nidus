@@ -7,5 +7,7 @@ public record SolicitudColaResponse(
     Long recursoId,
     Long usuarioId,
     String estado,
-    LocalDateTime creado
+    LocalDateTime creado,
+    String usuarioNombre,
+    String recursoNombre
 ) {}

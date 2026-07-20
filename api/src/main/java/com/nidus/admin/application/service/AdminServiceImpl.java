@@ -257,8 +257,15 @@ public class AdminServiceImpl implements AdminServicePort {
     }
 
     private ReservaAdminResponse toReservaAdminResponse(ReservaEntity reserva) {
+        var usuarioNombre = userRepository.findById(reserva.getUsuarioId())
+                .map(u -> u.getNombre())
+                .orElse("—");
+        var recursoNombre = recursoRepository.findById(reserva.getRecursoId())
+                .map(r -> r.getNombre())
+                .orElse("—");
         return new ReservaAdminResponse(
             reserva.getId(), reserva.getRecursoId(), reserva.getUsuarioId(),
-            reserva.getFechaInicio(), reserva.getFechaFin(), reserva.getEstado().name());
+            reserva.getFechaInicio(), reserva.getFechaFin(), reserva.getEstado().name(),
+            usuarioNombre, recursoNombre);
     }
 }

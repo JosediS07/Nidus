@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservaServiceImpl implements ReservaService {
@@ -198,7 +199,14 @@ public class ReservaServiceImpl implements ReservaService {
     }
 
     private ReservaResponse toResponse(Reserva reserva) {
+        var usuarioNombre = userRepository.findById(reserva.getUsuarioId())
+                .map(u -> u.getNombre())
+                .orElse("—");
+        var recursoNombre = Optional.ofNullable(recursoService.obtener(reserva.getRecursoId()))
+                .map(r -> r.nombre())
+                .orElse("—");
         return new ReservaResponse(reserva.getId(), reserva.getRecursoId(), reserva.getUsuarioId(),
-                reserva.getFechaInicio(), reserva.getFechaFin(), reserva.getEstado().name());
+                reserva.getFechaInicio(), reserva.getFechaFin(), reserva.getEstado().name(),
+                usuarioNombre, recursoNombre);
     }
 }
