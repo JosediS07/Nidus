@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { AdminService } from '../../../core/services/admin.service';
 import { ReservaAdminResponse, ListarReservasParams } from '../../../core/models/admin.models';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
@@ -14,7 +15,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-admin-reservas',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, PaginationComponent],
   templateUrl: './admin-reservas.component.html',
   styleUrl: './admin-reservas.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,16 +30,6 @@ export class AdminReservasComponent implements OnInit {
   filtroEstado = '';
   filtroRecursoId: number | null = null;
   filtroUsuarioId: number | null = null;
-
-  private readonly TAMANIO_PAGINA = 20;
-
-  get hayPaginaSiguiente(): boolean {
-    return (this.pagina + 1) * this.TAMANIO_PAGINA < this.total;
-  }
-
-  get hayPaginacion(): boolean {
-    return this.total > this.TAMANIO_PAGINA;
-  }
 
   constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
@@ -67,10 +58,6 @@ export class AdminReservasComponent implements OnInit {
         this.cargando = false;
       }
     });
-  }
-
-  cambiarPagina(evento: { pageIndex: number }): void {
-    this.cargar(evento.pageIndex);
   }
 
   buscar(): void {

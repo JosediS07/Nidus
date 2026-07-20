@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { FormsModule } from '@angular/forms';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { AdminService } from '../../../core/services/admin.service';
 import { RecursoResponse } from '../../../core/models/recurso.models';
 import { RecursoDialogComponent } from './recurso-dialog.component';
@@ -16,7 +17,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-admin-recursos',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, FormsModule],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule, FormsModule, PaginationComponent],
   templateUrl: './admin-recursos.component.html',
   styleUrl: './admin-recursos.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,16 +28,6 @@ export class AdminRecursosComponent implements OnInit {
   pagina = 0;
   cargando = false;
   error = '';
-
-  private readonly TAMANIO_PAGINA = 20;
-
-  get hayPaginaSiguiente(): boolean {
-    return (this.pagina + 1) * this.TAMANIO_PAGINA < this.total;
-  }
-
-  get hayPaginacion(): boolean {
-    return this.total > this.TAMANIO_PAGINA;
-  }
 
   constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
@@ -60,10 +51,6 @@ export class AdminRecursosComponent implements OnInit {
         this.cargando = false;
       }
     });
-  }
-
-  cambiarPagina(evento: { pageIndex: number }): void {
-    this.cargar(evento.pageIndex);
   }
 
   abrirCrear(): void {

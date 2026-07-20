@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { ReservaService } from '../../../core/services/reserva.service';
 import { ReservaResponse } from '../../../core/models/reserva.models';
 import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-dialog.component';
@@ -11,7 +12,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-reserva-lista',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatButtonModule, MatDialogModule, MatSnackBarModule],
+  imports: [CommonModule, RouterModule, MatButtonModule, MatDialogModule, MatSnackBarModule, PaginationComponent],
   templateUrl: './reserva-lista.component.html',
   styleUrl: './reserva-lista.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,16 +23,6 @@ export class ReservaListaComponent implements OnInit {
   pagina = 0;
   cargando = false;
   error = '';
-
-  private readonly TAMANIO_PAGINA = 20;
-
-  get hayPaginaSiguiente(): boolean {
-    return (this.pagina + 1) * this.TAMANIO_PAGINA < this.total;
-  }
-
-  get hayPaginacion(): boolean {
-    return this.total > this.TAMANIO_PAGINA;
-  }
 
   constructor(
     private reservaService: ReservaService,
@@ -60,10 +51,6 @@ export class ReservaListaComponent implements OnInit {
         this.cargando = false;
       }
     });
-  }
-
-  cambiarPagina(evento: { pageIndex: number }): void {
-    this.cargar(evento.pageIndex);
   }
 
   cancelar(r: ReservaResponse): void {

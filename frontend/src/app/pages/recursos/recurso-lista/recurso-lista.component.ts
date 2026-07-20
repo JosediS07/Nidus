@@ -2,13 +2,14 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { RecursoService } from '../../../core/services/recurso.service';
 import { RecursoResponse } from '../../../core/models/recurso.models';
 
 @Component({
   selector: 'app-recurso-lista',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatButtonModule],
+  imports: [CommonModule, RouterModule, MatButtonModule, PaginationComponent],
   templateUrl: './recurso-lista.component.html',
   styleUrl: './recurso-lista.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,16 +20,6 @@ export class RecursoListaComponent implements OnInit {
   pagina = 0;
   cargando = false;
   error = '';
-
-  private readonly TAMANIO_PAGINA = 20;
-
-  get hayPaginaSiguiente(): boolean {
-    return (this.pagina + 1) * this.TAMANIO_PAGINA < this.total;
-  }
-
-  get hayPaginacion(): boolean {
-    return this.total > this.TAMANIO_PAGINA;
-  }
 
   constructor(private recursoService: RecursoService, private cdr: ChangeDetectorRef) {}
 
@@ -54,7 +45,4 @@ export class RecursoListaComponent implements OnInit {
     });
   }
 
-  cambiarPagina(evento: { pageIndex: number }): void {
-    this.cargar(evento.pageIndex);
-  }
 }

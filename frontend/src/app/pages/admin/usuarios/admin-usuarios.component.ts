@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { AdminService } from '../../../core/services/admin.service';
 import { UsuarioAdminResponse } from '../../../core/models/admin.models';
 import { UsuarioDialogComponent } from './usuario-dialog.component';
@@ -11,7 +12,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-admin-usuarios',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, PaginationComponent],
   templateUrl: './admin-usuarios.component.html',
   styleUrl: './admin-usuarios.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,16 +23,6 @@ export class AdminUsuariosComponent implements OnInit {
   pagina = 0;
   cargando = false;
   error = '';
-
-  private readonly TAMANIO_PAGINA = 20;
-
-  get hayPaginaSiguiente(): boolean {
-    return (this.pagina + 1) * this.TAMANIO_PAGINA < this.total;
-  }
-
-  get hayPaginacion(): boolean {
-    return this.total > this.TAMANIO_PAGINA;
-  }
 
   constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
@@ -55,10 +46,6 @@ export class AdminUsuariosComponent implements OnInit {
         this.cargando = false;
       }
     });
-  }
-
-  cambiarPagina(evento: { pageIndex: number }): void {
-    this.cargar(evento.pageIndex);
   }
 
   abrirCrear(): void {

@@ -43,13 +43,5 @@
     }
   </div>
 
-    @if (hayPaginacion) {
-      <div class="flex items-center justify-between px-6 py-4 border-t border-subtle">
-        <span class="text-sm text-secondary">{{ total }} recursos</span>
-        <div class="flex gap-2">
-          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina - 1})" [disabled]="pagina === 0" class="btn-pagina">Anterior</button>
-          <button mat-stroked-button (click)="cambiarPagina({pageIndex: pagina + 1})" [disabled]="!hayPaginaSiguiente" class="btn-pagina">Siguiente</button>
-        </div>
-      </div>
-    }
+    <app-paginacion [total]="total" [pagina]="pagina" etiqueta="recursos" (cambioPagina)="cargar($event)"/>
 </div>
