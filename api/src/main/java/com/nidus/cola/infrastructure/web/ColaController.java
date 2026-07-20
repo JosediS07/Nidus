@@ -29,9 +29,9 @@ public class ColaController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<SolicitudColaResponse> apuntarse(
-            @RequestParam Long recursoId, Principal principal) {
+            @RequestBody SolicitudColaRequest request, Principal principal) {
         var usuarioId = obtenerUsuarioId(principal);
-        var response = solicitudColaService.apuntarse(recursoId, usuarioId);
+        var response = solicitudColaService.apuntarse(request.recursoId(), usuarioId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -50,6 +50,8 @@ public class ColaController {
         solicitudColaService.salir(id, usuarioId);
         return ResponseEntity.noContent().build();
     }
+
+    record SolicitudColaRequest(Long recursoId) {}
 
     private Long obtenerUsuarioId(Principal principal) {
         var email = principal.getName();
