@@ -1,13 +1,3 @@
-.text-primary { color: var(--mat-sys-primary); }
-.text-secondary { color: var(--mat-sys-on-surface-variant); }
-.border-subtle { border-color: var(--color-border); }
-.btn-solid {
-  background: var(--mat-sys-primary);
-  color: white;
-  border-radius: 0.5rem;
-  text-decoration: none;
-}
-
 .admin-nav-link { color: #22d3ee; }
 .admin-nav-link:hover { color: #67e8f9; }
 .admin-nav-link.nav-link-active { color: #67e8f9; }

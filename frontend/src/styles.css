@@ -208,4 +208,10 @@
     height: 1.5rem;
     color: var(--mat-sys-primary);
   }
+
+  .enlace-auth {
+    color: var(--mat-sys-primary);
+    font-weight: 500;
+    text-decoration: none;
+  }
 }
