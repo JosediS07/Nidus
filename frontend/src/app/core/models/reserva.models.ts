@@ -16,4 +16,6 @@ export interface ReservaResponse {
   fechaInicio: string;
   fechaFin: string;
   estado: string;
+  usuarioNombre: string;
+  recursoNombre: string;
 }

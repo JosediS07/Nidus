@@ -24,8 +24,8 @@
             @for (s of solicitudes; track s.id) {
               <tr class="table-row">
                 <td class="table-cell text-secondary">{{ s.id }}</td>
-                <td class="table-cell font-medium">#{{ s.recursoId }}</td>
-                <td class="table-cell text-secondary">#{{ s.usuarioId }}</td>
+                <td class="table-cell font-medium">{{ s.recursoNombre }}</td>
+                <td class="table-cell text-secondary">{{ s.usuarioNombre }}</td>
                 <td class="table-cell">
                   <span class="chip" [class.chip-primary]="s.estado === 'PENDIENTE'" [class.chip-warn]="s.estado === 'CANCELADA'">{{ s.estado }}</span>
                 </td>

@@ -36,6 +36,8 @@ export interface ReservaAdminResponse {
   fechaInicio: string;
   fechaFin: string;
   estado: string;
+  usuarioNombre: string;
+  recursoNombre: string;
 }
 
 export interface HistorialResponse {
@@ -53,6 +55,8 @@ export interface SolicitudColaResponse {
   usuarioId: number;
   estado: string;
   creado: string;
+  usuarioNombre: string;
+  recursoNombre: string;
 }
 
 export interface CambiarRolRequest {

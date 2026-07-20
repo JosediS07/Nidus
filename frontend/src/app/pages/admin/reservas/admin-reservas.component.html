@@ -45,8 +45,8 @@
             @for (r of reservas; track r.id) {
               <tr class="table-row">
                 <td class="table-cell text-secondary">{{ r.id }}</td>
-                <td class="table-cell font-medium">#{{ r.recursoId }}</td>
-                <td class="table-cell text-secondary">#{{ r.usuarioId }}</td>
+                <td class="table-cell font-medium">{{ r.recursoNombre }}</td>
+                <td class="table-cell text-secondary">{{ r.usuarioNombre }}</td>
                 <td class="table-cell text-secondary">{{ r.fechaInicio | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td class="table-cell text-secondary">{{ r.fechaFin | date:'dd/MM/yyyy HH:mm' }}</td>
                 <td class="table-cell">
