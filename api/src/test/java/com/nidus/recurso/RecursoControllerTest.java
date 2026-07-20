@@ -122,7 +122,7 @@ class RecursoControllerTest {
         mockMvc.perform(delete("/api/v1/recursos/1")
                         .with(user("admin").roles("ADMIN")))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.error").value("conflict"));
+                .andExpect(jsonPath("$.error").value("invalid_state"));
     }
 
     @Test
@@ -162,6 +162,6 @@ class RecursoControllerTest {
                         .with(user("admin").roles("ADMIN"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnprocessableEntity());
     }
 }
