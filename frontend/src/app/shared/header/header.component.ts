@@ -3,6 +3,7 @@ import { RouterModule, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/services/auth.service';
+import { AuthResponse } from '../../core/models/auth.models';
 
 @Component({
   selector: 'app-header',
@@ -13,18 +14,22 @@ import { AuthService } from '../../core/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
+  usuario: AuthResponse | null;
+
   constructor(
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
-
-  get usuario() {
-    return this.authService.getUser();
+  ) {
+    this.usuario = this.authService.getUser();
+    this.authService.usuario$.subscribe((u) => {
+      this.usuario = u;
+      this.cdr.markForCheck();
+    });
   }
 
   get esAdmin() {
-    return this.authService.isAdmin();
+    return this.usuario?.rol === 'ADMIN';
   }
 
   get inicialUsuario() {

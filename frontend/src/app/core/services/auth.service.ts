@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { LoginRequest, RegisterRequest, AuthResponse, UserResponse, ActualizarPerfilRequest } from '../models/auth.models';
@@ -8,14 +8,23 @@ import { LoginRequest, RegisterRequest, AuthResponse, UserResponse, ActualizarPe
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private api = `${environment.apiUrl}/auth`;
+  private usuarioSubject = new BehaviorSubject<AuthResponse | null>(this.cargarUsuario());
+
+  usuario$ = this.usuarioSubject.asObservable();
 
   constructor(private http: HttpClient) {}
+
+  private cargarUsuario(): AuthResponse | null {
+    const raw = localStorage.getItem('user');
+    return raw ? JSON.parse(raw) : null;
+  }
 
   login(peticion: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.api}/login`, peticion).pipe(
       map((respuesta) => {
         localStorage.setItem('token', respuesta.token);
         localStorage.setItem('user', JSON.stringify(respuesta));
+        this.usuarioSubject.next(respuesta);
         return respuesta;
       })
     );
@@ -26,6 +35,7 @@ export class AuthService {
       map((res) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('user', JSON.stringify(res));
+        this.usuarioSubject.next(res);
         return res;
       })
     );
@@ -44,8 +54,7 @@ export class AuthService {
   }
 
   getUser(): AuthResponse | null {
-    const raw = localStorage.getItem('user');
-    return raw ? JSON.parse(raw) : null;
+    return this.usuarioSubject.getValue();
   }
 
   isAdmin(): boolean {
@@ -55,5 +64,12 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    this.usuarioSubject.next(null);
+  }
+
+  limpiarSesion(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.usuarioSubject.next(null);
   }
 }
