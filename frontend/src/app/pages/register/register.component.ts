@@ -46,7 +46,10 @@ export class RegisterComponent {
   }
 
   enviar(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.cargando = true;
     this.error = '';
 
