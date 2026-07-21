@@ -67,8 +67,8 @@ export interface ListarReservasParams {
   page: number;
   size: number;
   estado?: string;
-  recursoId?: number;
-  usuarioId?: number;
+  recursoNombre?: string;
+  usuarioNombre?: string;
   fechaInicio?: string;
   fechaFin?: string;
 }

@@ -40,7 +40,7 @@ public interface AdminServicePort {
 
     void eliminarRecurso(Long id);
 
-    Page<ReservaAdminResponse> listarReservas(String estado, Long recursoId, Long usuarioId,
+    Page<ReservaAdminResponse> listarReservas(String estado, String recursoNombre, String usuarioNombre,
                                               LocalDateTime fechaInicio, LocalDateTime fechaFin, Pageable pageable);
 
     ReservaAdminResponse obtenerReserva(Long id);

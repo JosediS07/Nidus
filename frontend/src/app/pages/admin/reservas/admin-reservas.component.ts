@@ -28,8 +28,8 @@ export class AdminReservasComponent implements OnInit {
   error = '';
 
   filtroEstado = '';
-  filtroRecursoId: number | null = null;
-  filtroUsuarioId: number | null = null;
+  filtroRecursoNombre = '';
+  filtroUsuarioNombre = '';
 
   constructor(private adminService: AdminService, private dialog: MatDialog, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef) {}
 
@@ -43,8 +43,8 @@ export class AdminReservasComponent implements OnInit {
     this.error = '';
     const params: ListarReservasParams = { page, size: 20 };
     if (this.filtroEstado) params.estado = this.filtroEstado;
-    if (this.filtroRecursoId) params.recursoId = this.filtroRecursoId;
-    if (this.filtroUsuarioId) params.usuarioId = this.filtroUsuarioId;
+    if (this.filtroRecursoNombre) params.recursoNombre = this.filtroRecursoNombre;
+    if (this.filtroUsuarioNombre) params.usuarioNombre = this.filtroUsuarioNombre;
 
     this.adminService.listarReservas(params).subscribe({
       next: (res) => {

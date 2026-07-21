@@ -69,8 +69,8 @@ export class AdminService {
       .set('page', params.page)
       .set('size', params.size);
     if (params.estado) httpParams = httpParams.set('estado', params.estado);
-    if (params.recursoId) httpParams = httpParams.set('recursoId', params.recursoId);
-    if (params.usuarioId) httpParams = httpParams.set('usuarioId', params.usuarioId);
+    if (params.recursoNombre) httpParams = httpParams.set('recursoNombre', params.recursoNombre);
+    if (params.usuarioNombre) httpParams = httpParams.set('usuarioNombre', params.usuarioNombre);
     if (params.fechaInicio) httpParams = httpParams.set('fechaInicio', params.fechaInicio);
     if (params.fechaFin) httpParams = httpParams.set('fechaFin', params.fechaFin);
     return this.http.get<Page<ReservaAdminResponse>>(`${this.api}/reservas`, { params: httpParams });

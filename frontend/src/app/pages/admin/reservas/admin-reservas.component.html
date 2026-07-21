@@ -12,13 +12,13 @@
           <mat-option value="MODIFICADA">MODIFICADA</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="fill" class="!mb-0 min-w-32">
-        <mat-label>Recurso ID</mat-label>
-        <input matInput type="number" [(ngModel)]="filtroRecursoId" (input)="buscar()" />
+      <mat-form-field appearance="fill" class="!mb-0 min-w-40">
+        <mat-label>Recurso</mat-label>
+        <input matInput type="text" [(ngModel)]="filtroRecursoNombre" (input)="buscar()" />
       </mat-form-field>
-      <mat-form-field appearance="fill" class="!mb-0 min-w-32">
-        <mat-label>Usuario ID</mat-label>
-        <input matInput type="number" [(ngModel)]="filtroUsuarioId" (input)="buscar()" />
+      <mat-form-field appearance="fill" class="!mb-0 min-w-40">
+        <mat-label>Usuario</mat-label>
+        <input matInput type="text" [(ngModel)]="filtroUsuarioNombre" (input)="buscar()" />
       </mat-form-field>
     </div>
 

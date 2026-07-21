@@ -108,13 +108,13 @@ public class AdminController {
     @GetMapping("/reservas")
     public ResponseEntity<Page<ReservaAdminResponse>> listarReservas(
             @RequestParam(required = false) String estado,
-            @RequestParam(required = false) Long recursoId,
-            @RequestParam(required = false) Long usuarioId,
+            @RequestParam(required = false) String recursoNombre,
+            @RequestParam(required = false) String usuarioNombre,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
             @PageableDefault(size = 20) Pageable pageable) {
         return ResponseEntity.ok(
-            adminService.listarReservas(estado, recursoId, usuarioId, fechaInicio, fechaFin, pageable));
+            adminService.listarReservas(estado, recursoNombre, usuarioNombre, fechaInicio, fechaFin, pageable));
     }
 
     @GetMapping("/reservas/{id}")

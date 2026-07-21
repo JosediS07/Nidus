@@ -16,6 +16,7 @@ import com.nidus.recurso.application.dto.ActualizarRecursoRequest;
 import com.nidus.recurso.application.dto.CrearRecursoRequest;
 import com.nidus.recurso.application.dto.RecursoResponse;
 import com.nidus.recurso.application.port.input.RecursoService;
+import com.nidus.recurso.infrastructure.persistence.entity.RecursoEntity;
 import com.nidus.recurso.infrastructure.persistence.repository.JpaRecursoRepository;
 import com.nidus.reserva.application.port.input.ReservaService;
 import com.nidus.reserva.domain.EstadoReserva;
@@ -25,6 +26,8 @@ import com.nidus.reserva.infrastructure.persistence.repository.JpaReservaReposit
 import com.nidus.shared.exception.DuplicateResourceException;
 import com.nidus.shared.exception.ResourceNotFoundException;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -118,16 +121,16 @@ public class AdminServiceImpl implements AdminServicePort {
 
     @Transactional(readOnly = true)
     public Page<ReservaAdminResponse> listarReservas(
-            String estado, Long recursoId, Long usuarioId,
+            String estado, String recursoNombre, String usuarioNombre,
             LocalDateTime fechaInicio, LocalDateTime fechaFin,
             Pageable pageable) {
         Specification<ReservaEntity> spec = construirFiltroReservas(
-                estado, recursoId, usuarioId, fechaInicio, fechaFin);
+                estado, recursoNombre, usuarioNombre, fechaInicio, fechaFin);
         return reservaRepository.findAll(spec, pageable).map(this::toReservaAdminResponse);
     }
 
     private Specification<ReservaEntity> construirFiltroReservas(
-            String estado, Long recursoId, Long usuarioId,
+            String estado, String recursoNombre, String usuarioNombre,
             LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         return (root, query, cb) -> {
             var predicates = new ArrayList<Predicate>();
@@ -135,11 +138,19 @@ public class AdminServiceImpl implements AdminServicePort {
             if (estado != null && !estado.isBlank()) {
                 predicates.add(cb.equal(root.get("estado"), EstadoReserva.valueOf(estado.toUpperCase())));
             }
-            if (recursoId != null) {
-                predicates.add(cb.equal(root.get("recursoId"), recursoId));
+            if (recursoNombre != null && !recursoNombre.isBlank()) {
+                Subquery<Long> sub = cb.createQuery().subquery(Long.class);
+                Root<RecursoEntity> r = sub.from(RecursoEntity.class);
+                sub.select(r.get("id"));
+                sub.where(cb.like(cb.lower(r.get("nombre")), "%" + recursoNombre.toLowerCase() + "%"));
+                predicates.add(root.get("recursoId").in(sub));
             }
-            if (usuarioId != null) {
-                predicates.add(cb.equal(root.get("usuarioId"), usuarioId));
+            if (usuarioNombre != null && !usuarioNombre.isBlank()) {
+                Subquery<Long> sub = cb.createQuery().subquery(Long.class);
+                Root<UserEntity> u = sub.from(UserEntity.class);
+                sub.select(u.get("id"));
+                sub.where(cb.like(cb.lower(u.get("nombre")), "%" + usuarioNombre.toLowerCase() + "%"));
+                predicates.add(root.get("usuarioId").in(sub));
             }
             if (fechaInicio != null) {
                 predicates.add(cb.greaterThanOrEqualTo(root.get("fechaFin"), fechaInicio));
