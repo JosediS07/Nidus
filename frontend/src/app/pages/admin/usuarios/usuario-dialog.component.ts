@@ -29,7 +29,10 @@ import { UsuarioAdminResponse } from '../../../core/models/admin.models';
         @if (!data) {
           <mat-form-field appearance="fill">
             <mat-label>Contraseña</mat-label>
-            <input matInput type="password" [(ngModel)]="password" required />
+            <input matInput type="password" [(ngModel)]="password" required minlength="6" />
+            @if (passwordCorto) {
+              <mat-error>Mínimo 6 caracteres</mat-error>
+            }
           </mat-form-field>
         }
         <mat-form-field appearance="fill">
@@ -39,11 +42,16 @@ import { UsuarioAdminResponse } from '../../../core/models/admin.models';
             <mat-option value="ADMIN">ADMIN</mat-option>
           </mat-select>
         </mat-form-field>
+        @if (error) {
+          <div class="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">{{ error }}</div>
+        }
       </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancelar</button>
-      <button mat-flat-button color="primary" (click)="guardar()" [disabled]="!nombre || !email || (!password && !data) || !rol">Guardar</button>
+      <button mat-button mat-dialog-close [disabled]="cargando">Cancelar</button>
+      <button mat-flat-button color="primary" (click)="guardar()" [disabled]="!puedeGuardar || cargando">
+        {{ cargando ? 'Guardando...' : 'Guardar' }}
+      </button>
     </mat-dialog-actions>
   `
 })
@@ -52,6 +60,8 @@ export class UsuarioDialogComponent {
   email = '';
   password = '';
   rol = 'USER';
+  cargando = false;
+  error = '';
 
   constructor(
     private adminService: AdminService,
@@ -65,28 +75,42 @@ export class UsuarioDialogComponent {
     }
   }
 
+  get passwordCorto(): boolean {
+    return !!this.password && this.password.length > 0 && this.password.length < 6;
+  }
+
+  get puedeGuardar(): boolean {
+    if (!this.nombre || !this.email || !this.rol) return false;
+    if (!this.data && (!this.password || this.passwordCorto)) return false;
+    return true;
+  }
+
   guardar(): void {
-    if (!this.nombre || !this.email || !this.rol) return;
-    if (!this.data && !this.password) return;
+    if (!this.puedeGuardar) return;
+
+    this.cargando = true;
+    this.error = '';
+
+    const siguiente = {
+      next: () => this.dialogRef.close(true),
+      error: (err: any) => {
+        this.error = err.error?.message || err.error?.error || 'Error al guardar';
+        this.cargando = false;
+      }
+    };
 
     if (this.data) {
       this.adminService.actualizarUsuario(this.data.id, {
         nombre: this.nombre,
         email: this.email
-      }).subscribe({
-        next: () => this.dialogRef.close(true),
-        error: () => this.dialogRef.close(false)
-      });
+      }).subscribe(siguiente);
     } else {
       this.adminService.crearUsuario({
         nombre: this.nombre,
         email: this.email,
         password: this.password,
         rol: this.rol
-      }).subscribe({
-        next: () => this.dialogRef.close(true),
-        error: () => this.dialogRef.close(false)
-      });
+      }).subscribe(siguiente);
     }
   }
 }
