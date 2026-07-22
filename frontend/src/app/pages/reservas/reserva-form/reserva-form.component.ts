@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ReservaService } from '../../../core/services/reserva.service';
@@ -14,7 +17,8 @@ import { RecursoResponse } from '../../../core/models/recurso.models';
 @Component({
   selector: 'app-reserva-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatInputModule, MatSelectModule, MatSnackBarModule],
+  imports: [CommonModule, ReactiveFormsModule, MatButtonModule, MatInputModule, MatSelectModule,
+            MatDatepickerModule, MatNativeDateModule, MatIconModule, MatSnackBarModule],
   templateUrl: './reserva-form.component.html',
   styleUrl: './reserva-form.component.css'
 })
@@ -22,9 +26,16 @@ export class ReservaFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   form = this.fb.group({
     recursoId: [0, Validators.required],
-    fechaInicio: ['', Validators.required],
-    fechaFin: ['', Validators.required],
+    fechaInicioDate: [null as Date | null, Validators.required],
+    fechaInicioHora: [9, Validators.required],
+    fechaInicioMinuto: [0, Validators.required],
+    fechaFinDate: [null as Date | null, Validators.required],
+    fechaFinHora: [11, Validators.required],
+    fechaFinMinuto: [0, Validators.required],
   });
+
+  horas = Array.from({ length: 24 }, (_, i) => i);
+  minutos = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
   editando = false;
   reservaId?: number;
@@ -60,9 +71,15 @@ export class ReservaFormComponent implements OnInit {
       this.reservaId = Number(id);
       this.reservaService.obtener(this.reservaId).subscribe({
         next: (reserva) => {
+          const inicio = new Date(reserva.fechaInicio);
+          const fin = new Date(reserva.fechaFin);
           this.form.patchValue({
-            fechaInicio: this.toLocalDatetime(reserva.fechaInicio),
-            fechaFin: this.toLocalDatetime(reserva.fechaFin),
+            fechaInicioDate: inicio,
+            fechaInicioHora: inicio.getHours(),
+            fechaInicioMinuto: inicio.getMinutes(),
+            fechaFinDate: fin,
+            fechaFinHora: fin.getHours(),
+            fechaFinMinuto: fin.getMinutes(),
           });
         },
         error: (error) => { this.error = error.error?.message || 'Error al cargar reserva'; }
@@ -75,10 +92,16 @@ export class ReservaFormComponent implements OnInit {
     this.guardando = true;
     this.error = '';
 
+    const v = this.form.value;
+    const fechaInicio = new Date(v.fechaInicioDate!);
+    fechaInicio.setHours(v.fechaInicioHora!, v.fechaInicioMinuto!, 0, 0);
+    const fechaFin = new Date(v.fechaFinDate!);
+    fechaFin.setHours(v.fechaFinHora!, v.fechaFinMinuto!, 0, 0);
+
     const req = {
-      recursoId: this.form.value.recursoId!,
-      fechaInicio: new Date(this.form.value.fechaInicio!).toISOString(),
-      fechaFin: new Date(this.form.value.fechaFin!).toISOString(),
+      recursoId: v.recursoId!,
+      fechaInicio: fechaInicio.toISOString(),
+      fechaFin: fechaFin.toISOString(),
     };
 
     const action = this.editando
@@ -99,9 +122,5 @@ export class ReservaFormComponent implements OnInit {
         this.guardando = false;
       }
     };
-  }
-
-  private toLocalDatetime(iso: string): string {
-    return iso?.substring(0, 16) || '';
   }
 }

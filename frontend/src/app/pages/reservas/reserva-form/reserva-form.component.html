@@ -14,15 +14,63 @@
         </mat-form-field>
       }
 
-      <mat-form-field appearance="fill">
-        <mat-label>Fecha inicio</mat-label>
-        <input matInput type="datetime-local" formControlName="fechaInicio" />
-      </mat-form-field>
+      <div>
+        <label class="block text-sm font-medium text-secondary mb-1">Fecha y hora inicio</label>
+        <div class="flex gap-3 items-end">
+          <mat-form-field appearance="fill" class="flex-1">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="pickerInicio" formControlName="fechaInicioDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+            <mat-datepicker #pickerInicio></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="!w-24">
+            <mat-label>Hora</mat-label>
+            <mat-select formControlName="fechaInicioHora">
+              @for (h of horas; track h) {
+                <mat-option [value]="h">{{ h.toString().padStart(2, '0') }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <span class="text-lg font-bold text-secondary pb-3">:</span>
+          <mat-form-field appearance="fill" class="!w-24">
+            <mat-label>Min</mat-label>
+            <mat-select formControlName="fechaInicioMinuto">
+              @for (m of minutos; track m) {
+                <mat-option [value]="m">{{ m.toString().padStart(2, '0') }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
 
-      <mat-form-field appearance="fill">
-        <mat-label>Fecha fin</mat-label>
-        <input matInput type="datetime-local" formControlName="fechaFin" />
-      </mat-form-field>
+      <div>
+        <label class="block text-sm font-medium text-secondary mb-1">Fecha y hora fin</label>
+        <div class="flex gap-3 items-end">
+          <mat-form-field appearance="fill" class="flex-1">
+            <mat-label>Fecha</mat-label>
+            <input matInput [matDatepicker]="pickerFin" formControlName="fechaFinDate" />
+            <mat-datepicker-toggle matIconSuffix [for]="pickerFin"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFin></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="!w-24">
+            <mat-label>Hora</mat-label>
+            <mat-select formControlName="fechaFinHora">
+              @for (h of horas; track h) {
+                <mat-option [value]="h">{{ h.toString().padStart(2, '0') }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <span class="text-lg font-bold text-secondary pb-3">:</span>
+          <mat-form-field appearance="fill" class="!w-24">
+            <mat-label>Min</mat-label>
+            <mat-select formControlName="fechaFinMinuto">
+              @for (m of minutos; track m) {
+                <mat-option [value]="m">{{ m.toString().padStart(2, '0') }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
 
       @if (error) {
         <div class="alert-danger">{{ error }}</div>
