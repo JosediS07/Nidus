@@ -35,17 +35,15 @@ public class DataInitializer implements CommandLineRunner {
             log.info("Admin email no configurado — se omite creación de admin por defecto");
             return;
         }
-
+        if (adminPassword == null || adminPassword.isBlank()) {
+            log.info("Admin password no configurado — se omite creación de admin por defecto");
+            return;
+        }
         if (!userRepository.existsByEmail(adminEmail)) {
             var admin = new User("Admin", adminEmail,
                     passwordEncoder.encode(adminPassword), Role.ADMIN);
             userRepository.save(admin);
             log.info("Usuario admin creado: {}", adminEmail);
-        } else {
-            var admin = userRepository.findByEmail(adminEmail).orElseThrow();
-            admin.setPassword(passwordEncoder.encode(adminPassword));
-            userRepository.save(admin);
-            log.info("Contraseña de admin actualizada: {}", adminEmail);
         }
     }
 }
