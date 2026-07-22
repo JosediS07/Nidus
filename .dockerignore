@@ -1,0 +1,14 @@
+target/
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+.git/
+.idea/
+*.md
+.env
+.env.*
+.gitignore
+.github/
+docker-compose.yml
+spec/
+postman/
