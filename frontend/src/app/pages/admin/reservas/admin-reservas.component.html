@@ -2,7 +2,7 @@
   <h1 class="page-title">Todas las reservas</h1>
 
   <div class="card overflow-hidden !p-0">
-    <div class="px-6 py-4 border-b border-subtle flex gap-4 flex-wrap">
+    <div class="px-6 py-4 border-b border-subtle flex flex-wrap gap-4 items-center">
       <mat-form-field appearance="fill" class="!mb-0 min-w-40">
         <mat-label>Estado</mat-label>
         <mat-select [(ngModel)]="filtroEstado" (selectionChange)="buscar()">
@@ -14,12 +14,16 @@
       </mat-form-field>
       <mat-form-field appearance="fill" class="!mb-0 min-w-40">
         <mat-label>Recurso</mat-label>
-        <input matInput type="text" [(ngModel)]="filtroRecursoNombre" (input)="buscar()" />
+        <input matInput type="text" [(ngModel)]="filtroRecursoNombre" (keyup.enter)="buscar()" />
       </mat-form-field>
       <mat-form-field appearance="fill" class="!mb-0 min-w-40">
         <mat-label>Usuario</mat-label>
-        <input matInput type="text" [(ngModel)]="filtroUsuarioNombre" (input)="buscar()" />
+        <input matInput type="text" [(ngModel)]="filtroUsuarioNombre" (keyup.enter)="buscar()" />
       </mat-form-field>
+      <div class="flex gap-2">
+        <button mat-raised-button color="primary" (click)="buscar()">Buscar</button>
+        <button mat-stroked-button (click)="limpiarFiltros()">Limpiar</button>
+      </div>
     </div>
 
     @if (cargando) {

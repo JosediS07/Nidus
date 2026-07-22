@@ -6,6 +6,7 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
 import { PaginationComponent } from '../../../shared/pagination/pagination.component';
 import { AdminService } from '../../../core/services/admin.service';
@@ -15,7 +16,7 @@ import { ConfirmDialogComponent } from '../../../shared/confirm-dialog/confirm-d
 @Component({
   selector: 'app-admin-reservas',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, PaginationComponent],
+  imports: [CommonModule, MatButtonModule, MatDialogModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatIconModule, FormsModule, PaginationComponent],
   templateUrl: './admin-reservas.component.html',
   styleUrl: './admin-reservas.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -56,11 +57,20 @@ export class AdminReservasComponent implements OnInit {
       error: (err) => {
         this.error = err.error?.message || 'Error al cargar reservas';
         this.cargando = false;
+        this.cdr.markForCheck();
       }
     });
   }
 
   buscar(): void {
+    this.cargar(0);
+  }
+
+  limpiarFiltros(): void {
+    this.filtroEstado = '';
+    this.filtroRecursoNombre = '';
+    this.filtroUsuarioNombre = '';
+    this.cdr.markForCheck();
     this.cargar(0);
   }
 
