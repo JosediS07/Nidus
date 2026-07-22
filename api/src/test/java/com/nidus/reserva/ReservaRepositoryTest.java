@@ -3,6 +3,7 @@ package com.nidus.reserva;
 import com.nidus.reserva.domain.EstadoReserva;
 import com.nidus.reserva.infrastructure.persistence.entity.ReservaEntity;
 import com.nidus.reserva.infrastructure.persistence.repository.JpaReservaRepository;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("integration")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")

@@ -3,6 +3,7 @@ package com.nidus.auth;
 import com.nidus.auth.domain.Role;
 import com.nidus.auth.infrastructure.persistence.entity.UserEntity;
 import com.nidus.auth.infrastructure.persistence.repository.JpaUserRepository;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -11,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("integration")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")

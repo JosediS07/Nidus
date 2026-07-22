@@ -3,6 +3,7 @@ package com.nidus.recurso;
 import com.nidus.recurso.domain.TipoRecurso;
 import com.nidus.recurso.infrastructure.persistence.entity.RecursoEntity;
 import com.nidus.recurso.infrastructure.persistence.repository.JpaRecursoRepository;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -12,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Tag("integration")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
