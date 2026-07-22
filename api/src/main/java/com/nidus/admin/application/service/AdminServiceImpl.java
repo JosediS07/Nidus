@@ -139,14 +139,14 @@ public class AdminServiceImpl implements AdminServicePort {
                 predicates.add(cb.equal(root.get("estado"), EstadoReserva.valueOf(estado.toUpperCase())));
             }
             if (recursoNombre != null && !recursoNombre.isBlank()) {
-                Subquery<Long> sub = cb.createQuery().subquery(Long.class);
+                Subquery<Long> sub = query.subquery(Long.class);
                 Root<RecursoEntity> r = sub.from(RecursoEntity.class);
                 sub.select(r.get("id"));
                 sub.where(cb.like(cb.lower(r.get("nombre")), "%" + recursoNombre.toLowerCase() + "%"));
                 predicates.add(root.get("recursoId").in(sub));
             }
             if (usuarioNombre != null && !usuarioNombre.isBlank()) {
-                Subquery<Long> sub = cb.createQuery().subquery(Long.class);
+                Subquery<Long> sub = query.subquery(Long.class);
                 Root<UserEntity> u = sub.from(UserEntity.class);
                 sub.select(u.get("id"));
                 sub.where(cb.like(cb.lower(u.get("nombre")), "%" + usuarioNombre.toLowerCase() + "%"));
