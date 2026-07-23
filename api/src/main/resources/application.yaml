@@ -1,12 +1,12 @@
+server:
+  port: ${PORT:8080}
+
 spring:
   profiles:
     active:
       - local
   application:
     name: nidus
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
 
   datasource:
     url: ${DB_URL}
