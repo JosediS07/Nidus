@@ -4,6 +4,9 @@ spring:
       - local
   application:
     name: nidus
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
   datasource:
     url: ${DB_URL}
