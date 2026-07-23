@@ -44,7 +44,6 @@ public class SecurityConfig {
                     "/assets/**",
                     "/favicon.ico",
                     "/robots.txt",
-                    "/*.{js,css,svg,png,ico,jpg,gif,woff,woff2,ttf,eot}",
                     "/{path:^(?!api$|swagger.*|v3.*|actuator.*).*$}"
                 ).permitAll()
                 .anyRequest().authenticated()
